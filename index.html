@@ -1,0 +1,2750 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANEXO I - PLAN DE MANEJO MBGI</title>
+    <!-- Dependencias externas cargadas desde CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
+    <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #e9eef2;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- INICIO: ESTILOS PARA LA PANTALLA DE LOGIN --- */
+        #loginOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(44, 62, 80, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        #loginLogo {
+            max-width: 550px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        #loginFormContainer {
+            background-color: #f8f9fa;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        #loginFormContainer h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 1.5em;
+        }
+
+        #loginFormContainer .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        #loginFormContainer label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        #loginFormContainer input[type="text"],
+        #loginFormContainer input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        
+        #loginFormContainer input:focus {
+             border-color: #80bdff;
+             outline: 0;
+             box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+
+        #loginButton {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color: 0.2s;
+        }
+        
+        #loginButton:hover {
+            background-color: #0056b3;
+        }
+
+        #loginError {
+            color: #d9534f;
+            margin-top: 15px;
+            font-weight: bold;
+            display: none;
+        }
+        /* --- FIN: ESTILOS PARA LA PANTALLA DE LOGIN --- */
+
+
+        #pdfPrintImageHeader,
+        h1#pdfPrintMainTitle,
+        span#printDateGlobal,
+        div#pdfPrintPageFooterStrings {
+            display: none;
+        }
+
+        #mainAppContent {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        #mainAppContent > img {
+            align-self: flex-start;
+        }
+
+        #mainContainer {
+            max-width: 1200px; 
+            width: 100%;
+            background-color: #f8f9fa;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-top: 20px;
+        }
+
+        h1, h2, h3, h4, h5 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        h1#appTitle { 
+            font-size: 2.0em; 
+            color: #2c3e50;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 20px; 
+        }
+        .main-section-title { 
+            font-size: 1.6em;
+            color: #1a5276;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #1a5276;
+        }
+        .sub-section-title { 
+            font-size: 1.2em;
+            color: #2980b9;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        .static-text-section {
+            background-color: #fff;
+            padding: 15px 20px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        .static-text-section p, .static-text-section ul {
+            margin-bottom: 10px;
+            text-align: justify;
+        }
+        .static-text-section ul {
+            padding-left: 20px;
+        }
+        .static-text-section li {
+            margin-bottom: 5px;
+        }
+
+
+        .controls {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 20px 0;
+            border-top: 1px solid #dee2e6;
+        }
+        .controls button {
+            margin: 8px;
+            padding: 12px 22px;
+            font-size: 0.95em;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .controls button:hover {
+            background-color: #4cae4c;
+            transform: translateY(-1px);
+        }
+        .controls button:active {
+            transform: translateY(0px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        #btnBorrarDatosIngresados { background-color: #f0ad4e; }
+        #btnBorrarDatosIngresados:hover { background-color: #ec971f; }
+        #btnBorrarCalculosGenerados { background-color: #d9534f; }
+        #btnBorrarCalculosGenerados:hover { background-color: #c9302c; }
+        #btnImprimirPDF { background-color: #007bff; }
+        #btnImprimirPDF:hover { background-color: #0056b3; }
+
+
+        .input-fieldset {
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            padding: 20px 25px 25px 25px;
+            margin-bottom: 30px;
+            background-color: #fff;
+        }
+        .input-fieldset legend {
+            font-weight: bold;
+            color: #495057;
+            padding: 0 10px;
+            font-size: 1.2em;
+            margin-left: 10px;
+        }
+        
+        .input-fieldset h3 {
+            margin-top: 20px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 6px;
+            font-size: 1.1em;
+            color: #343a40;
+        }
+         .input-section > h2, 
+         .input-section > h3:not(#treeInputTable ~ h3):not(#enteredTreesTable ~ h3) {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+            font-size: 1.3em;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            text-align: left;
+            vertical-align: middle;
+        }
+        th {
+            background-color: #f1f3f5;
+            font-weight: 600;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        td {
+             text-align: right;
+             font-size: 0.9em;
+        }
+        td:first-child { 
+            text-align: left;
+        }
+        .input-section label, .input-fieldset label {
+            font-weight: normal;
+            text-align: left;
+            padding-right: 5px;
+            font-size: 0.95em;
+            color: #495057;
+        }
+        .input-fieldset label.inline-checkbox-label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            margin-top: 5px;
+        }
+        .input-fieldset input[type="checkbox"] {
+            margin-right: 8px;
+            width: auto;
+        }
+
+        #supParcelasM2 {
+            background-color: #e9ecef; /* Readonly color */
+            border: 1px solid #ced4da;
+            padding: 8px 10px;
+            width: auto;
+            flex-grow: 1;
+            max-width: 180px;
+            font-size: 0.95em;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #495057;
+        }
+        label[for="supParcelasM2"] {
+            background-color: #e6f7ff;
+            padding: 9px 12px;
+            font-weight: bold;
+            border: 1px solid #91d5ff;
+            border-right: none;
+            margin-right: 0;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+            font-size: 0.95em;
+        }
+        div.sup-parcela-container {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .input-section input[type="text"],
+        .input-section input[type="number"],
+        .input-section select,
+        .input-fieldset input[type="text"],
+        .input-fieldset input[type="number"],
+        .input-fieldset select,
+        .input-fieldset input[type="email"],
+        .input-fieldset input[type="tel"],
+        .input-fieldset textarea,
+        #poaContainer textarea { 
+            padding: 8px 10px;
+            box-sizing: border-box;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            width: 100%;
+            font-size: 0.95em;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            font-family: Arial, sans-serif;
+            color: #333;
+            text-align: justify;
+        }
+        .input-fieldset textarea, #poaContainer textarea {
+            min-height: 50px;
+            resize: vertical; 
+            overflow-y: hidden;
+        }
+        .textarea-placeholder-style {
+            color: #555; 
+        }
+        
+        .textarea-print-content {
+            display: none;
+        }
+
+
+        .input-section input:focus, .input-section select:focus,
+        .input-fieldset input:focus, .input-fieldset select:focus,
+        .input-fieldset textarea:focus, #poaContainer textarea:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+        input[readonly] {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+
+        #spanSupBosqueNativo, #spanTotalSupDetallada,
+        #spanSupTotalCoberturaBoscosaIntervenida, #spanTotalPerdidaNeta,
+        .calculated-span { 
+            font-weight: bold;
+            padding: 8px 10px;
+            border: 1px solid #ced4da;
+            background-color: #e9ecef;
+            display: inline-block;
+            min-width: 90px;
+            text-align: right;
+            border-radius: 4px;
+            font-size: 0.95em;
+            transition: color 0.3s;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: max-content 1fr;
+            gap: 12px 18px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        .form-grid-perdida-neta { 
+             display: grid;
+             grid-template-columns: max-content 1fr max-content 1fr; 
+             gap: 10px 15px;
+             align-items: center;
+             margin-bottom: 12px;
+        }
+        .perdida-neta-label { grid-column: 1 / 2; }
+        .perdida-neta-input { grid-column: 2 / 3; }
+        .perdida-neta-calc-label { grid-column: 3 / 4; text-align: right; padding-right: 5px; }
+        .perdida-neta-calc-span { 
+            grid-column: 4 / 5;
+            width: 100%;
+        }
+
+
+        .form-grid hr {
+            grid-column: 1 / -1;
+            margin: 8px 0;
+            border-color: #dee2e6;
+        }
+
+        #treeInputTable th, #treeInputTable td {
+            padding: 8px;
+        }
+        #treeInputTable input[type="number"], #treeInputTable select {
+            width: 95%;
+            padding: 8px;
+        }
+        #btnAddTree {
+            padding: 8px 14px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        #btnAddTree:hover { background-color: #0056b3; }
+
+        #enteredTreesTable tbody tr:nth-child(odd) {
+            background-color: #f8f9fa;
+        }
+        #enteredTreesTable tbody tr:hover {
+            background-color: #e9ecef;
+        }
+        #enteredTreesTable th, #enteredTreesTable td {
+            padding: 8px;
+        }
+        #enteredTreesTable .action_column button {
+            padding: 5px 10px;
+            font-size: 0.85em;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 3px;
+        }
+        #enteredTreesTable .action_column button:hover {
+            background-color: #c82333;
+        }
+
+
+        .results-section, .inventory-results-section {
+            background-color: #fff;
+            padding: 25px;
+            margin-top: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+        .inventory-results-section {
+            padding: 15px 20px;
+            margin-top: 15px;
+            border: 1px solid #d1e7dd;
+        }
+        .results-section > h2, .inventory-results-section > h3 { 
+            font-size: 1.5em;
+            color: #007bff;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+        }
+        .inventory-results-section > h3 {
+            font-size: 1.2em;
+            color: #1a5276;
+            border-bottom: 1px solid #1a5276;
+        }
+        .result-table-container {
+            margin-bottom: 35px;
+            overflow-x: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+        }
+        .result-table-container h3 {
+            background-color: #6c757d;
+            color: white;
+            border: 1px solid #5a6268;
+            padding: 12px;
+            text-align: center;
+            font-size: 1.15em;
+            margin: 0;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .result-table-container table {
+            margin-top: 0;
+        }
+        .result-table-container table tbody tr:nth-child(odd) {
+            background-color: #fdfdfd;
+        }
+        .result-table-container table tbody tr:hover {
+            background-color: #f1f3f5;
+        }
+        
+        .result-table-container tfoot tr td {
+            font-weight: bold;
+            background-color: #e9ecef !important;
+            border-top: 2px solid #adb5bd;
+        }
+        
+        #tablePosibilidad th, #tableResumenParcelasAB th, #tableDetalleParcelasObservado th, #tableDetalleParcelasHa th {
+            font-size: 0.85em;
+        }
+        #tablePosibilidad td, #tableResumenParcelasAB td, #tableDetalleParcelasObservado td, #tableDetalleParcelasHa td {
+            font-size: 0.85em;
+        }
+
+        #tableVolumen th, #tableAreaBasal th, #tableDensidad th, #tableToneladas th {
+            font-size: 0.8em;
+            padding: 5px;
+        }
+        #tableVolumen td, #tableAreaBasal td, #tableDensidad td, #tableToneladas td {
+            font-size: 0.85em;
+            padding: 6px;
+        }
+
+        .results-section thead th { vertical-align: middle; }
+        
+        #graficosContainer, #graficosInventarioContainer {
+             display: none; 
+             margin-top: 40px;
+             border-top: 2px solid #dee2e6;
+             padding-top: 25px;
+        }
+        #graficosInventarioContainer {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+        }
+        #graficosContainer > h2 {
+            font-size: 1.4em;
+            text-align: center;
+            margin-bottom: 25px;
+            color: #28a745;
+        }
+        .chart-container {
+            width: 98%;
+            max-width: 750px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border: 1px solid #f0f0f0;
+        }
+        #graficosInventarioContainer .chart-container {
+            margin: 0;
+            width: 100%;
+        }
+        .chart-container h4 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #495057;
+            font-size: 1.1em;
+        }
+
+        #planillaCampoContainer { display: none; } 
+
+        /* --- ESTILOS PARA EL COMPONENTE DE MAPA (SECCIÓN 8) --- */
+        .map-component-wrapper {
+            background-color: white;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        .map-page-container {
+            width: 100%;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .map-container {
+            height: 400px;
+            width: 100%;
+            position: relative;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        #mapa-kml { height: 100%; width: 100%; }
+        .map-controls-container {
+            padding: 15px;
+            background-color: #f8f9fa;
+        }
+        .map-controls-header {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .map-controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .map-layer-control {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #fff;
+            font-size: 0.9em;
+        }
+        .map-layer-control h4 {
+            margin: 0 0 8px 0;
+            color: #333;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+        }
+        .map-file-input-group { margin-bottom: 8px; }
+        .map-file-input-group label {
+            display: block;
+            margin-bottom: 3px;
+            font-weight: bold;
+            color: #555;
+            font-size: 0.95em;
+        }
+        .map-file-input-group input[type="file"] {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            background-color: white;
+            font-size: 0.9em;
+        }
+        .map-checkbox-group { margin-top: 8px; }
+        .map-checkbox-group label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
+        }
+        .map-checkbox-group input[type="checkbox"] { margin-right: 8px; }
+        .map-color-indicator {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            margin-right: 8px;
+            border: 1px solid #ccc;
+        }
+        .map-button-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .map-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color: 0.2s;
+        }
+        .map-btn:hover { background-color: #0056b3; }
+        .map-btn.clear { background-color: #dc3545; }
+        .map-btn.clear:hover { background-color: #c82333; }
+        .map-status {
+            margin-top: 10px; padding: 8px; border-radius: 4px;
+            font-size: 0.9em; text-align: center; display: none;
+        }
+        .map-status.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .map-status.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .map-coordinates, .map-title {
+            position: absolute; background-color: rgba(255, 255, 255, 0.9);
+            padding: 4px 8px; border-radius: 3px; font-size: 0.8em; z-index: 1000; border: 1px solid #ccc;
+        }
+        .map-coordinates { bottom: 10px; left: 10px; }
+        .map-title { top: 10px; left: 80px; font-weight: bold; font-size: 1em; }
+
+
+        /* --- INICIO: ESTILOS PARA POAs DINÁMICOS --- */
+        #poaContainer details {
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            background-color: #fdfdfd;
+        }
+        #poaContainer summary {
+            font-weight: bold;
+            font-size: 1.3em;
+            padding: 15px;
+            cursor: pointer;
+            background-color: #ecf0f1;
+            border-radius: 5px 5px 0 0;
+            color: #34495e;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        #poaContainer details[open] summary {
+            background-color: #3498db;
+            color: white;
+        }
+        #poaContainer .poa-content {
+            padding: 20px;
+        }
+        .poa-reuse-text-label {
+            display: flex;
+            align-items: center;
+            font-style: italic;
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: -5px;
+            margin-bottom: 10px;
+        }
+        .poa-reuse-text-label input {
+            margin-right: 10px;
+        }
+        .poa-gantt-table th, .poa-gantt-table td {
+            text-align: center;
+        }
+        .poa-gantt-table td:first-child {
+            text-align: left;
+        }
+        /* Estilos para la tabla de presupuesto */
+        .poa-budget-table {
+            font-size: 0.9em;
+        }
+        .poa-budget-table th, .poa-budget-table td {
+            padding: 6px 8px;
+            font-size: 0.9em;
+        }
+        .poa-budget-table .area-cell {
+            font-weight: bold;
+            background-color: #f2f2f2;
+            vertical-align: middle;
+            text-align: center;
+        }
+        .poa-budget-table .rubro-cell {
+            text-align: left;
+            padding-left: 15px;
+        }
+        .poa-budget-table .subtotal-row td:first-child {
+            text-align: right;
+            padding-right: 10px;
+            font-weight: bold;
+        }
+        .poa-budget-table .subtotal-row td {
+            font-weight: bold;
+            background-color: #e9ecef;
+        }
+        .poa-budget-table .total-row td {
+            font-weight: bold;
+            background-color: #d1e7dd; /* Verde claro */
+            font-size: 1.1em;
+        }
+        .poa-budget-table .total-row td:first-child {
+            text-align: right;
+            padding-right: 10px;
+        }
+        .poa-budget-table input[type="text"] {
+            text-align: right;
+            -moz-appearance: textfield; /* Firefox */
+        }
+        .poa-budget-table input::-webkit-outer-spin-button,
+        .poa-budget-table input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .poa-budget-table input[type="text"]::placeholder {
+            text-align: center;
+            color: #555;
+        }
+
+        .firmas-section-print {
+            display: none;
+        }
+
+        /* --- FIN: ESTILOS PARA POAs DINÁMICOS --- */
+
+        @media print {
+            /* Ocultar el login en la impresión */
+            #loginOverlay {
+                display: none !important;
+            }
+            
+            /* Asegurar que el contenido principal sea visible en la impresión */
+            #mainAppContent {
+                display: flex !important;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                font-size: 9pt;
+                line-height: 1.3;
+                background-color: #fff !important;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            body > *:not(#mainAppContent) {
+                display: none !important;
+            }
+            
+            #mainAppContent > *:not(#pdfPrintImageHeader):not(h1#pdfPrintMainTitle):not(span#printDateGlobal):not(#mainContainer) {
+                 display: none !important;
+            }
+
+            #pdfPrintImageHeader {
+                display: flex !important;
+                justify-content: flex-start;
+                width: 100%;
+                margin-bottom: 8mm;
+            }
+            #pdfPrintImageHeader img {
+                max-width: 500px;
+                width: auto;
+                height: auto;
+            }
+            
+            h1#pdfPrintMainTitle {
+                display: block !important;
+                font-size: 16pt !important;
+                line-height: 1.4;
+                font-weight: bold;
+                text-align: center !important;
+                margin: 0 0 3mm 0 !important;
+                color: #000 !important;
+                width: 100%;
+            }
+            span#printDateGlobal {
+                display: block !important;
+                text-align: center;
+                font-size: 8.5pt !important;
+                margin-bottom: 5mm !important; 
+                color: #000 !important;
+                width: 100%;
+            }
+
+            #mainContainer {
+                box-shadow: none;
+                padding: 0;
+                border-radius: 0;
+                margin-top: 0;
+                max-width: 100%;
+                width: 100% !important;
+            }
+            
+            h1#appTitle,
+            #mainContainer > img,
+            .controls, 
+            #btnImprimirPDF,
+            .input-section #treeInputTable, 
+            .input-section #treeInputTable ~ h4,
+            .input-section #enteredTreesTable, 
+            .input-section .sup-parcela-container + p,
+            .input-section #sup-parcela-container-wrapper > h4,
+            .input-section #btnAddTree,
+            .input-section th.action_column, .input-section td.action_column,
+            #poaSection .input-fieldset, 
+            #poaSection > .main-section-title
+             {
+                display: none !important;
+            }
+            
+            #graficosContainer,
+            #graficosInventarioContainer,
+            #planillaCampoContainer,
+            .textarea-print-content,
+            .results-section,
+            #pdfPrintHeaderWrapperForRunningElement,
+            .firmas-section-print { 
+                 display: block !important;
+                 visibility: visible !important;
+            }
+            
+            /* --- INICIO: REGLAS DE IMPRESIÓN PARA POAs --- */
+            .poa-details-wrapper {
+                page-break-before: always;
+            }
+
+            #poaContainer details {
+                page-break-inside: avoid;
+                border: 1px solid #888 !important;
+            }
+            #poaContainer details[open] {
+                display: block !important;
+            }
+            #poaContainer summary {
+                display: none; /* Ocultar el 'details' en la impresión, mostrar el H2 */
+            }
+            .poa-content > .main-section-title {
+                display: block !important;
+            }
+
+            #poaContainer .form-grid, .poa-reuse-text-label {
+                 page-break-inside: avoid;
+            }
+            .poa-reuse-text-label {
+                display: none !important; /* Ocultar el checkbox de reusar texto */
+            }
+            .poa-budget-table input[type="text"] {
+                border: none !important;
+                background-color: transparent !important;
+                box-shadow: none !important;
+                font-size: 7.5pt !important;
+                color: #000 !important;
+            }
+             /* --- FIN: REGLAS DE IMPRESIÓN PARA POAs --- */
+
+            .input-fieldset textarea,
+            #poaContainer .auto-resize-textarea { 
+                display: none !important;
+            }
+            .textarea-print-content {
+                display: block !important;
+                border: 1px solid #ccc !important;
+                background-color: #f9f9f9 !important;
+                padding: 1.5mm 2mm !important;
+                font-size: 8pt !important;
+                font-family: Arial, sans-serif;
+                line-height: 1.4 !important;
+                width: 100% !important;
+                min-height: 20px;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                page-break-inside: auto;
+                text-align: justify;
+            }
+            
+            .results-section, .inventory-results-section {
+                width: 100%;
+                box-shadow: none;
+                border: none;
+                margin: 0;
+                padding: 0;
+            }
+            
+            #pdfPrintHeaderWrapperForRunningElement {
+                margin-bottom: 5mm; 
+            }
+            #datosPredioParaImprimir {
+                position: running(propertyPageHeader);
+                font-size: 8pt;
+                line-height: 1.3;
+                margin: 0 !important;
+                padding: 0 !important;
+                border-bottom: none !important;
+            }
+            
+            #datosPredioParaImprimir p {
+                text-align: center;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                font-size: 7.5pt;
+                color: #333;
+                border-bottom: 0.5px solid #ccc;
+                padding-bottom: 1.5mm;
+            }
+             #datosPredioParaImprimir p strong {
+                margin: 0 5mm;
+             }
+
+            .input-fieldset {
+                border: 1px solid #aaa !important;
+                padding: 10px 15px;
+                margin-bottom: 3mm;
+                page-break-inside: auto;
+            }
+            .input-fieldset legend { font-size: 10pt !important; }
+            
+            .static-text-section p, .static-text-section ul, .static-text-section li { font-size: 8.5pt !important; text-align: justify; }
+
+            .main-section-title, .sub-section-title { 
+                font-size: 11pt !important; color: #000 !important; border-bottom: 1px solid #555 !important;
+                margin-top: 4mm; margin-bottom: 2mm; text-align: left;
+                page-break-after: avoid;
+            }
+            .sub-section-title {
+                font-size: 10pt !important;
+                border-bottom-style: dashed !important;
+            }
+
+            .result-table-container, .chart-container {
+                page-break-inside: avoid;
+            }
+            
+            .map-component-wrapper { border: 1px solid #000; padding: 2mm; page-break-inside: avoid; }
+            .map-page-container { box-shadow: none !important; border: none !important; }
+            .map-container { height: 120mm !important; border-bottom: 1px solid #000 !important; }
+            .map-controls-container {
+                display: block !important;
+                background: transparent !important;
+                padding: 2mm 0 0 0 !important;
+                border-top: 1px solid #000 !important;
+            }
+            .map-controls-container .map-file-input-group,
+            .map-controls-container .map-checkbox-group,
+            .map-controls-container .map-button-row,
+            .map-controls-container #map-status {
+                display: none !important;
+            }
+            .map-layer-control {
+                border: none !important;
+                padding: 0.5mm !important;
+                background-color: transparent !important;
+            }
+            .map-layer-control h4 {
+                font-size: 8pt !important;
+                margin: 0 !important;
+            }
+            .map-title { font-size: 10pt !important; border: 1px solid #000 !important; background: white !important; }
+            .map-coordinates {
+                display: block !important; visibility: visible !important; position: absolute !important; bottom: 2mm !important;
+                left: 2mm !important; background: white !important; border: 0.5px solid #333 !important;
+                padding: 1mm 2mm !important; font-size: 7pt !important; color: #000 !important; z-index: 4000 !important;
+            }
+            .leaflet-control-container { display: none !important; }
+            
+            th, td {
+                font-size: 6.5pt;
+                padding: 2px;
+                border: 1px solid #555 !important; 
+                color: #000 !important;
+                word-wrap: break-word;
+            }
+            th { background-color: #e9ecef !important; }
+            td:first-child { 
+                font-size: 6.5pt;
+            }
+            
+            .result-table-container tfoot tr td {
+                font-weight: bold;
+                background-color: #e9ecef !important;
+                border-top: 2px solid #555 !important;
+            }
+
+            .result-table-container h3 { 
+                 padding: 4px; background-color: #d1e7dd !important; border: 1px solid #a3cfbb !important;
+                 font-size: 9.5pt; color: #000 !important;
+            }
+            .results-section > h2, .inventory-results-section > h3,
+            .results-section > h3.sub-section-title {
+                font-size: 11pt; margin-top: 3mm; margin-bottom: 3mm; border-bottom: 1px solid #888 !important;
+                color: #000 !important; text-align: center;
+            }
+
+            .chart-container {
+                width: 100% !important; max-width: 100% !important; margin: 8mm 0; box-shadow: none;
+                border: 1px solid #ccc; padding: 8px;
+            }
+            .chart-container canvas { max-width: 100%; height: auto !important; }
+            .chart-container h4 { font-size: 8.5pt; color: #000 !important; margin-bottom: 6px; }
+
+            #planillaCampoContainer h2 { margin-bottom: 5mm; }
+            #tablePlanillaCampo { width: 100%; margin-bottom: 5mm;}
+            #tablePlanillaCampo th, #tablePlanillaCampo td { font-size: 7.5pt; padding: 3px; }
+            #tablePlanillaCampo th { text-align: center; }
+            #tablePlanillaCampo td { text-align: right; }
+            #tablePlanillaCampo td:nth-child(2) { text-align: left; } 
+
+            .firmas-section-print {
+                margin-top: 10mm !important; padding-top: 8mm !important; page-break-before: auto;
+                border-top: 1px solid #888 !important;
+                page-break-inside: avoid;
+            }
+            .firmas-section-print * { visibility: visible !important; }
+            .firmas-section-print table td {
+                border: none !important; font-size: 8pt !important; padding: 4px !important;
+                color: #000 !important; vertical-align: top;
+            }
+            .firmas-section-print span[style*="display:block"] { margin-bottom: 20px !important; }
+            .firma-detalle { font-size: 7.5pt !important; line-height: 1.3; }
+
+            table { page-break-inside: auto; }
+            tr { page-break-inside: avoid; page-break-after: auto; }
+            thead { display: table-header-group !important; }
+
+            #pageFooterEstablecimiento { string-set: establecimiento content(text); }
+            #pageFooterPartida { string-set: partida content(text); }
+            #pageFooterDepartamento { string-set: departamento content(text); }
+
+            @page {
+                size: A4 portrait;
+                margin: 25mm 15mm 20mm 15mm; 
+
+                @top-center {
+                    content: element(propertyPageHeader);
+                    font-size: 7.5pt;
+                    color: #333;
+                    padding-bottom: 2mm;
+                    vertical-align: top;
+                    height: 15mm;
+                    box-sizing: border-box;
+                }
+
+                @bottom-center {
+                    content: "Dirección de Recursos Forestales - Perú 1120 C.P.: W3400CQF Corrientes bosquesnativos@corrientes.gob.ar  |  Hoja " counter(page) " de " counter(pages);
+                    font-size: 7.5pt;
+                    color: #555;
+                    padding-top: 3mm;
+                    border-top: 0.5px solid #ddd;
+                    vertical-align: top;
+                }
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- --- INICIO: PANTALLA DE LOGIN --- -->
+    <div id="loginOverlay">
+        <div id="loginFormContainer">
+            <img src="membrete_provincia.png" alt="Logo Provincia" id="loginLogo">
+            <form id="loginForm">
+                <h2>PLAN DE MANEJO MBGI</h2>
+                <div class="input-group">
+                    <label for="inputUsername">Usuario</label>
+                    <input type="text" id="inputUsername" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="inputPassword">Contraseña</label>
+                    <input type="password" id="inputPassword" name="password" required>
+                </div>
+                <button type="submit" id="loginButton">Ingresar</button>
+                <div id="loginError"></div>
+            </form>
+        </div>
+    </div>
+    <!-- --- FIN: PANTALLA DE LOGIN --- -->
+    
+    <!-- Contenedor para la aplicación principal, oculto por defecto -->
+    <div id="mainAppContent">
+        <div id="pdfPrintImageHeader">
+            <img src="membrete_provincia.png" alt="Membrete Provincia" width="800" height="400">
+        </div>
+
+        <h1 id="pdfPrintMainTitle">
+            FORMULARIO: PLAN DE MANEJO DE BOSQUES CON GANADERÍA INTEGRADA (MBGI)
+        </h1>
+        <span id="printDateGlobal"></span>
+        <div id="pdfPrintPageFooterStrings" style="display:none;">
+            <span id="pageFooterEstablecimiento"></span>
+            <span id="pageFooterPartida"></span>
+            <span id="pageFooterDepartamento"></span>
+        </div>
+        
+        <img src="membrete_provincia.png" alt="Membrete Provincia" width="500" height="100">
+        <div id="mainContainer">
+            <h1 id="appTitle">PLAN DE MANEJO DE BOSQUES CON GANADERÍA INTEGRADA (MBGI)</h1>
+        
+            <div id="pdfPrintHeaderWrapperForRunningElement" style="display: none;">
+                <div id="datosPredioParaImprimir">
+                </div>
+            </div>
+
+            <!-- ========= INICIO: SECCIÓN DEL PLAN TÉCNICO ========= -->
+<div id="planTecnicoSection">
+    
+    <!-- ===== INICIO: BLOQUE DE TEXTO CON TEXTO JUSTIFICADO ===== -->
+    <div class="static-text-section" style="text-align: justify;">
+        <h4>DE LOS PLANES DE MANEJO DE BOSQUES CON GANADERIA INTEGRADA (M.B.G.I)</h4>
+        <p style="font-size: 0.85em; font-style: italic;">
+            (Disposición de la Secretaria de Desarrollo Foresto Industrial 031/2022; Disposición de la Dirección de Recursos Forestales 034/2014 y Resoluciones COFEMA 277/2014; 360/2018; 497/2022).
+        </p>
+        <ol type="a" style="padding-left: 20px;">
+            <li>El Plan de Manejo de Bosques con Ganadería Integrada (M.B.G.I) es el documento que sintetiza la organización, medios y recursos, en el tiempo y en el espacio, de las medidas específicas para mantener o incrementar los atributos de conservación de un bosque nativo o grupo de bosques nativos y/o del aprovechamiento sostenible de sus recursos no maderables y servicios, para lo cual debe incluir una descripción pormenorizada del terreno forestal en sus aspectos ecológicos, legales, sociales y económicos y, en particular, un inventario forestal y/o del recurso no maderable objeto de aprovechamiento con un nivel de detalle tal que permita la toma de decisiones en cuanto a la silvicultura o conjunto de pautas de uso a aplicar en cada una de las unidades de bosque nativo. En caso de existir presencia de herbívora, debe probarse que la carga no disminuye los valores de conservación o, en caso contrario, prever las medidas para que esto no suceda.</li>
+            <li>Los Planes M.B.G.I, pueden ser presentados por beneficiarios para bosques clasificados categoría de conservación II y III (amarillo y verde) correspondiente a contemplada en Ley provincial N.º 5974.</li>
+            <li>Los objetivos y actividades propuestas en los Planes M.B.G.I deben asegurar, que el manejo productivo deberá contener prácticas que aseguren la integridad del paisaje y el cumplimiento de los principios de sostenibilidad establecidos en las Ley de Presupuestos Mínimos para la Protección Ambiental de los Bosques Nativos N° 26.331.</li>
+            <li>Los Planes M.B.G.I, deben contemplar los puntos fundamentales propuestos en la Resolución Conjunta 2/2022, del MINISTERIO DE AMBIENTE Y DESARROLLO SOSTENIBLE y MINISTERIO DE AGRICULTURA, GANADERÍA Y PESCA:
+                <ol style="margin-top: 10px; padding-left: 25px;">
+                    <li>Los PMBGI mantienen un área exclusiva para la conservación de biodiversidad, el mantenimiento de la conectividad, preservación del acervo genético de las especies que ocupan el predio y el resguardo de la fauna asociada.</li>
+                    <li>Todos los estratos que forman parte de la estructura vertical de un bosque constituyen elementos vitales en el funcionamiento del ecosistema y del sistema productivo, manejo del estrato arbustivo con fines de mejorar la oferta forrajera, puede realizarse de forma manual o mecánica, asegurando la permanencia de un mínimo de 30%.</li>
+                    <li>La organización de actividades incluye un plan de manejo forestal que permita conducir la estructura del bosque y monitorear su estado periódicamente.</li>
+                    <li>El manejo ganadero explicitado en el plan de manejo integral, debe adecuarse a las posibilidades reales del sistema, en un horizonte temporal que tenga en cuenta la variabilidad interanual de las condiciones ambientales.</li>
+                    <li>Los planes de M.B.G.I deben contar con un sistema de prevención y control de incendios forestales y de pastizales asociados.</li>
+                    <li>Los planes de M.B.G.I, deben contar con un diseño apropiado de aguadas para lograr un uso productivo eficiente sin perjuicio del funcionamiento del bosque.</li>
+                </ol>
+            </li>
+            <li>El lineamiento técnico estratégico en que se encuadra, es el de MANEJO DE BOSQUES CON GANADERIA INTEGRADA (M.B.G.I), como su nombre lo indica.</li>
+        </ol>
+    </div>
+    <!-- ===== FIN: BLOQUE DE TEXTO ===== -->
+        
+                <div class="input-section">
+                    <h2 class="main-section-title">1. LINEAMIENTO TECNICO ESTRATÉGICO </h2>
+                    <fieldset class="input-fieldset">
+                        <legend>Tipo de Plan de Manejo</legend>
+                        <div class="form-grid" style="grid-template-columns: max-content 1fr;"> 
+                            <label for="selectTipoPlan">Tipo de Lineamiento:</label>
+                            <input type="text" id="selectTipoPlan" value="Manejo de Bosques con Ganadería Integrada (MBGI)" readonly>
+                        </div>
+                    </fieldset>
+        
+                    <h2 class="main-section-title">2. DATOS DEL TITULAR REGISTRAL DEL INMUEBLE</h2>
+                    <fieldset class="input-fieldset">
+                        <legend>Información del Titular Registral</legend>
+                        <div class="form-grid">
+                            <label for="inputTitular">Titular:</label>
+                            <input type="text" id="inputTitular">
+                            <label for="inputDNI">DNI / CUIT Titular:</label>
+                            <input type="text" id="inputDNI">
+                            <label for="inputTitularDomicilio">Domicilio Legal:</label>
+                            <input type="text" id="inputTitularDomicilio">
+                            <label for="inputTitularTelefono">Teléfono:</label>
+                            <input type="tel" id="inputTitularTelefono">
+                            <label for="inputTitularEmail">Email:</label>
+                            <input type="email" id="inputTitularEmail">
+                        </div>
+                    </fieldset>
+        
+                    <h2 class="main-section-title">3. TITULAR DEL PROYECTO</h2>
+                    <fieldset class="input-fieldset">
+                        <legend>Información del Titular del Proyecto</legend>
+                        <label class="inline-checkbox-label">
+                            <input type="checkbox" id="checkMismoTitularProyecto"> Mismo que Titular Registral
+                        </label>
+                        <div class="form-grid">
+                            <label for="inputTitularProyectoNombre">Nombre y Apellido / Razón Social:</label>
+                            <input type="text" id="inputTitularProyectoNombre">
+                            <label for="inputTitularProyectoCUIT">CUIT / CUIL:</label>
+                            <input type="text" id="inputTitularProyectoCUIT">
+                            <label for="inputTitularProyectoDomicilio">Domicilio Legal:</label>
+                            <input type="text" id="inputTitularProyectoDomicilio">
+                            <label for="inputTitularProyectoTelefono">Teléfono:</label>
+                            <input type="tel" id="inputTitularProyectoTelefono">
+                            <label for="inputTitularProyectoEmail">Email:</label>
+                            <input type="email" id="inputTitularProyectoEmail">
+                        </div>
+                    </fieldset>
+        
+                    <h2 class="main-section-title">4. DATOS DEL REPRESENTANTE LEGAL DEL PROYECTO (si corresponde)</h2>
+                    <fieldset class="input-fieldset">
+                        <legend>Información del Representante Legal</legend>
+                        <label class="inline-checkbox-label">
+                            <input type="checkbox" id="checkRepLegalNoAplica"> No Aplica / Mismos datos que Titular del Proyecto
+                        </label>
+                        <div class="form-grid">
+                            <label for="inputRepLegalNombre">Nombre y Apellido:</label>
+                            <input type="text" id="inputRepLegalNombre">
+                            <label for="inputRepLegalDNI">DNI:</label>
+                            <input type="text" id="inputRepLegalDNI">
+                            <label for="inputRepLegalCargo">Cargo / Carácter:</label>
+                            <input type="text" id="inputRepLegalCargo">
+                            <label for="inputRepLegalDomicilio">Domicilio:</label>
+                            <input type="text" id="inputRepLegalDomicilio">
+                            <label for="inputRepLegalTelefono">Teléfono:</label>
+                            <input type="tel" id="inputRepLegalTelefono">
+                        </div>
+                    </fieldset>
+        
+                    <h2 class="main-section-title">5. RESPONSABLE TÉCNICO DEL PROYECTO</h2>
+                    <fieldset class="input-fieldset">
+                        <legend>Datos del Técnico Responsable</legend>
+                        <div class="form-grid">
+                            <label for="inputTecnicoNombre">Nombre y Apellido:</label>
+                            <input type="text" id="inputTecnicoNombre">
+                            <label for="inputTecnicoMatricula">Matrícula N°:</label>
+                            <input type="text" id="inputTecnicoMatricula">
+                            <label for="inputTecnicoDomicilio">Domicilio Profesional:</label>
+                            <input type="text" id="inputTecnicoDomicilio">
+                            <label for="inputTecnicoTelefono">Teléfono Profesional:</label>
+                            <input type="tel" id="inputTecnicoTelefono">
+                            <label for="inputTecnicoEmail">Email Profesional:</label>
+                            <input type="email" id="inputTecnicoEmail">
+                        </div>
+                    </fieldset>
+                </div>
+        
+                <div class="input-section">
+                    <h2 class="main-section-title">7. DATOS DEL INMUEBLE</h2>
+                    <fieldset class="input-fieldset">
+                        <legend>Detalles del Inmueble</legend>
+                        <div class="form-grid" id="inmueble-grid">
+                            <label for="inputEstablecimiento">Nombre Establecimiento:</label>
+                            <input type="text" id="inputEstablecimiento">
+                            <label for="inputPartidaInmobiliaria">Partida Inmobiliaria:</label>
+                            <input type="text" id="inputPartidaInmobiliaria">
+                            <label for="selectLocalidad">Localidad:</label>
+                            <select id="selectLocalidad"></select>
+                            <label for="inputDepartamento">Departamento:</label>
+                            <input type="text" id="inputDepartamento" readonly>
+                            <label for="inputProvincia">Provincia:</label>
+                            <input type="text" id="inputProvincia" value="CORRIENTES" readonly>
+                        </div>
+                    </fieldset>
+        
+                    <h2 class="main-section-title">8. UBICACIÓN GEOGRÁFICA</h2>
+                    <fieldset class="input-fieldset" id="map-component-fieldset">
+                        <legend>Carga de Capas KML y Visualización de Ordenamiento</legend>
+                        <div class="map-component-wrapper">
+                            <div class="map-page-container">
+                                <div class="map-container">
+                                    <div id="mapa-kml"></div>
+                                    <div class="map-title">Mapa de Ubicación</div>
+                                    <div class="map-coordinates" id="map-coordinates-display">
+                                        Lat: ---, Lng: ---
+                                    </div>
+                                </div>
+                                
+                                <div class="map-controls-container">
+                                    <div class="map-controls-header">Referencias de Capas</div>
+                                    
+                                    <div class="map-controls-grid">
+                                        <div class="map-layer-control">
+                                            <h4>
+                                                <span class="map-color-indicator" style="background-color: #ed07ed;"></span>
+                                                Polígono del Predio
+                                            </h4>
+                                            <div class="map-file-input-group">
+                                                <label for="kml-predio-file">Cargar KML:</label>
+                                                <input type="file" id="kml-predio-file" accept=".kml" />
+                                            </div>
+                                            <div class="map-checkbox-group">
+                                                <label>
+                                                    <input type="checkbox" id="kml-predio-visible" checked />
+                                                    Mostrar capa
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="map-layer-control">
+                                            <h4>
+                                                <span class="map-color-indicator" style="background-color: #06f1f1;"></span>
+                                                Área del Plan Técnico
+                                            </h4>
+                                            <div class="map-file-input-group">
+                                                <label for="kml-plan-file">Cargar KML:</label>
+                                                <input type="file" id="kml-plan-file" accept=".kml" />
+                                            </div>
+                                            <div class="map-checkbox-group">
+                                                <label>
+                                                    <input type="checkbox" id="kml-plan-visible" checked />
+                                                    Mostrar capa
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="map-layer-control">
+                                            <h4>
+                                                <span class="map-color-indicator" style="background-color: #ed6e07;"></span>
+                                                Parcelas de Muestreo
+                                            </h4>
+                                            <div class="map-file-input-group">
+                                                <label for="kml-parcelas-file">Cargar KML:</label>
+                                                <input type="file" id="kml-parcelas-file" accept=".kml" />
+                                            </div>
+                                            <div class="map-checkbox-group">
+                                                <label>
+                                                    <input type="checkbox" id="kml-parcelas-visible" checked />
+                                                    Mostrar capa
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="map-button-row">
+                                        <button class="map-btn clear" id="btn-map-clear">Limpiar Capas</button>
+                                        <button class="map-btn" id="btn-map-fit">Ajustar Vista</button>
+                                        <button class="map-btn" id="btn-map-fix">Fijar Vista (p/Imprimir)</button>
+                                    </div>
+                                    
+                                    <div id="map-status" class="map-status"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+        
+                    <h2 class="main-section-title">9. CARACTERÍSTICAS DEL ÁREA DEL PROYECTO</h2>
+                    <fieldset class="input-fieldset">
+                        <legend>Superficies Relevantes</legend>
+                         <div class="form-grid">
+                            <label for="inputSupPredio">Superficie Total del Predio (ha):</label>
+                            <input type="number" id="inputSupPredio" step="0.01" value="0" readonly>
+        
+                            <label for="inputSupAreaProyecto" style="font-weight: bold;">Superficie del Área del Proyecto (ha):</label>
+                            <input type="number" id="inputSupAreaProyecto" step="0.01" value="0" readonly>
+                            
+                            <label for="inputSupAreaConservacion" style="font-weight: bold; color: #28a745;">Área Exclusiva para Conservación (ha):</label>
+                            <input type="number" id="inputSupAreaConservacion" step="0.01" value="0">
+
+                            <label style="font-weight: bold;">Sup. Total Cobertura Boscosa en Predio (ha):</label>
+                            <span id="spanSupBosqueNativo" class="calculated-span">0,00</span> 
+                        </div>
+        
+                        <h3 style="text-align:center; margin-top: 20px;">Superficies de Cobertura Boscosa por Categoría OTBN (ha)</h3>
+                        <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 10px 15px; align-items: center; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; background-color: #fcfcfc;">
+                            <strong style="text-align: left; padding-left: 5px;">Categoría</strong>
+                            <strong style="text-align: center;">OTBN-Predio (ha)</strong>
+                            <strong style="text-align: center;">OTBN-Plan de Manejo (ha)</strong>
+        
+                            <label for="inputCatRojo" style="color: red; font-weight: bold;">Cat. I - Rojo:</label>
+                            <input type="number" id="inputCatRojo" step="0.01" value="0" readonly style="text-align: right;">
+                            <span id="spanPlanCatRojo" class="calculated-span" style="width: 100%;">0,00</span>
+        
+                            <label for="inputCatAmarillo" style="color: #b8b800; font-weight: bold;">Cat. II - Amarillo:</label>
+                            <input type="number" id="inputCatAmarillo" step="0.01" value="0" readonly style="text-align: right;">
+                            <span id="spanPlanCatAmarillo" class="calculated-span" style="width: 100%;">0,00</span>
+        
+                            <label for="inputCatVerde" style="color: green; font-weight: bold;">Cat. III - Verde:</label>
+                            <input type="number" id="inputCatVerde" step="0.01" value="0" readonly style="text-align: right;">
+                            <span id="spanPlanCatVerde" class="calculated-span" style="width: 100%;">0,00</span>
+                            
+                            <label for="inputSinCategorizar">Sin Categorizar:</label>
+                            <input type="number" id="inputSinCategorizar" step="0.01" value="0" style="text-align: right;">
+                            <input type="number" id="inputPlanSinCategorizar" step="0.01" value="0" style="text-align: right;">
+                        </div>
+        
+                         <hr>
+                        <p style="font-size:0.9em; color:#555; margin-top:0; margin-bottom: 5px;">
+                            Nota: La "Sup. Total Cobertura Boscosa en Predio (ha)" se calcula como la suma de las categorías Rojo, Amarillo, Verde y Sin Categorizar. La suma no puede superar la "Superficie Total del Predio".
+                        </p>
+                        <p style="font-size:0.9em; color:#555; margin-top:0; margin-bottom:15px;">
+                            Se considera bosque nativo a los ambientes con: 0,5 ha de ocupación continua, 3 m de altura mínima y 20% de cobertura de copas mínima.
+                        </p>
+                    </fieldset>
+
+                    <h2 class="main-section-title">10. DIAGNÓSTICO E PROPUESTA DE MANEJO MBGI</h2>
+                    <fieldset class="input-fieldset">
+                        <legend>Diagnóstico Inicial y Propuesta Técnica</legend>
+
+                        <h3 class="sub-section-title">10.1. Diagnóstico Inicial Ambiental y Productivo</h3>
+                        <fieldset class="input-fieldset" style="background-color: #f7f9fc;">
+                            <legend>Diagnóstico Productivo</legend>
+                            <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                                <label for="inputCargaAnimal">Capacidad de Carga Inicial (UG/ha):</label>
+                                <input type="number" id="inputCargaAnimal" step="0.01" value="0">
+                                <label for="inputOfertaForrajera">Oferta Forrajera Inicial (kg MS/ha):</label>
+                                <input type="number" id="inputOfertaForrajera" step="1" value="0">
+                                <label for="inputIndiceDestete">Índice de Destete Inicial (%):</label>
+                                <input type="number" id="inputIndiceDestete" step="0.1" value="0">
+                                <label for="inputGananciaPeso">Ganancia de Peso Promedio (kg/día):</label>
+                                <input type="number" id="inputGananciaPeso" step="0.01" value="0">
+                            </div>
+                        </fieldset>
+                        <textarea id="textDiagnosticoAmbiental" class="auto-resize-textarea">Descripción del Diagnóstico Ambiental: Detallar estado actual del bosque (estructura, regeneración, biodiversidad, disponibilidad de sombra y agua), condiciones climáticas históricas y proyectadas (lluvias, sequías), y características del suelo (fertilidad, susceptibilidad a la erosión).</textarea>
+                        <div id="print-textDiagnosticoAmbiental" class="textarea-print-content"></div>
+
+                        <h3 class="sub-section-title">10.2. Manejo del Estrato Arbustivo</h3>
+                        <div class="form-grid" style="max-width: 600px;">
+                           <label for="inputCoberturaArbustivaMin" style="font-weight: bold;">Cobertura Mínima de Estrato Arbustivo a Mantener (%):</label>
+                           <input type="number" id="inputCoberturaArbustivaMin" value="30" readonly>
+                        </div>
+                        <p style="font-size:0.9em; color:#555; margin-top:-5px; margin-bottom:15px;">
+                           El valor del 30% corresponde al requisito mínimo según el Lineamiento 2.3.3 A.1. Se podrá proponer un valor superior.
+                        </p>
+                        <textarea id="textManejoArbustivo" class="auto-resize-textarea">Descripción de Prácticas de Manejo del Estrato Arbustivo: Detallar métodos a utilizar (manejo selectivo, podas, raleos) para equilibrar la producción forrajera y la conservación, garantizando la funcionalidad del ecosistema y la conectividad.</textarea>
+                        <div id="print-textManejoArbustivo" class="textarea-print-content"></div>
+
+                        <h3 class="sub-section-title">10.3. Propuesta de Manejo Ganadero Sostenible</h3>
+                        <textarea id="textManejoGanadero" class="auto-resize-textarea">Planificación del Sistema de Pastoreo y Estrategias Adaptativas: Describir el sistema de pastoreo (ej. rotativo, diferido), la categorización del ganado, el aprovechamiento de fuentes forrajeras, y las estrategias de manejo adaptativo para afrontar la variabilidad climática. Incluir los indicadores de monitoreo productivos y de impacto sobre el bosque (ej. regeneración, estado del suelo).</textarea>
+                        <div id="print-textManejoGanadero" class="textarea-print-content"></div>
+                        
+                        <h3 class="sub-section-title">10.4. Diseño de Aguadas y Fuentes de Agua</h3>
+                        <textarea id="textDiseñoAguadas" class="auto-resize-textarea">Diagnóstico y Diseño de Aguadas: Detallar el relevamiento de fuentes de agua existentes, el diseño de nuevas aguadas (ubicación estratégica, características, acceso controlado), y los planes para la protección y/o restauración de fuentes de agua naturales (arroyos, lagunas), incluyendo la creación de franjas de amortiguamiento.</textarea>
+                        <div id="print-textDiseñoAguadas" class="textarea-print-content"></div>
+
+                        <h3 class="sub-section-title">10.5. Estrategias de Mitigación (Sequías e Incendios)</h3>
+                        <textarea id="textEstrategiasMitigacion" class="auto-resize-textarea">Medidas de Mitigación ante Sequías e Incendios: Describir el plan de prevención de incendios (reducción de combustible, cortafuegos, monitoreo). Detallar las estrategias ante sequías prolongadas (reservas hídricas y forrajeras, áreas de refugio, ajustes en la carga animal).</textarea>
+                        <div id="print-textEstrategiasMitigacion" class="textarea-print-content"></div>
+                    </fieldset>
+        
+                    <h2 class="main-section-title">11. DATOS DE INVENTARIO FORESTAL</h2>
+                    <fieldset class="input-fieldset">
+                        <legend>Datos de Parcela, Árboles y Resultados</legend>
+        
+                        <h3 class="sub-section-title">11.1. Metodología de Muestreo y Caracterización de Parcelas</h3>
+                        <div class="static-text-section">
+                            <p>Las Unidades de Muestreos (UM) se componen de parcelas circulares, para el relevamiento de individuos leñosos de diferentes tamaños.</p>
+                            <p>Cada parcela tiene una superficie de 1.000 m² (con un radio de 17,8 metros). Se recolectaron datos, incluidos parámetros dasométricos que permiten calcular estimadores de la masa forestal como volumen, área basal y toneladas.</p>
+                            <h4>Determinación de los Individuos de la Unidad de Muestreo</h4>
+                            <p>Para determinar si un individuo leñoso se incluía o no como registro dentro de la correspondiente parcela, con los criterios de diámetro normal (DAP) a la altura estándar de 1.30 metros sobre el suelo, se controlaba la distancia desde su centro geométrico (corazón o médula) al centro de la parcela. Si esa distancia era mayor que el radio de la parcela, el mismo no formaba parte de la muestra.</p>
+                            <p>Para definir sobre aquellos individuos leñosos que se encontraban en el borde límite de la parcela cuya base del fuste coincidía con algún punto del perímetro, se tomaron en cuenta los siguientes criterios:</p>
+                            <ul>
+                                <li>Si el límite de la parcela pasaba por el centro geométrico de la base del fuste, este quedaba incluido en la parcela. Para individuos polifustales, se medirán todos los fustes del mismo, aunque algunos quedaran por fuera de la parcela.</li>
+                                <li>Si el centro geométrico de la base del fuste pasaba por fuera del límite de la parcela, este quedaba excluido de la parcela. En el caso de individuos polifustales, no se medía ningún fuste, aunque alguno quedara por dentro de la parcela.</li>
+                            </ul>
+                            <p>Las alturas a registrar de cada individuo dentro de la parcela son altura total y altura de fuste.</p>
+                        </div>
+        
+                        <h3 class="sub-section-title">11.2. Registro de Datos de Campo</h3>
+                        <div id="sup-parcela-container-wrapper">
+                            <div class="sup-parcela-container">
+                                <label for="supParcelasM2">SUP. TOTAL MUESTREADA (m²):</label>
+                                <input type="number" id="supParcelasM2" value="0" readonly>
+                            </div>
+                            <p style="font-size:0.9em; color:#555; margin-top:-5px; margin-bottom:15px;">
+                                La superficie se calcula automáticamente sumando 1000 m² por cada número de parcela única ingresada.
+                            </p>
+        
+                            <h4>Ingresar Árbol Individual:</h4>
+                            <table id="treeInputTable">
+                                <thead>
+                                    <tr>
+                                        <th>ESPECIES</th>
+                                        <th>DAP (cm)</th>
+                                        <th>ALT TOTAL (m)</th>
+                                        <th>ALT FUSTE (m)</th>
+                                        <th>Parcela Número (Obligatorio)</th>
+                                        <th class="action_column">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><select id="selEspecie"></select></td>
+                                        <td><input type="number" id="inputDAP" step="0.1"></td>
+                                        <td><input type="number" id="inputAltTotal" step="0.1"></td>
+                                        <td><input type="number" id="inputAltFuste" step="0.1"></td>
+                                        <td><input type="number" id="inputParcelaNum" step="1" min="1"></td>
+                                        <td class="action_column"><button id="btnAddTree">Añadir Árbol</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+        
+                            <h4>Árboles Ingresados:</h4>
+                            <table id="enteredTreesTable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>ESPECIES</th>
+                                        <th>DAP (cm)</th>
+                                        <th>ALT TOTAL (m)</th>
+                                        <th>ALT FUSTE (m)</th>
+                                        <th>Parcela</th>
+                                        <th class="action_column">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+        
+                        <h3 class="sub-section-title">11.3. Resultados del Inventario (por Hectárea)</h3>
+                        <div class="inventory-results-section" id="inventoryResultsWrapper">
+                            <div id="resultadosVolumen" class="result-table-container">
+                                <h3>PLANILLA DE VOLUMEN (POR HECTÁREA)</h3>
+                                <table id="tableVolumen"></table>
+                            </div>
+                
+                            <div id="resultadosAreaBasal" class="result-table-container">
+                                <h3>PLANILLA DE ÁREA BASAL (POR HECTÁREA)</h3>
+                                <table id="tableAreaBasal"></table>
+                            </div>
+                
+                            <div id="resultadosDensidad" class="result-table-container">
+                                <h3>PLANILLA DE DENSIDAD (POR HECTÁREA)</h3>
+                                <table id="tableDensidad"></table>
+                            </div>
+        
+                            <div id="resultadosToneladas" class="result-table-container">
+                                <h3>PLANILLA DE TONELADAS (POR HECTÁREA)</h3>
+                                <table id="tableToneladas"></table>
+                            </div>
+                
+                             <div id="resultadosEstadisticosGenerales" class="result-table-container">
+                                <h3>ESTADÍSTICOS GENERALES DEL MUESTREO (DAP >= 10cm, Población Total)</h3>
+                                <table id="tableEstadisticosGenerales">
+                                    <thead>
+                                        <tr>
+                                            <th>ESTADISTICOS</th>
+                                            <th>N/ha</th>
+                                            <th>AB/ha</th>
+                                            <th>Vol. Fuste/ha</th>
+                                            <th>Vol. Total/ha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+        
+                            <div id="graficosInventarioContainer" style="display: none;">
+                                <div class="chart-container">
+                                    <h4>Volumen por Clase Diamétrica (m³/ha)</h4>
+                                    <canvas id="chartVolumenClaseDAP"></canvas>
+                                </div>
+                                <div class="chart-container">
+                                    <h4>Área Basal por Clase Diamétrica (m²/ha)</h4>
+                                    <canvas id="chartABClaseDAP"></canvas>
+                                </div>
+                                <div class="chart-container">
+                                    <h4>Densidad por Clase Diamétrica (N/ha)</h4>
+                                    <canvas id="chartDensidadClaseDAP"></canvas>
+                                </div>
+                                <div class="chart-container">
+                                    <h4>Toneladas por Clase Diamétrica (Tn/ha)</h4>
+                                    <canvas id="chartToneladasClaseDAP"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="sub-section-title">11.4. Estadísticos del Muestreo por Parcelas</h3>
+                        <fieldset class="input-fieldset">
+                             <legend>Análisis Estadístico del Muestreo</legend>
+                             <div class="form-grid" style="grid-template-columns: max-content auto;">
+                                <label for="inputErrorEstablecidoAB">Error Muestral Objetivo para AB (%):</label>
+                                <input type="number" id="inputErrorEstablecidoAB" step="1" value="15" min="1" max="50">
+                             </div>
+                             <div id="resultadosEstadisticosMuestreo" class="result-table-container">
+                                <h3>RESUMEN DE DATOS DE PARCELAS (Área Basal)</h3>
+                                <table id="tableResumenParcelasAB">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Valor</th><th>Unidad</th></tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                             </div>
+                             <div id="resultadosDetalleParcelasObs" class="result-table-container">
+                                <h3>DATOS POR PARCELA (Valores Observados en cada parcela)</h3>
+                                <table id="tableDetalleParcelasObservado">
+                                    <thead>
+                                        <tr>
+                                            <th>Parcela N°</th>
+                                            <th>N° Árboles</th>
+                                            <th>AB (m²)</th>
+                                            <th>Vol. Fuste (m³)</th>
+                                            <th>Vol. Total Prod. (m³)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                             </div>
+                             <div id="resultadosDetalleParcelasHa" class="result-table-container">
+                                <h3>DATOS POR PARCELA (Valores por Hectárea)</h3>
+                                <table id="tableDetalleParcelasHa">
+                                     <thead>
+                                        <tr>
+                                            <th>Parcela N°</th>
+                                            <th>N/ha</th>
+                                            <th>AB (m²/ha)</th>
+                                            <th>Vol. Fuste (m³/ha)</th>
+                                            <th>Vol. Total Prod. (m³/ha)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                             </div>
+                        </fieldset>
+        
+                    </fieldset>
+        
+                    <div class="controls">
+                        <button id="btnCalcularDatosForestales">Calcular Datos Forestales y Plan</button>
+                        <button id="btnBorrarDatosIngresados">Borrar Datos Ingresados</button>
+                        <button id="btnBorrarCalculosGenerados">Borrar Cálculos Generados</button>
+                    </div>
+                </div>
+                
+                <div class="static-text-section-wrapper">
+                    <h2 class="main-section-title">12. CONTENIDOS GENERALES DEL PLAN</h2>
+                    <fieldset class="input-fieldset">
+                        <legend>Descripciones Generales</legend>
+                
+                        <h3 class="sub-section-title">OBJETIVOS GENERALES.</h3>
+                        <textarea id="textPlanObjGenerales" class="auto-resize-textarea">Integrar la producción ganadera con la conservación de los bosques nativos, asegurando la sostenibilidad del ecosistema y la viabilidad económica del establecimiento, reconociendo la importancia de estos ecosistemas como proveedores de servicios ambientales fundamentales.</textarea>
+                        <div id="print-textPlanObjGenerales" class="textarea-print-content"></div>
+                
+                        <h3 class="sub-section-title">OBJETIVOS ESPECIFICOS.</h3>
+                        <textarea id="textPlanObjEspecificos" class="auto-resize-textarea">Haga clic aquí para escribir los objetivos específicos (ej: Mantener una cobertura arbórea del X%, mejorar la oferta forrajera en un Y%, establecer Z hectáreas de áreas de conservación, etc.).</textarea>
+                        <div id="print-textPlanObjEspecificos" class="textarea-print-content"></div>
+                
+                        <h3 class="sub-section-title">DESCRIPCIÓN DE ANTECEDENTES RELACIONADOS AL USO DE LA TIERRA E DE LAS CONDICIONES SOCIOECONÓMICAS DE LA REGIÓN.</h3>
+                        <textarea id="textPlanAntecedentes" class="auto-resize-textarea">“Hace referencia a información sobre cómo ha sido utilizada la tierra en términos de actividades productivas, como la agricultura, la ganadería, la producción forestal u otras actividades económicas. Esto incluiría datos sobre los cultivos que se han cultivado históricamente en la región, los métodos agrícolas utilizados, la productividad de la tierra, los tipos de ganado criados, los sistemas de manejo forestal empleados, entre otros aspectos. Además, también se considerarían las condiciones socioeconómicas de la región que han influido en la producción, como la disponibilidad de mano de obra, el acceso a recursos naturales, las políticas agrícolas y económicas, la infraestructura disponible, entre otros factores.”</textarea>
+                        <div id="print-textPlanAntecedentes" class="textarea-print-content"></div>
+                
+                        <h3 class="sub-section-title">DESCRIPCIÓN DE LOS RECURSOS FORESTALES QUE SERÁN MANEJADOS, DE SU ENTORNO NATURAL Y DE LAS LIMITACIONES AMBIENTALES EXISTENTES.</h3>
+                        <textarea id="textPlanRecursos" class="auto-resize-textarea">“Se refiere a los recursos forestales que se pretenden gestionar para conservarlos. Esto incluye los árboles, la vegetación y la biodiversidad asociada en un área específica que se desea proteger y manejar de manera sostenible. El "entorno natural" se refiere al contexto en el que se encuentran estos recursos forestales, incluyendo factores como el clima, la topografía, el suelo y la hidrología. Estos elementos influyen en la salud y el crecimiento de los bosques, así como en la disponibilidad de agua y otros recursos naturales. Las "limitaciones ambientales existentes" se refieren a las restricciones o condiciones específicas que pueden afectar la gestión de los recursos forestales para su conservación. Esto puede incluir restricciones legales, como áreas protegidas o regulaciones ambientales, así como limitaciones físicas, como la presencia de especies invasoras, riesgos de incendios forestales, o problemas de degradación del suelo.”</textarea>
+                        <div id="print-textPlanRecursos" class="textarea-print-content"></div>
+                
+                        <h3 class="sub-section-title">DESCRIPCION DEL INVENTARIO FORESTAL DISEÑADO EN FUNCIÓN DE LOS OBJETIVOS.</h3>
+                        <textarea id="textPlanInventario" class="auto-resize-textarea">“La Disposición N.º 037/2014 de la Dirección de Recursos Forestales, establece los requisitos y procedimientos específicos que deben seguirse para realizar el inventario forestal, como así también la presentación de los datos, los cuales se encuentran por defecto en el presente formulario.”</textarea>
+                        <div id="print-textPlanInventario" class="textarea-print-content"></div>
+                
+                        <h3 class="sub-section-title">DESCRIPCIÓN DEL SISTEMA SILVICULTURAL U OTRO SISTEMA DE MANEJO, O DE LAS TÉCNICAS DE RECUPERACIÓN.</h3>
+                        <textarea id="textPlanSilvicultural" class="auto-resize-textarea">“El diseño del sistema de manejo se basa en la información recopilada durante el inventario forestal y los diagnósticos productivos y ambientales. Con esta información, se definen las acciones de manejo silvopastoril, como el raleo selectivo de árboles, el manejo del estrato arbustivo para mejorar la oferta forrajera, y la planificación del pastoreo para asegurar la regeneración natural y la salud del ecosistema.”</textarea>
+                        <div id="print-textPlanSilvicultural" class="textarea-print-content"></div>
+                        
+                        <h3 class="sub-section-title">DESCRIPCIÓN DE LOS ASPECTOS SOCIALES RELEVANTES Y DEL IMPACTO SOCIAL POSITIVO PREVISTO.</h3>
+                        <textarea id="textPlanSocial" class="auto-resize-textarea">“Se describe la situación socioeconómica de las comunidades locales antes del proyecto, incluyendo aspectos como el nivel de ingresos, el acceso a servicios básicos, la educación y la salud. También se puede incluir información sobre las prácticas culturales y tradicionales relacionadas con los recursos forestales. Luego, se describe el impacto social positivo previsto del proyecto, es decir, cómo se espera que el proyecto beneficie a las comunidades locales y a otros grupos sociales. Esto puede incluir la creación de empleo, el desarrollo de capacidades, el acceso a servicios básicos, la mejora de la infraestructura local, entre otros aspectos”.</textarea>
+                        <div id="print-textPlanSocial" class="textarea-print-content"></div>
+                
+                        <h3 class="sub-section-title">DECLARACIÓN JURADA POR PARTE DEL TITULAR DE LOS IMPACTOS AMBIENTALES PREVISTOS EN EL PLAN.</h3>
+                        <textarea id="textPlanImpactoAmbientalDJ" class="auto-resize-textarea">“Declaración de los impactos ambientales previstos en el Plan, para facilitar el análisis por parte de la Autoridad de Aplicación de la Ley 26331, quien determinará la necesidad de efectuar un estudio de impacto ambiental (EIA). En el caso que los riesgos ambientales no ameriten un EIA se incluirán en el plan de manejo las medidas preventivas y correctivas de los tratamientos que alteren el ecosistema.”</textarea>
+                        <div id="print-textPlanImpactoAmbientalDJ" class="textarea-print-content"></div>
+                    </fieldset>
+    
+                    <h2 class="main-section-title">13. ACTIVIDADES GENERALES DEL PLAN</h2>
+                     <fieldset class="input-fieldset">
+                        <legend>Descripciones de Actividades Generales</legend>
+                        <p style="font-size:0.9em; color:#2e0b4f; margin-bottom:15px;">Escriba aquí las descripciones generales para las actividades del plan. Luego, en cada POA, podrá elegir si usar este texto general o escribir uno específico para ese año.</p>
+    
+                        <h3 class="sub-section-title">DESCRIPCIÓN Y JUSTIFICACIÓN DE LAS TÉCNICAS A IMPLEMENTAR Y DEL EQUIPAMIENTO UTILIZADO.</h3>
+                        <textarea id="textPlanTecnicas" class="auto-resize-textarea">“Descripción detallada de las técnicas y equipamiento para el manejo forestal (raleo, podas) y ganadero (alambrados eléctricos, aguadas móviles). Se justificará la elección en función de su eficacia para lograr los objetivos de producción y conservación, minimizando el impacto ambiental (ej. uso de maquinaria de bajo impacto) y maximizando la eficiencia de las tareas.”</textarea>
+                        <div id="print-textPlanTecnicas" class="textarea-print-content"></div>
+                
+                        <h3 class="sub-section-title">PRESCRIPCIÓN DE TÉCNICAS Y MEDIDAS DE PROTECCIÓN AMBIENTAL.</h3>
+                        <textarea id="textPlanProteccionAmbiental" class="auto-resize-textarea">“Se detallan las medidas para minimizar los impactos ambientales:
+1. Silvicultura sostenible: Asegurar la regeneración natural y evitar la sobreexplotación de los recursos forestales.
+2. Conservación de la biodiversidad: Proteger especies y hábitats críticos, manteniendo la conectividad del paisaje.
+3. Control de la erosión: Implementar medidas para prevenir la pérdida de suelo, especialmente en áreas de pendiente o suelos frágiles.
+4. Manejo del agua: Proteger las fuentes de agua y la vegetación ribereña para mantener la calidad y cantidad del recurso hídrico.
+5. Gestión de residuos: Aplicar prácticas de minimización, reciclaje y compostaje para reducir la contaminación.
+6. Manejo de Carga Animal: Ajustar la carga ganadera a la capacidad del sistema para evitar el sobrepastoreo y la compactación del suelo.”</textarea>
+                        <div id="print-textPlanProteccionAmbiental" class="textarea-print-content"></div>
+                
+                        <h3 class="sub-section-title">MEDIDAS PARA EL MONITOREO DEL CRECIMIENTO Y DINÁMICA DEL BOSQUE.</h3>
+                        <textarea id="textPlanMonitoreo" class="auto-resize-textarea">“Para garantizar la sostenibilidad del sistema MBGI, se implementarán las siguientes medidas de monitoreo:
+1. Parcelas permanentes de monitoreo: Para medir el crecimiento de los árboles, la regeneración natural y la dinámica general del bosque.
+2. Monitoreo de la biodiversidad: Realizar seguimiento de especies clave de flora y fauna para evaluar el estado de conservación.
+3. Monitoreo de la calidad del agua y el suelo: Realizar análisis periódicos para detectar posibles impactos de las actividades de manejo.
+4. Monitoreo de la oferta forrajera: Evaluar la disponibilidad y calidad de la pastura para ajustar la carga animal y el plan de pastoreo.
+5. Monitoreo de fauna: Realizar seguimiento de la presencia y abundancia de especies animales indicadoras de la salud del ecosistema.
+Estas medidas permitirán una gestión adaptativa y la toma de decisiones informadas.”</textarea>
+                        <div id="print-textPlanMonitoreo" class="textarea-print-content"></div>
+                
+                        <h3 class="sub-section-title">MEDIDAS DE PREVENCIÓN E MITIGACIÓN DE IMPACTOS AMBIENTALES.</h3>
+                        <textarea id="textPlanPrevencionImpactos" class="auto-resize-textarea">“Para prevenir y mitigar los impactos ambientales asociados a un emprendimiento forestal, es fundamental implementar una serie de medidas específicas.
+Aquí hay algunas medidas comunes que se pueden considerar:
+1. Planificación adecuada del emprendimiento: Realizar un estudio detallado del área antes de comenzar cualquier actividad forestal para identificar áreas sensibles y determinar las mejores prácticas de manejo.
+2. Prácticas de manejo sostenible: Utilizar métodos de manejo forestal que minimicen la alteración del ecosistema, como la tala selectiva, la regeneración natural y la protección de áreas de alto valor ecológico.
+3. Control de erosión: Implementar medidas para prevenir la erosión del suelo, como la construcción de terrazas, la siembra de cobertura vegetal y la revegetación de áreas degradadas.
+4. Control de la contaminación: Establecer protocolos para el manejo adecuado de productos químicos y desechos, así como para evitar la contaminación del suelo y del agua.
+5. Protección de la biodiversidad: Conservar hábitats críticos y especies en peligro de extinción, evitando la fragmentación del bosque y manteniendo la conectividad entre áreas naturales.
+6. Monitoreo ambiental: Realizar monitoreos periódicos para evaluar el impacto de las actividades forestales en el medio ambiente y tomar medidas correctivas si es necesario.
+7. Capacitación y sensibilización: Proporcionar capacitación a los trabajadores forestales sobre prácticas ambientalmente responsables y promover la sensibilización sobre la importancia de la conservación de los recursos naturales.
+8. Participación comunitaria: Involucrar a las comunidades locales en la toma de decisiones y en la implementación de medidas de conservación ambiental, fomentando la colaboración y el compromiso.
+Estas medidas, cuando se implementan de manera efectiva y se combinan con un monitoreo constante, pueden ayudar a minimizar los impactos ambientales negativos y promover la sostenibilidad de las actividades forestales. .”</textarea>
+                        <div id="print-textPlanPrevencionImpactos" class="textarea-print-content"></div>
+                
+                        <h3 class="sub-section-title">DESCRIPCIÓN DEL TRATAMIENTO DE RESIDUOS.</h3>
+                        <textarea id="textPlanResiduos" class="auto-resize-textarea">“El tratamiento de residuos en un emprendimiento forestal es crucial para minimizar su impacto ambiental y garantizar su gestión adecuada.
+Algunas prácticas comunes incluyen:
+1. Separación en origen: Separar los residuos en origen para facilitar su posterior tratamiento y reciclaje.
+2. Reciclaje: Promover el reciclaje de materiales como papel, cartón, plástico y vidrio para reducir la cantidad de residuos enviados a vertederos.
+3. Compostaje: Compostar los residuos orgánicos para producir abono natural y reducir la cantidad de residuos orgánicos enviados a vertederos.
+4. Reutilización: Promover la reutilización de materiales y productos para extender su vida útil y reducir la generación de residuos.
+5. Disposición final adecuada: Enviar los residuos no reciclables ni compostables a vertederos controlados o instalaciones de tratamiento de residuos autorizadas.
+6. Reducción en la fuente: Implementar medidas para reducir la cantidad de residuos generados, como la compra de productos a granel o la eliminación de envases innecesarios.
+7. Gestión de residuos peligrosos: Tratar de manera especial los residuos peligrosos, como productos químicos o envases contaminados, para evitar su impacto negativo en el medio ambiente.
+8. Educación y sensibilización: Capacitar al personal y a la comunidad sobre la importancia de una adecuada gestión de residuos y promover prácticas responsables.
+La implementación de un plan integral de tratamiento de residuos en un emprendimiento forestal puede contribuir significativamente a reducir su impacto ambiental y promover la sostenibilidad de sus operaciones.”</textarea>
+                        <div id="print-textPlanResiduos" class="textarea-print-content"></div>
+                
+                        <h3 class="sub-section-title">MEDIDAS DE PREVENCIÓN Y MITIGACIÓN DE INCENDIOS.</h3>
+                        <textarea id="textPlanPrevencionFuego" class="auto-resize-textarea">“Las medidas de prevención de incendios forestales son fundamentales para proteger los bosques y prevenir la pérdida de biodiversidad y recursos naturales.
+Algunas medidas efectivas incluyen:
+1. Creación de cortafuegos: Establecer barreras naturales o artificiales que impidan la propagación del fuego, como áreas despejadas o caminos amplios.
+2. Mantenimiento de cortafuegos: Mantener limpios y despejados los cortafuegos para garantizar su eficacia en caso de incendio.
+3. Control de la vegetación: Realizar actividades de desbroce y poda para reducir la cantidad de material vegetal combustible.
+4. Restricción de actividades riesgosas: Prohibir o restringir actividades que puedan generar chispas o calor, como quemas agrícolas o uso de maquinaria pesada en épocas secas y ventosas.
+5. Vigilancia y detección temprana: Implementar sistemas de vigilancia y detección de incendios forestales, como torres de vigilancia, drones o cámaras de monitoreo.
+6. Capacitación y concientización: Capacitar al personal y a la comunidad sobre la prevención de incendios y la importancia de reportar cualquier situación sospechosa.
+7. Uso controlado del fuego: Realizar quemas controladas bajo condiciones climáticas y de seguridad adecuadas para reducir la acumulación de material combustible.
+8. Infraestructura y acceso: Mejorar la infraestructura y el acceso a las áreas forestales para facilitar la respuesta rápida ante incendios.
+9. Colaboración interinstitucional: Coordinar acciones entre instituciones gubernamentales, organizaciones y comunidades locales para mejorar la prevención y respuesta ante incendios forestales.
+10. Plan de emergencia: Elaborar y mantener actualizado un plan de emergencia para actuar de manera rápida y eficaz en caso de incendio forestal.
+Implementar estas medidas de prevención de incendios puede contribuir significativamente a proteger los bosques y reducir los riesgos de incendios forestales.”</textarea>
+                        <div id="print-textPlanPrevencionFuego" class="textarea-print-content"></div>
+                     </fieldset>
+                </div>
+        
+                <div id="graficosContainer">
+                    <h2>Gráficos Resumen del Inventario</h2>
+                    <div class="chart-container">
+                        <h4>Volumen Total por Especie (m³/ha)</h4>
+                        <canvas id="chartVolumenPorEspecie"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h4>Densidad por Especie (Arb/ha)</h4>
+                        <canvas id="chartDensidadPorEspecie"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h4>Distribución de Clases Diamétricas (Total Árboles)</h4>
+                        <canvas id="chartDistribucionDAP"></canvas>
+                    </div>
+                </div>
+        
+                <div id="planillaCampoContainer">
+                    <h2>Planilla de Campo (Árboles Individuales Registrados)</h2>
+                    <table id="tablePlanillaCampo">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Especie (Nombre Científico)</th>
+                                <th>DAP (cm)</th>
+                                <th>Alt. Total (m)</th>
+                                <th>Alt. Fuste (m)</th>
+                                <th>N° Parcela</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <div class="firmas-section-print" id="firmas-section-plan"></div>
+    
+            </div>
+            <!-- ========= FIN: SECCIÓN DEL PLAN TÉCNICO ========= -->
+
+
+            <!-- ========= INICIO: SECCIÓN DE POAs ========= -->
+            <div id="poaSection">
+                <h2 class="main-section-title">14. PLANES OPERATIVOS ANUALES (POA)</h2>
+                <fieldset class="input-fieldset">
+                    <legend>Configuración de POAs</legend>
+                     <div class="form-grid" style="grid-template-columns: max-content 1fr; max-width: 400px;">
+                        <label for="inputNumPoas" style="font-weight: bold;">Cantidad de POAs a detallar:</label>
+                        <input type="number" id="inputNumPoas" min="0" max="10" step="1" value="0">
+                    </div>
+                    <p style="font-size:0.9em; color:#555; margin-top:-5px; margin-bottom:15px;">
+                        Ingrese un número y el formulario generará las secciones correspondientes para cada Plan Operativo Anual.
+                    </p>
+                </fieldset>
+    
+                <!-- Contenedor para los POAs dinámicos -->
+                <div id="poaContainer"></div>
+            </div>
+            <!-- ========= FIN: SECCIÓN DE POAs ========= -->
+
+             <div class="static-text-section-wrapper">
+                <h2 class="main-section-title">15. DOCUMENTACION LEGAL QUE DEBE ACOMPAÑAR AL PRESENTE FORMULARIO AL MOMENTO DE LA PRESENTACIÓN.</h2>
+                <div class="static-text-section">
+                    <p>Las solicitudes deberán ser acompañadas de documentación que acredite los derechos sobre los inmuebles a desarrollarse los proyectos. Los Titulares Dominiales o Adquirientes por Boletos de Compra Venta, deberán presentar copia certificada del título de propiedad o boleto de compraventa, según corresponda. En caso de sucesiones se deberá presentar copia certificada de Declaratoria de Herederos, copia certificada de designación de Administrador Judicial y Aceptación del cargo o autorización de todos los herederos declarados. En caso de Condominio, se deberá presentar la conformidad de todos los condóminos o designación de apoderado. En caso de Arrendatarios copia certificada del contrato vigente. Para personas jurídicas, copia certificadas, del Estatuto Social o Contrato Social, Acta de Asamblea vigente, poder del representante legal en caso de designación. Copia de DNI y Constancia de CUIT o CUIL, tanto de titulares como de Representante Legal. En caso de ser el Titular, un organismo estatal, deberá presentar copia autenticada del acto administrativo que autoriza al funcionario a actuar en representación del organismo. Cuando los predios se encontraran bajo el dominio estatal, deberá presentar copia autenticada del acto administrativo autorizando la realización dicho emprendimiento.</p>
+                    <p>El presente FORMULARIO, deberán ser confeccionado en forma completa y con la documentación legal solicitada.</p>
+                    <p>La presentación, para su análisis y evaluación, es por Mesa de Entrada de la Dirección de Recursos Forestales del Ministerio de Producción, sita en Perú Nº1120 de la Cuidad de Corrientes.</p>
+                    <p>Las solicitudes que no se presenten con documentación legal completa requerida, para cada caso en particular y detallada en el ítems 13, del presente formulario, quedaran pendientes de evaluación por parte de la Dirección de Recursos Forestales del Ministerio de Producción, hasta la cumplimentación de las mismas.</p>
+                </div>
+    
+                <h2 class="main-section-title">16. DECLARACIÓN JURADA</h2>
+                <div class="static-text-section">
+                    <p>El/los que subscribe/n, con poder suficiente para este acto, manifiesta/n en calidad de declaración jurada y asumiendo toda la responsabilidad civil, penal y administrativa por cualquier falsedad, omisión u ocultamiento que se verificare, que la información contenida en el presente formulario y en la documentación anexa es veraz y exacta y subsiste al tiempo de efectuarse esta presentación.</p>
+                    <label class="inline-checkbox-label" style="margin-top: 15px; font-weight: bold;">
+                        <input type="checkbox" id="checkAceptoDDJJ"> Acepto los términos de la declaración jurada.
+                    </label>
+                </div>
+    
+                <div class="controls" style="border-bottom: none; border-top: 1px solid #dee2e6;">
+                    <button id="btnImprimirPDF">Imprimir / Guardar PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+       document.addEventListener('DOMContentLoaded', () => {
+
+            // --- INICIO: LÓGICA DE LOGIN ---
+            const USERS_DB = { 'walter': '123', 'usuario': '123', 'usuario_visor': 'vermapa123' };
+            const loginOverlay = document.getElementById('loginOverlay');
+            const loginForm = document.getElementById('loginForm');
+            const loginError = document.getElementById('loginError');
+            const mainAppContent = document.getElementById('mainAppContent');
+            const inputPassword = document.getElementById('inputPassword');
+
+            loginForm.addEventListener('submit', (event) => {
+                event.preventDefault(); 
+                const username = document.getElementById('inputUsername').value.trim();
+                const password = inputPassword.value;
+
+                if (USERS_DB.hasOwnProperty(username) && USERS_DB[username] === password) {
+                    loginOverlay.style.display = 'none'; 
+                    mainAppContent.style.display = 'flex';  
+                    setupStaticTextareas();
+                    window.dispatchEvent(new Event('resize'));
+                } else {
+                    loginError.textContent = 'Usuario o contraseña incorrectos.';
+                    loginError.style.display = 'block';
+                    inputPassword.value = '';
+                    inputPassword.focus();
+                }
+            });
+            // --- FIN: LÓGICA DE LOGIN ---
+
+            // --- INICIO: FUNCIONES AUXILIARES ---
+            function autoResizeTextarea(el) {
+                setTimeout(() => {
+                    el.style.height = 'auto';
+                    el.style.height = (el.scrollHeight + 2) + 'px';
+                }, 0);
+            }
+            
+            function formatNumber(num, decimals = 2) {
+                if (isNaN(num) || num === null || num === undefined) {
+                    return decimals === 0 ? '0' : '0,00';
+                }
+                const fixedNum = num.toFixed(decimals);
+                 if (decimals === 0) {
+                    return fixedNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                }
+                let [integerPart, decimalPart] = fixedNum.split('.');
+                integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                return `${integerPart},${decimalPart}`;
+            }
+
+            function setupStaticTextareas() {
+                document.querySelectorAll('.auto-resize-textarea').forEach(textarea => {
+                    const placeholderText = textarea.value.trim();
+                    textarea.setAttribute('data-placeholder', placeholderText);
+                    if (textarea.value.trim() === '' || textarea.value.trim() === placeholderText) {
+                         textarea.classList.add('textarea-placeholder-style');
+                         textarea.value = placeholderText;
+                    }
+
+
+                    textarea.addEventListener('focus', () => {
+                         if (textarea.readOnly) return;
+                        if (textarea.value === placeholderText) {
+                            textarea.value = '';
+                            textarea.classList.remove('textarea-placeholder-style');
+                        }
+                    });
+
+                    textarea.addEventListener('blur', () => {
+                         if (textarea.readOnly) return;
+                        if (textarea.value.trim() === '') {
+                            textarea.value = placeholderText;
+                            textarea.classList.add('textarea-placeholder-style');
+                        }
+                    });
+                    
+                    textarea.addEventListener('input', () => autoResizeTextarea(textarea));
+                    autoResizeTextarea(textarea);
+                });
+            }
+
+            function generateSignatureBlockHTML(suffix) {
+                return `
+                    <div class="firmas-section-print" id="firmas-section-${suffix}">
+                        <table style="width: 100%; border: none; margin-top: 10px; font-size: 9pt;">
+                            <tr style="border: none;">
+                                <td style="width: 48%; text-align: center; border: none; padding: 20px 10px;">
+                                    <span style="display:block; margin-bottom: 30px;">_________________________</span>
+                                    <strong>Firma Titular del Proyecto / Rep. Legal</strong><br>
+                                    <span class="firma-detalle">Aclaración:</span> <span id="firmaPrintTitularProyecto-${suffix}" class="firma-detalle"></span><br>
+                                    <span class="firma-detalle">DNI / CUIT:</span> <span id="firmaPrintTitularProyectoCUIT-${suffix}" class="firma-detalle"></span>
+                                </td>
+                                <td style="width: 4%; border: none;"></td>
+                                <td style="width: 48%; text-align: center; border: none; padding: 20px 10px;">
+                                    <span style="display:block; margin-bottom: 30px;">_________________________</span>
+                                    <strong>Firma Técnico Responsable</strong><br>
+                                    <span class="firma-detalle">Aclaración:</span> <span id="firmaPrintTecnicoNombre-${suffix}" class="firma-detalle"></span><br>
+                                    <span class="firma-detalle">Matrícula N°:</span> <span id="firmaPrintTecnicoMatricula-${suffix}" class="firma-detalle"></span>
+                                </td>
+                            </tr>
+                            <tr style="border:none;">
+                                <td colspan="3" style="text-align:center; border:none; padding-top: 20px;">
+                                    <strong class="firma-detalle">Establecimiento:</strong> <span id="firmaPrintEstablecimiento-${suffix}" class="firma-detalle"></span><br>
+                                    <strong class="firma-detalle">Partida Inmobiliaria:</strong> <span id="firmaPrintPartidaInmobiliaria-${suffix}" class="firma-detalle"></span> -
+                                    <strong class="firma-detalle">Departamento:</strong> <span id="firmaPrintDepartamento-${suffix}" class="firma-detalle"></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>`;
+            }
+
+            // --- FIN: FUNCIONES AUXILIARES ---
+
+            // --- MAPA, DATOS GEOGRÁFICOS Y DE ESPECIES ---
+            var map = L.map('mapa-kml').setView([-28.5, -57.5], 8);
+            var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            });
+            var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles © Esri'
+            });
+            satellite.addTo(map);
+            var baseLayers = { "Satélite": satellite, "Calles": osm };
+            L.control.scale({ imperial: false, metric: true }).addTo(map);
+
+            let predioGeoJSON = null;
+            let planGeoJSON = null;
+            let ordenamientoGeoJSON = null;
+            const mapLayers = { predio: null, plan: null, parcelas: null, ordenamiento: null };
+            const mapStyles = {
+                predio: { color: '#ed07ed', weight: 3, opacity: 0.9, fillOpacity: 0.01 },
+                plan: { color: ' #06f1f1', weight: 2, opacity: 0.9, fillOpacity: 0.2 },
+                parcelas: { color: '#ed6e07', weight: 2, opacity: 1, fillOpacity: 0.8, radius: 6 },
+                ordenamiento: (feature) => {
+                    const cat = feature.properties.Categoria ? String(feature.properties.Categoria).toUpperCase() : '';
+                    let style = { weight: 1.5, opacity: 0.8, fillOpacity: 0.4 };
+                    if (cat.includes('ROJO')) { style.color = "#dc3545"; style.fillColor = "#dc3545"; } 
+                    else if (cat.includes('AMARILLO')) { style.color = "#ffc107"; style.fillColor = "#ffc107"; } 
+                    else if (cat.includes('VERDE')) { style.color = "#28a745"; style.fillColor = "#28a745"; } 
+                    else { style.color = "#6c757d"; style.fillColor = "#6c757d"; }
+                    return style;
+                }
+            };
+            const mapLayerTitles = {
+                predio: 'Polígono del Predio', plan: 'Área del Plan Técnico', parcelas: 'Parcelas de Muestreo'
+            };
+            const statusEl = document.getElementById('map-status');
+
+            function showMapStatus(message, type) {
+                statusEl.textContent = message;
+                statusEl.className = 'map-status ' + type;
+                statusEl.style.display = 'block';
+                setTimeout(() => { statusEl.style.display = 'none'; }, 5000);
+            }
+
+            function processKMLData(kmlText, layerName) {
+                try {
+                    if (mapLayers[layerName]) map.removeLayer(mapLayers[layerName]);
+                    const geojson = omnivore.kml.parse(kmlText).toGeoJSON();
+                    if (layerName === 'predio') { predioGeoJSON = geojson; } else if (layerName === 'plan') { planGeoJSON = geojson; }
+                    mapLayers[layerName] = L.geoJSON(geojson, {
+                        style: mapStyles[layerName],
+                        pointToLayer: (feature, latlng) => L.circleMarker(latlng, mapStyles.parcelas),
+                        onEachFeature: (feature, layer) => {
+                            let popupContent = `<strong>${mapLayerTitles[layerName]}</strong>`;
+                            if (feature && feature.properties) { for (const key in feature.properties) { popupContent += `<br><strong>${key}:</strong> ${feature.properties[key]}`; } }
+                            layer.bindPopup(popupContent);
+                        }
+                    });
+                    
+                    updateLayerControl();
+                    mapLayers[layerName].addTo(map);
+
+                    showMapStatus(`Capa "${mapLayerTitles[layerName]}" cargada.`, 'success');
+                    if (layerName === 'predio') {
+                        const center = mapLayers.predio.getBounds().getCenter();
+                        document.getElementById('map-coordinates-display').innerHTML = `Lat: ${center.lat.toFixed(6)}, Lng: ${center.lng.toFixed(6)}`;
+                        calcularInterseccionesYSuperficies(); 
+                    } else if (layerName === 'plan') {
+                        calcularSuperficiePlan();
+                        calculatePlanCategoriesIntersection(); 
+                    }
+                    fitToLayers();
+                } catch (error) { showMapStatus(`Error al procesar KML para ${layerName}: ` + error.message, 'error'); }
+            }
+            
+            function loadKML(file, layerName) {
+                if (!file) return;
+                var reader = new FileReader();
+                reader.onload = (e) => processKMLData(e.target.result, layerName);
+                reader.readAsText(file);
+            }
+            
+            function loadDefaultOtbn() {
+                fetch('Ordenamiento.geojson') 
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Archivo de Ordenamiento (Ordenamiento.geojson) no encontrado. La capa no se cargará.');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        processOrdenamientoData(data);
+                    })
+                    .catch(error => {
+                        console.error('Error al cargar la capa de OTBN por defecto:', error);
+                        showMapStatus(error.message, 'error');
+                    });
+            }
+
+            function processOrdenamientoData(data) {
+                if (mapLayers.ordenamiento) map.removeLayer(mapLayers.ordenamiento);
+                ordenamientoGeoJSON = data;
+                mapLayers.ordenamiento = L.geoJSON(data, {
+                   style: mapStyles.ordenamiento,
+                   onEachFeature: (feature, layer) => { layer.bindPopup(`<strong>Categoría:</strong> ${feature.properties.Categoria || 'N/A'}`); }
+                });
+                
+                updateLayerControl();
+                mapLayers.ordenamiento.addTo(map); 
+
+                showMapStatus('Capa de Ordenamiento cargada.', 'success');
+                calcularInterseccionesYSuperficies();
+                calculatePlanCategoriesIntersection();
+            }
+            
+            let layerControl = L.control.layers(baseLayers, {}, { collapsed: false }).addTo(map);
+
+            function updateLayerControl() {
+                if (layerControl) {
+                    map.removeControl(layerControl);
+                }
+                const overlayLayers = {};
+                if(mapLayers.predio) overlayLayers['Polígono del Predio'] = mapLayers.predio;
+                if(mapLayers.plan) overlayLayers['Área del Plan Técnico'] = mapLayers.plan;
+                if(mapLayers.parcelas) overlayLayers['Parcelas de Muestreo'] = mapLayers.parcelas;
+                if(mapLayers.ordenamiento) overlayLayers['Ordenamiento Territorial'] = mapLayers.ordenamiento;
+
+                layerControl = L.control.layers(baseLayers, overlayLayers, { collapsed: false }).addTo(map);
+            }
+            
+            function toggleLayer(layerName, visible) {
+                if (mapLayers[layerName]) { 
+                    if (visible) { 
+                        if (!map.hasLayer(mapLayers[layerName])) mapLayers[layerName].addTo(map);
+                    } else { 
+                        if (map.hasLayer(mapLayers[layerName])) map.removeLayer(mapLayers[layerName]);
+                    } 
+                }
+            }
+
+            function fitToLayers() {
+                var group = new L.featureGroup();
+                var hasLayers = false;
+                ['predio', 'plan', 'parcelas'].forEach(key => {
+                    if (mapLayers[key] && map.hasLayer(mapLayers[key])) {
+                        group.addLayer(mapLayers[key]);
+                        hasLayers = true;
+                    }
+                });
+                if (hasLayers) {
+                    const bounds = group.getBounds();
+                    if (bounds.isValid()) {
+                        map.fitBounds(bounds, { padding: [30, 30] });
+                    }
+                }
+            }
+            
+            function calcularSuperficiePlan() {
+                if (!planGeoJSON) return;
+                try {
+                    const areaPlanM2 = turf.area(planGeoJSON);
+                    const areaPlanHa = areaPlanM2 / 10000;
+                    const areaPredioHa = parseFloat(document.getElementById('inputSupPredio').value) || 0;
+                    if (areaPredioHa > 0 && areaPlanHa > (areaPredioHa + 0.001)) {
+                         showMapStatus(`Error: El área del Plan (${formatNumber(areaPlanHa)}) no puede ser mayor al área del Predio (${formatNumber(areaPredioHa)}).`, 'error');
+                         document.getElementById('inputSupAreaProyecto').value = "0";
+                    } else {
+                        document.getElementById('inputSupAreaProyecto').value = areaPlanHa.toFixed(2);
+                        showMapStatus(`Área del Plan Técnico calculada: ${formatNumber(areaPlanHa)} ha.`, 'success');
+                    }
+                    actualizarSuperficientes();
+                    validatePlanSurfaces();
+                } catch(e) { showMapStatus('Error calculando el área del Plan Técnico: ' + e.message, 'error'); }
+            }
+            
+            function calcularInterseccionesYSuperficies() {
+                if (!predioGeoJSON || !ordenamientoGeoJSON) { return; }
+                showMapStatus('Calculando superficies...', 'success');
+                try {
+                    const areaTotalM2 = turf.area(predioGeoJSON);
+                    const areaTotalHa = areaTotalM2 / 10000;
+                    document.getElementById('inputSupPredio').value = areaTotalHa.toFixed(2);
+                } catch (e) { showMapStatus('Error al calcular el área del predio.', 'error'); return; }
+                let areaRojoM2 = 0, areaAmarilloM2 = 0, areaVerdeM2 = 0;
+                try {
+                    const predioFeatures = predioGeoJSON.features;
+                    const ordenamientoFeatures = ordenamientoGeoJSON.features;
+                    predioFeatures.forEach(predioFeature => {
+                        ordenamientoFeatures.forEach(ordenamientoFeature => {
+                            try {
+                                const intersection = turf.intersect(predioFeature.geometry, ordenamientoFeature.geometry);
+                                if (intersection) {
+                                    const areaInterseccionM2 = turf.area(intersection);
+                                    const Categoria = (ordenamientoFeature.properties.Categoria || '').toUpperCase();
+                                    if (Categoria.includes('ROJO')) { areaRojoM2 += areaInterseccionM2; } 
+                                    else if (Categoria.includes('AMARILLO')) { areaAmarilloM2 += areaInterseccionM2; } 
+                                    else if (Categoria.includes('VERDE')) { areaVerdeM2 += areaInterseccionM2; }
+                                }
+                            } catch (e) { /* Ignorar errores de topología */ }
+                        });
+                    });
+                    document.getElementById('inputCatRojo').value = (areaRojoM2 / 10000).toFixed(2);
+                    document.getElementById('inputCatAmarillo').value = (areaAmarilloM2 / 10000).toFixed(2);
+                    document.getElementById('inputCatVerde').value = (areaVerdeM2 / 10000).toFixed(2);
+                    actualizarSuperficientes(); 
+                    showMapStatus('Cálculo de superficies por categoría completado.', 'success');
+                } catch(e) { showMapStatus('Error durante el cálculo de intersección: ' + e.message, 'error'); }
+            }
+            
+            function calculatePlanCategoriesIntersection() {
+                if (!planGeoJSON || !ordenamientoGeoJSON) {
+                    document.getElementById('spanPlanCatRojo').textContent = '0,00';
+                    document.getElementById('spanPlanCatAmarillo').textContent = '0,00';
+                    document.getElementById('spanPlanCatVerde').textContent = '0,00';
+                    return;
+                }
+                let areaRojoM2 = 0, areaAmarilloM2 = 0, areaVerdeM2 = 0;
+                try {
+                    const planFeatures = planGeoJSON.features;
+                    const ordenamientoFeatures = ordenamientoGeoJSON.features;
+                    planFeatures.forEach(planFeature => {
+                        ordenamientoFeatures.forEach(ordenamientoFeature => {
+                            try {
+                                const intersection = turf.intersect(planFeature.geometry, ordenamientoFeature.geometry);
+                                if (intersection) {
+                                    const areaInterseccionM2 = turf.area(intersection);
+                                    const Categoria = (ordenamientoFeature.properties.Categoria || '').toUpperCase();
+                                    if (Categoria.includes('ROJO')) { areaRojoM2 += areaInterseccionM2; } 
+                                    else if (Categoria.includes('AMARILLO')) { areaAmarilloM2 += areaInterseccionM2; } 
+                                    else if (Categoria.includes('VERDE')) { areaVerdeM2 += areaInterseccionM2; }
+                                }
+                            } catch (e) { /* Ignorar errores de topología */ }
+                        });
+                    });
+                    document.getElementById('spanPlanCatRojo').textContent = formatNumber(areaRojoM2 / 10000);
+                    document.getElementById('spanPlanCatAmarillo').textContent = formatNumber(areaAmarilloM2 / 10000);
+                    document.getElementById('spanPlanCatVerde').textContent = formatNumber(areaVerdeM2 / 10000);
+                    validatePlanSurfaces();
+                } catch(e) { showMapStatus('Error calculando intersección del Área del Plan: ' + e.message, 'error'); }
+            }
+            
+            function validatePlanSurfaces() {
+                const inputPlanSinCat = document.getElementById('inputPlanSinCategorizar');
+                inputPlanSinCat.style.border = '';
+
+                const predioSinCat = parseFloat(document.getElementById('inputSinCategorizar').value) || 0;
+                const planSinCat = parseFloat(inputPlanSinCat.value) || 0;
+                if (planSinCat > (predioSinCat + 0.001)) {
+                    inputPlanSinCat.style.border = '2px solid red';
+                    return { valid: false, type: 'sinCat', planSinCat, predioSinCat };
+                }
+
+                const supAreaProyecto = parseFloat(document.getElementById('inputSupAreaProyecto').value) || 0;
+                const planRojo = parseFloat(document.getElementById('spanPlanCatRojo').textContent.replace(/\./g, '').replace(',', '.')) || 0;
+                const planAmarillo = parseFloat(document.getElementById('spanPlanCatAmarillo').textContent.replace(/\./g, '').replace(',', '.')) || 0;
+                const planVerde = parseFloat(document.getElementById('spanPlanCatVerde').textContent.replace(/\./g, '').replace(',', '.')) || 0;
+                const sumaPlan = planRojo + planAmarillo + planVerde + planSinCat;
+                
+                // **CORRECCIÓN DE LÓGICA**: La suma de las categorías del plan NO DEBE SUPERAR el área del proyecto.
+                if (sumaPlan > (supAreaProyecto + 0.01)) { // Se usa una tolerancia de 0.01ha para errores de redondeo.
+                    inputPlanSinCat.style.border = '2px solid orange';
+                    return { valid: false, type: 'suma', sumaPlan, supAreaProyecto };
+                }
+
+                return { valid: true };
+            }
+
+            document.getElementById('kml-predio-file').addEventListener('change', (e) => loadKML(e.target.files[0], 'predio'));
+            document.getElementById('kml-plan-file').addEventListener('change', (e) => loadKML(e.target.files[0], 'plan'));
+            document.getElementById('kml-parcelas-file').addEventListener('change', (e) => loadKML(e.target.files[0], 'parcelas'));
+            document.getElementById('kml-predio-visible').addEventListener('change', (e) => toggleLayer('predio', e.target.checked));
+            document.getElementById('kml-plan-visible').addEventListener('change', (e) => toggleLayer('plan', e.target.checked));
+            document.getElementById('kml-parcelas-visible').addEventListener('change', (e) => toggleLayer('parcelas', e.target.checked));
+            
+            document.getElementById('btn-map-clear').addEventListener('click', () => {
+                ['predio', 'plan', 'parcelas', 'ordenamiento'].forEach(key => { 
+                    if (mapLayers[key]) { map.removeLayer(mapLayers[key]); mapLayers[key] = null; } 
+                });
+                predioGeoJSON = null; planGeoJSON = null; ordenamientoGeoJSON = null;
+                document.getElementById('kml-predio-file').value = ''; 
+                document.getElementById('kml-plan-file').value = ''; 
+                document.getElementById('kml-parcelas-file').value = '';
+                document.getElementById('inputSupPredio').value = '0'; 
+                document.getElementById('inputSupAreaProyecto').value = '0';
+                document.getElementById('inputCatRojo').value = '0'; 
+                document.getElementById('inputCatAmarillo').value = '0'; 
+                document.getElementById('inputCatVerde').value = '0';
+                document.getElementById('spanPlanCatRojo').textContent = '0,00'; 
+                document.getElementById('spanPlanCatAmarillo').textContent = '0,00'; 
+                document.getElementById('spanPlanCatVerde').textContent = '0,00';
+                document.getElementById('inputPlanSinCategorizar').value = '0';
+                actualizarSuperficientes();
+                updateLayerControl();
+                document.getElementById('map-coordinates-display').innerHTML = `Lat: ---, Lng: ---`;
+                showMapStatus('Todas las capas han sido removidas.', 'success');
+                loadDefaultOtbn(); 
+            });
+
+            document.getElementById('btn-map-fit').addEventListener('click', fitToLayers);
+            document.getElementById('btn-map-fix').addEventListener('click', () => {
+            map.panBy([120, 0]);
+            map.dragging.disable(); map.touchZoom.disable(); map.doubleClickZoom.disable();
+            map.scrollWheelZoom.disable(); map.boxZoom.disable(); map.keyboard.disable();
+            if (map.tap) map.tap.disable();
+            if(layerControl) map.removeControl(layerControl);
+            showMapStatus('Vista del mapa fijada y desplazada. Lista para imprimir.', 'success');
+            });
+        
+        const T_VALUES_95_CI = { 1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 6: 2.447, 7: 2.365, 8: 2.306, 9: 2.262, 10: 2.228, 15: 2.131, 20: 2.086, 25: 2.060, 30: 2.042, Infinity: 1.96 };
+        function getTValue(df) { if (df <= 0) return T_VALUES_95_CI[1]; if (df >= 30) return T_VALUES_95_CI.Infinity; if (T_VALUES_95_CI[df]) return T_VALUES_95_CI[df]; let closestDf = Object.keys(T_VALUES_95_CI).map(Number).filter(k => k !== Infinity && k <= df).pop(); return T_VALUES_95_CI[closestDf || 1]; }
+        const locationData = { "ALVEAR": { dpto: "GENERAL ALVEAR" }, "BELLA VISTA": { dpto: "BELLA VISTA" }, "BERON DE ASTRADA": { dpto: "BERON DE ASTRADA" }, "CHAVARRIA": { dpto: "SAN ROQUE" }, "COLONIA CARLOS PELLEGRINI": { dpto: "SAN MARTIN" }, "COLONIA LIEBIGS": { dpto: "ITUZAINGO" }, "CONCEPCION": { dpto: "CONCEPCION" }, "CORRIENTES": { dpto: "CAPITAL" }, "CURUZU CUATIA": { dpto: "CURUZU CUATIA" }, "EL SOMBRERO": { dpto: "EMPEDRADO" }, "EMPEDRADO": { dpto: "EMPEDRADO" }, "ESQUINA": { dpto: "ESQUINA" }, "FELIPE YOFRE": { dpto: "MERCEDES" }, "GARRUCHOS": { dpto: "SANTO TOME" }, "GOBERNADOR AGR. VALENTIN VIRASORO": { dpto: "SANTO TOME" }, "GOBERNADOR JUAN E. MARTINEZ": { dpto: "LAVALLE" }, "GOYA": { dpto: "GOYA" }, "GUAVIRAVI": { dpto: "SAN MARTIN" }, "ITA IBATE": { dpto: "GENERAL PAZ" }, "ITATI": { dpto: "ITATI" }, "ITUZAINGO": { dpto: "ITUZAINGO" }, "LA CRUZ": { dpto: "SAN MARTIN" }, "LAGUNA BRAVA": { dpto: "CAPITAL" }, "LAVALLE": { dpto: "LAVALLE" }, "LORETO": { dpto: "SAN MIGUEL" }, "MARIANO I. LOZA": { dpto: "MERCEDES" }, "MBURUCUYA": { dpto: "MBURUCUYA" }, "MERCEDES": { dpto: "MERCEDES" }, "MOCORETA": { dpto: "MONTE CASEROS" }, "MONTE CASEROS": { dpto: "MONTE CASEROS" }, "NUESTRA SENORA DEL ROSARIO DE CAA CATI": { dpto: "GENERAL PAZ" }, "9 DE JULIO": { dpto: "SAN ROQUE" }, "PASO DE LA PATRIA": { dpto: "SAN COSME" }, "PASO DE LOS LIBRES": { dpto: "PASO DE LOS LIBRES" }, "PEDRO R. FERNANDEZ": { dpto: "SAN ROQUE" }, "PERUGORRIA": { dpto: "CURUZU CUATIA" }, "SALADAS": { dpto: "SALADAS" }, "SAN ANTONIO": { dpto: "ITUZAINGO" }, "SAN CARLOS": { dpto: "ITUZAINGO" }, "SAN COSME": { dpto: "SAN COSME" }, "SAN LORENZO": { dpto: "SALADAS" }, "SAN LUIS DEL PALMAR": { dpto: "SAN LUIS DEL PALMAR" }, "SAN MIGUEL": { dpto: "SAN MIGUEL" }, "SAN ROQUE": { dpto: "SAN ROQUE" }, "SANTA ANA": { dpto: "SAN COSME" }, "SANTA LUCIA": { dpto: "LAVALLE" }, "SANTA ROSA": { dpto: "CONCEPCION" }, "SANTO TOME": { dpto: "SANTO TOME" }, "SAUCE": { dpto: "SAUCE" }, "VILLA OLIVARI": { dpto: "ITUZAINGO" }, "YAPEYU": { dpto: "SAN MARTIN" }, };
+        const speciesFormulas = { 'Aguai': { scientificName: 'Pouteria gardneriana', volFuste: (d, af) => Math.exp(-9.49642 - 0.00145081 * d + 0.824921 * Math.log(d**2 * af) + 0.366708 * Math.log(d * af) - 0.0870289 * af), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 },'Aguaribay': { scientificName: 'Schinus areira', volFuste: (d, af) => Math.exp(-8.3864 + 0.0551011 * d - 0.000533799 * d**2 - 0.159762 * af + 1.34969 * Math.log(d * af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Alecrín': { scientificName: 'Holocalyx balansae', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.80 }, 'Algarrobo Blanco': { scientificName: 'Prosopis alba', volFuste: (d, af) => Math.exp(-9.49642 - 0.00145081 * d + 0.824921 * Math.log(d**2 * af) + 0.366708 * Math.log(d * af) - 0.0870289 * af), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.85 }, 'Algarrobo Negro': { scientificName: 'Prosopis nigra', volFuste: (d, af) => Math.exp(-9.49642 - 0.00145081 * d + 0.824921 * Math.log(d**2 * af) + 0.366708 * Math.log(d * af) - 0.0870289 * af), volTotal: (d, at) => Math.exp(-11.39444 + 1.19444 * Math.log(d**2 * at)), pesoEspecifico: 0.90 }, 'Brea': { scientificName: 'Parkinsonia praecox', volFuste: (d, af) => Math.exp(-9.49642 - 0.00145081 * d + 0.824921 * Math.log(d**2 * af) + 0.366708 * Math.log(d * af) - 0.0870289 * af), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 0.85 }, 'Espina corona': { scientificName: 'Gleditsia amorphoides', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.70 }, 'Guabiyú': { scientificName: 'Myrcianthes pungens', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.85 }, 'Guaraniná': { scientificName: 'Sideroxylon obtusifolium', volFuste: (d, af) => Math.exp(-8.3864 + 0.0551011 * d - 0.000533799 * d**2 - 0.159762 * af + 1.34969 * Math.log(d * af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.65 }, 'Guayacán': { scientificName: 'Libidibia paraguariensis', volFuste: (d, af) => Math.exp(-9.22955 + 1.933161 * Math.log(d) + 0.901548 * Math.log(af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.10 }, 'Guayaibí': { scientificName: 'Patagonula americana', volFuste: (d, af) => Math.exp(-9.5086 + 2.0041 * Math.log(d) + 0.973 * Math.log(af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.70 }, 'Ibirá pitá': { scientificName: 'Peltophorum dubium', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.60 }, 'Itín': { scientificName: 'Prosopis kuntzei', volFuste: (d, af) => Math.exp(-9.49642 - 0.00145081 * d + 0.824921 * Math.log(d**2 * af) + 0.366708 * Math.log(d * af) - 0.0870289 * af), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 1.15 }, 'Lapachillo': { scientificName: 'Poecilanthe parviflora', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Lapacho (Handroanthus spp.)': { scientificName: 'Handroanthus spp.', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.95 }, 'Laurel': { scientificName: 'Ocotea puberula / Nectandra spp.', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.65 }, 'Mistol': { scientificName: 'Sarcomphalus mistol', volFuste: (d, af) => Math.exp(-8.3864 + 0.0551011 * d - 0.000533799 * d**2 - 0.159762 * af + 1.34969 * Math.log(d * af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.70 }, 'Molle Ceniento': { scientificName: 'Lithraea molleoides', volFuste: (d, af) => Math.exp(-9.22955 + 1.933161 * Math.log(d) + 0.901548 * Math.log(af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Molle de Beber': { scientificName: 'Lithraea ternifolia', volFuste: (d, af) => Math.exp(-9.22955 + 1.933161 * Math.log(d) + 0.901548 * Math.log(af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Molle negro': { scientificName: 'Schinus fasciculatus', volFuste: (d, af) => Math.exp(-9.22955 + 1.933161 * Math.log(d) + 0.901548 * Math.log(af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Molle Pispito': { scientificName: 'Schinus johnstonii', volFuste: (d, af) => Math.exp(-9.22955 + 1.933161 * Math.log(d) + 0.901548 * Math.log(af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Mora': { scientificName: 'Maclura tinctoria', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.60 }, 'Ñandubay': { scientificName: 'Prosopis affinis', volFuste: (d, af) => Math.exp(-9.49642 - 0.00145081 * d + 0.824921 * Math.log(d**2 * af) + 0.366708 * Math.log(d * af) - 0.0870289 * af), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.90 }, 'Otras': { scientificName: 'Varias spp.', volFuste: (d, af) => Math.exp(-9.49642 - 0.00145081 * d + 0.824921 * Math.log(d**2 * af) + 0.366708 * Math.log(d * af) - 0.0870289 * af), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Palo Amarillo': { scientificName: 'Terminalia australis', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Palo Blanco': { scientificName: 'Phyllostylon rhamnoides', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.60 }, 'Palo cruz': { scientificName: 'Tabebuia nodosa', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.80 }, 'Palo lanza': { scientificName: 'Phyllostylon rhamnoides', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.85 }, 'Palo Piedra': { scientificName: 'Diplokeleba floribunda', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.0 }, 'Palo Santo': { scientificName: 'Bulnesia sarmientoi', volFuste: (d, af) => Math.exp(-9.18113 + 0.950324 * Math.log(d**2 * af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.2 }, 'Quebrachillo': { scientificName: 'Acanthosyris falcata', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.85 }, 'Quebracho Blanco': { scientificName: 'Aspidosperma quebracho-blanco', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.90 }, 'Quebracho Colorado Chaqueño': { scientificName: 'Schinopsis balansae', volFuste: (d, af) => Math.exp(-9.5086 + 2.0041 * Math.log(d) + 0.973 * Math.log(af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.1 }, 'Quebracho Colorado Santiagueño': { scientificName: 'Schinopsis lorentzii', volFuste: (d, af) => Math.exp(-9.5086 + 2.0041 * Math.log(d) + 0.973 * Math.log(af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 1.1 }, 'Tatané': { scientificName: 'Maclura tinctoria', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.65 }, 'Timbó': { scientificName: 'Enterolobium contortisiliquum', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.97116 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.45 }, 'Urunday': { scientificName: 'Myracrodruon balansae', volFuste: (d, af) => Math.exp(-9.22955 + 1.933161 * Math.log(d) + 0.901548 * Math.log(af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.95 }, 'Vinal': { scientificName: 'Prosopis ruscifolia', volFuste: (d, af) => Math.exp(-9.39969 + 1.9797 * Math.log(d) + 0.939584 * Math.log(af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.70 }, 'Vinalillo': { scientificName: 'Prosopis vinalillo', volFuste: (d, af) => Math.exp(-9.39969 + 1.9797 * Math.log(d) + 0.939584 * Math.log(af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.70 }, 'Viraró o tipa colorada': { scientificName: 'Ruprechtia laxiflora', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.97116 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.70 }, 'Zapallo caspi': { scientificName: 'Pisonia zapallo', volFuste: (d, af) => Math.exp(-9.44933 + 0.983515 * Math.log(d**2 * af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.60 }};
+        const dapClasses = [ { name: 'I (<10cm)', min: 0, max: 9.99, label: "< 10 cm" }, { name: 'II (10-14.9cm)', min: 10, max: 14.99, label: "10-14,9 cm" }, { name: 'III (15-19.9cm)', min: 15, max: 19.99, label: "15-19,9 cm" }, { name: 'IV (20-24.9cm)', min: 20, max: 24.99, label: "20-24,9 cm" }, { name: 'V (25-29.9cm)', min: 25, max: 29.99, label: "25-29,9 cm" }, { name: 'VI (30-34.9cm)', min: 30, max: 34.99, label: "30-34,9 cm" }, { name: 'VII (35-39.9cm)', min: 35, max: 39.99, label: "35-39,9 cm" }, { name: 'VIII (40-44.9cm)', min: 40, max: 44.99, label: "40-44,9 cm" }, { name: 'IX (45-49.9cm)', min: 45, max: 49.99, label: "45-49,9 cm" }, { name: 'X (>50cm)', min: 50, max: Infinity, label: ">50 cm" } ];
+        let enteredTrees = []; let chartVolumenEspecieInstance = null; let chartDensidadEspecieInstance = null; let chartDistribucionDAPInstance = null; let chartVolumenClaseDAPInstance = null; let chartABClaseDAPInstance = null; let chartDensidadClaseDAPInstance = null; let chartToneladasClaseDAPInstance = null; let resultsBySpeciesDAPGlobal = {}; 
+        
+        // --- INICIO: LÓGICA PARA POAs DINÁMICOS ---
+        const poaContainer = document.getElementById('poaContainer');
+        const inputNumPoas = document.getElementById('inputNumPoas');
+        const poaActivityConfig = [
+            { id: 'Tecnicas', generalId: 'textPlanTecnicas', title: '1- DESCRIPCIÓN Y JUSTIFICACIÓN DE LAS TÉCNICAS A IMPLEMENTAR Y DEL EQUIPAMIENTO UTILIZADO.' },
+            { id: 'ProteccionAmbiental', generalId: 'textPlanProteccionAmbiental', title: '2- PRESCRIPCIÓN DE TÉCNICAS Y MEDIDAS DE PROTECCIÓN AMBIENTAL.' },
+            { id: 'Monitoreo', generalId: 'textPlanMonitoreo', title: '3- MEDIDAS PARA EL MONITOREO DEL CRECIMIENTO Y DINÁMICA DEL BOSQUE.' },
+            { id: 'PrevencionImpactos', generalId: 'textPlanPrevencionImpactos', title: '4- MEDIDAS DE PREVENCIÓN E MITIGACIÓN DE IMPACTOS AMBIENTALES.' },
+            { id: 'Residuos', generalId: 'textPlanResiduos', title: '5- DESCRIPCIÓN DEL TRATAMIENTO DE RESIDUOS.' },
+            { id: 'PrevencionFuego', generalId: 'textPlanPrevencionFuego', title: '6- MEDIDAS DE PREVENCIÓN Y MITIGACIÓN DE INCENDIOS.' }
+        ];
+
+        function generatePoaSections() {
+            const numPoas = parseInt(inputNumPoas.value, 10) || 0;
+            poaContainer.innerHTML = ''; 
+            if (numPoas === 0) return;
+
+            for (let i = 1; i <= numPoas; i++) {
+                let activitiesHtml = '';
+                poaActivityConfig.forEach(config => {
+                    const poaTextareaId = `poaText${config.id}_${i}`;
+                    activitiesHtml += `
+                        <h3 class="sub-section-title">${config.title}</h3>
+                        <label class="poa-reuse-text-label">
+                            <input type="checkbox" class="reuse-text-checkbox" data-source-id="${config.generalId}" data-target-id="${poaTextareaId}" checked>
+                            Usar texto general del plan (definido en el Ítem 13)
+                        </label>
+                        <textarea id="${poaTextareaId}" class="auto-resize-textarea"></textarea>
+                        <div id="print-${poaTextareaId}" class="textarea-print-content"></div>
+                    `;
+                });
+                
+                const intervencionesRubros = ['Acondicionamiento y remoción de residuos', 'Control de especies invasoras, plagas y enfermedades', 'Cosecha forestal', 'Enriquecimiento', 'Implantación de pasturas nativas', 'Manejo de fauna autóctona', 'Manejo de ganado', 'Manejo de rebrote', 'Manejo del sotobosque', 'Poda comercial', 'Poda de saneamiento', 'Prevención de incendios', 'Productos Forestales No Madereros', 'Promoción de la regeneración natural', 'Control de procesos erosivos', 'Raleo comercial', 'Raleo de saneamiento', 'Restauración', 'Servicios de los bosques nativos', 'Vigilancia y control'];
+                const obtencionRubros = ['Elaboración de informes', 'Elaboración de SIG', 'Inventario Forestal', 'Monitoreo de indicadores ambientales', 'Procesamiento y análisis de datos', 'Recopilación de información', 'Relevamiento de base', 'Relevamiento de la biodiversidad', 'Zonificación y elaboración de cartografía'];
+                const infraestructuraRubros = ['Accesos', 'Cerramientos', 'Edificaciones', 'Manejo de agua'];
+                const extensionRubros = ['Capacitación', 'Difusión', 'Participación'];
+                const comprasRubros = ['Bienes de uso y de capital', 'Gastos operativos', 'Recursos humanos'];
+
+                let budgetTableHTML = `<table class="poa-budget-table" id="budgetTable_${i}"><thead><tr><th style="width: 20%;">Área</th><th>Rubro</th><th style="width: 25%;">Total ($)</th></tr></thead><tbody>`;
+                
+                // Intervenciones
+                budgetTableHTML += `<tr><td rowspan="${intervencionesRubros.length}" class="area-cell">Intervenciones sobre el bosque nativo</td><td class="rubro-cell">${intervencionesRubros[0]}</td><td><input type="text" placeholder="-" class="poa-budget-item" data-category="intervenciones" data-poa-id="${i}"></td></tr>`;
+                for(let r=1; r < intervencionesRubros.length; r++) { budgetTableHTML += `<tr><td class="rubro-cell">${intervencionesRubros[r]}</td><td><input type="text" placeholder="-" class="poa-budget-item" data-category="intervenciones" data-poa-id="${i}"></td></tr>`; }
+                budgetTableHTML += `<tr class="subtotal-row"><td colspan="2">Subtotal Intervenciones</td><td>$ <span id="subtotalIntervenciones_${i}">0,00</span></td></tr>`;
+                
+                // Obtención y análisis
+                budgetTableHTML += `<tr><td rowspan="${obtencionRubros.length}" class="area-cell">Obtención y análisis de datos</td><td class="rubro-cell">${obtencionRubros[0]}</td><td><input type="text" placeholder="-" class="poa-budget-item" data-category="obtencion" data-poa-id="${i}"></td></tr>`;
+                for(let r=1; r < obtencionRubros.length; r++) { budgetTableHTML += `<tr><td class="rubro-cell">${obtencionRubros[r]}</td><td><input type="text" placeholder="-" class="poa-budget-item" data-category="obtencion" data-poa-id="${i}"></td></tr>`; }
+                budgetTableHTML += `<tr class="subtotal-row"><td colspan="2">Subtotal Obtención y análisis de datos</td><td>$ <span id="subtotalObtencion_${i}">0,00</span></td></tr>`;
+                
+                // Infraestructura
+                budgetTableHTML += `<tr><td rowspan="${infraestructuraRubros.length}" class="area-cell">Infraestructura</td><td class="rubro-cell">${infraestructuraRubros[0]}</td><td><input type="text" placeholder="-" class="poa-budget-item" data-category="infraestructura" data-poa-id="${i}"></td></tr>`;
+                for(let r=1; r < infraestructuraRubros.length; r++) { budgetTableHTML += `<tr><td class="rubro-cell">${infraestructuraRubros[r]}</td><td><input type="text" placeholder="-" class="poa-budget-item" data-category="infraestructura" data-poa-id="${i}"></td></tr>`; }
+                budgetTableHTML += `<tr class="subtotal-row"><td colspan="2">Subtotal Infraestructura</td><td>$ <span id="subtotalInfraestructura_${i}">0,00</span></td></tr>`;
+
+                // Extensión
+                budgetTableHTML += `<tr><td rowspan="${extensionRubros.length}" class="area-cell">Extensión</td><td class="rubro-cell">${extensionRubros[0]}</td><td><input type="text" placeholder="-" class="poa-budget-item" data-category="extension" data-poa-id="${i}"></td></tr>`;
+                for(let r=1; r < extensionRubros.length; r++) { budgetTableHTML += `<tr><td class="rubro-cell">${extensionRubros[r]}</td><td><input type="text" placeholder="-" class="poa-budget-item" data-category="extension" data-poa-id="${i}"></td></tr>`; }
+                budgetTableHTML += `<tr class="subtotal-row"><td colspan="2">Subtotal Extensión</td><td>$ <span id="subtotalExtension_${i}">0,00</span></td></tr>`;
+
+                // Compras
+                budgetTableHTML += `<tr><td rowspan="${comprasRubros.length}" class="area-cell">Compras y Contrataciones</td><td class="rubro-cell">${comprasRubros[0]}</td><td><input type="text" placeholder="-" class="poa-budget-item" data-category="compras" data-poa-id="${i}"></td></tr>`;
+                for(let r=1; r < comprasRubros.length; r++) { budgetTableHTML += `<tr><td class="rubro-cell">${comprasRubros[r]}</td><td><input type="text" placeholder="-" class="poa-budget-item" data-category="compras" data-poa-id="${i}"></td></tr>`; }
+                budgetTableHTML += `<tr class="subtotal-row"><td colspan="2">Subtotal Compras y Contrataciones</td><td>$ <span id="subtotalCompras_${i}">0,00</span></td></tr>`;
+
+                budgetTableHTML += `<tr class="total-row"><td colspan="2">PRESUPUESTO POA ${i}</td><td>$ <span id="totalPoa_${i}">0,00</span></td></tr></tbody></table>`;
+
+                const poaHtml = `
+                    <div class="poa-details-wrapper">
+                        <details open>
+                            <summary>PLAN OPERATIVO ANUAL (POA) ${i}</summary>
+                            <div class="poa-content">
+                                <h2 class="main-section-title" style="text-align:center; display:none;">PLAN OPERATIVO ANUAL (POA) ${i}</h2>
+                                <fieldset class="input-fieldset">
+                                    <legend>Datos Generales del POA ${i}</legend>
+                                    <div class="form-grid" style="grid-template-columns: max-content 1fr;">
+                                        <label for="inputPoaArea_${i}">Superficie del POA (ha):</label>
+                                        <input type="number" id="inputPoaArea_${i}" class="poa-area-input" step="0.01" value="0">
+                                    </div>
+                                </fieldset>
+                                ${activitiesHtml}
+                                <h3 class="sub-section-title">7- CRONOGRAMA DE ACTIVIDADES DEL POA ${i}</h3>
+                                <div class="result-table-container">
+                                    <table class="poa-gantt-table" id="ganttTable_${i}">
+                                         <thead>
+                                            <tr>
+                                                <th rowspan="2" style="vertical-align: middle;">Actividades</th>
+                                                <th colspan="12">Mes</th>
+                                            </tr>
+                                            <tr>
+                                                <th>Ene</th><th>Feb</th><th>Mar</th><th>Abr</th><th>May</th><th>Jun</th>
+                                                <th>Jul</th><th>Ago</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dic</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                          ${['Intervenciones sobre el bosque nativo', 'Obtención y análisis de datos', 'Infraestructura', 'Extensión', 'Compras y Contrataciones'].map(act => `<tr><td>${act}</td>${'<td><input type="checkbox"></td>'.repeat(12)}</tr>`).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <h3 class="sub-section-title">8- PRESUPUESTO DEL POA ${i}</h3>
+                                <div class="result-table-container">
+                                    ${budgetTableHTML}
+                                </div>
+                                ${generateSignatureBlockHTML('poa' + i)}
+                            </div>
+                        </details>
+                    </div>
+                `;
+                poaContainer.insertAdjacentHTML('beforeend', poaHtml);
+            }
+            rebindPoaEventListeners();
+        }
+
+        function handleReuseTextChange(event) {
+            const checkbox = event.target;
+            const sourceTextarea = document.getElementById(checkbox.dataset.sourceId);
+            const targetTextarea = document.getElementById(checkbox.dataset.targetId);
+            const poaPlaceholder = "Haga clic aquí para escribir texto...";
+
+            if (checkbox.checked) {
+                targetTextarea.value = sourceTextarea.value;
+                targetTextarea.readOnly = true;
+                if (sourceTextarea.classList.contains('textarea-placeholder-style')) {
+                     targetTextarea.classList.add('textarea-placeholder-style');
+                } else {
+                     targetTextarea.classList.remove('textarea-placeholder-style');
+                }
+            } else {
+                targetTextarea.readOnly = false;
+                targetTextarea.value = poaPlaceholder;
+                targetTextarea.classList.add('textarea-placeholder-style');
+            }
+            autoResizeTextarea(targetTextarea);
+        }
+        
+        function calculatePoaBudget(poaId) {
+            const categories = { intervenciones: 0, obtencion: 0, infraestructura: 0, extension: 0, compras: 0 };
+            for (const cat in categories) {
+                let subtotal = 0;
+                document.querySelectorAll(`.poa-budget-item[data-category="${cat}"][data-poa-id="${poaId}"]`).forEach(input => {
+                    const cleanValue = parseFloat(input.value.replace(/\./g, '').replace(',', '.')) || 0;
+                    subtotal += cleanValue;
+                });
+                categories[cat] = subtotal;
+                document.getElementById(`subtotal${cat.charAt(0).toUpperCase() + cat.slice(1)}_${poaId}`).textContent = formatNumber(subtotal);
+            }
+            const totalPoa = Object.values(categories).reduce((sum, val) => sum + val, 0);
+            document.getElementById(`totalPoa_${poaId}`).textContent = formatNumber(totalPoa);
+        }
+
+        function rebindPoaEventListeners() {
+            document.querySelectorAll('#poaContainer .auto-resize-textarea').forEach(textarea => {
+                const poaPlaceholder = "Haga clic aquí para escribir texto...";
+                textarea.setAttribute('data-placeholder', poaPlaceholder);
+                textarea.addEventListener('focus', () => {
+                    if (textarea.readOnly) return;
+                    if (textarea.value === poaPlaceholder) {
+                        textarea.value = '';
+                        textarea.classList.remove('textarea-placeholder-style');
+                    }
+                });
+                textarea.addEventListener('blur', () => {
+                    if (textarea.readOnly) return;
+                    if (textarea.value.trim() === '') {
+                        textarea.value = poaPlaceholder;
+                        textarea.classList.add('textarea-placeholder-style');
+                    }
+                });
+                textarea.addEventListener('input', () => autoResizeTextarea(textarea));
+            });
+            document.querySelectorAll('#poaContainer .reuse-text-checkbox').forEach(cb => {
+                cb.addEventListener('change', handleReuseTextChange);
+                setTimeout(() => cb.dispatchEvent(new Event('change')), 10);
+            });
+            document.querySelectorAll('.poa-area-input').forEach(input => {
+                input.addEventListener('input', validatePoaAreas);
+            });
+            document.querySelectorAll('.poa-budget-item').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    e.target.value = e.target.value.replace(/[^0-9,.]/g, '');
+                    calculatePoaBudget(input.dataset.poaId)
+                });
+                input.addEventListener('blur', (e) => {
+                    const cleanValue = parseFloat(e.target.value.replace(/\./g, '').replace(',', '.')) || 0;
+                     e.target.value = cleanValue > 0 ? formatNumber(cleanValue) : '';
+                     if (e.target.value === '' || e.target.value === '0,00') {
+                        e.target.placeholder = '-';
+                     }
+                });
+                 input.addEventListener('focus', (e) => {
+                    const cleanValue = parseFloat(e.target.value.replace(/\./g, '').replace(',', '.')) || 0;
+                    if (cleanValue > 0) {
+                        e.target.value = cleanValue.toString().replace('.', ',');
+                    } else {
+                        e.target.value = '';
+                    }
+                });
+            });
+        }
+
+        function validatePoaAreas() {
+            const areaTotalPlan = parseFloat(document.getElementById('inputSupAreaProyecto').value) || 0;
+            let sumaAreasPoa = 0;
+            const poaAreaInputs = document.querySelectorAll('.poa-area-input');
+            poaAreaInputs.forEach(input => {
+                sumaAreasPoa += parseFloat(input.value) || 0;
+                input.style.border = '';
+            });
+            if (areaTotalPlan > 0 && sumaAreasPoa > (areaTotalPlan + 0.01) ) {
+                alert(`¡Advertencia! La suma de las superficies de los POAs (${formatNumber(sumaAreasPoa)}) no debe exceder la Superficie del Área del Proyecto (${formatNumber(areaTotalPlan)}).`);
+                poaAreaInputs.forEach(input => { input.style.border = '2px solid orange'; });
+                return false;
+            }
+            return true;
+        }
+        // --- FIN: LÓGICA PARA POAs DINÁMICOS ---
+
+        function populateSpeciesDropdown() { const select = document.getElementById('selEspecie'); const speciesNames = Object.keys(speciesFormulas).sort(); speciesNames.forEach(name => { const option = document.createElement('option'); option.value = name; option.textContent = name; select.appendChild(option); }); }
+        function populateLocationDropdown() { const select = document.getElementById('selectLocalidad'); const locations = Object.keys(locationData).sort(); select.innerHTML = '<option value="">Seleccione una localidad</option>'; locations.forEach(loc => { const option = document.createElement('option'); option.value = loc; option.textContent = loc; select.appendChild(option); }); select.addEventListener('change', () => { const selectedLoc = select.value; const dptoInput = document.getElementById('inputDepartamento'); if (selectedLoc && locationData[selectedLoc]) { dptoInput.value = locationData[selectedLoc].dpto; } else { dptoInput.value = ''; } }); }
+        function updateSampledArea() { const uniqueParcels = new Set(enteredTrees.map(tree => tree.parcelaNum)); const totalArea = uniqueParcels.size * 1000; document.getElementById('supParcelasM2').value = totalArea; }
+        function addTreeToList() { const especie = document.getElementById('selEspecie').value; const dap = parseFloat(document.getElementById('inputDAP').value); const altTotal = parseFloat(document.getElementById('inputAltTotal').value); const altFuste = parseFloat(document.getElementById('inputAltFuste').value); const parcelaNum = parseInt(document.getElementById('inputParcelaNum').value); if (!especie || isNaN(dap) || isNaN(altTotal) || isNaN(altFuste) || isNaN(parcelaNum)) { alert('Por favor, complete todos los campos del árbol, incluyendo un número de parcela válido.'); return; } if (dap <= 0 || altTotal <= 0 || altFuste < 0 || parcelaNum <= 0) { alert('Los valores de DAP, Altura Total y Parcela deben ser mayores que cero. Altura de Fuste no puede ser negativa.'); return; } if (altFuste > altTotal) { alert('La Altura de Fuste no puede ser mayor que la Altura Total.'); return; } const treeId = Date.now(); enteredTrees.push({ id: treeId, especie, dap, altTotal, altFuste, parcelaNum }); renderEnteredTrees(); clearTreeInput(); updateSampledArea(); }
+        function renderEnteredTrees() { const tbody = document.getElementById('enteredTreesTable').querySelector('tbody'); tbody.innerHTML = ''; enteredTrees.forEach((tree, index) => { const row = tbody.insertRow(); row.innerHTML = `<td>${index + 1}</td><td>${tree.especie}</td><td>${formatNumber(tree.dap,1)}</td><td>${formatNumber(tree.altTotal,1)}</td><td>${formatNumber(tree.altFuste,1)}</td><td>${tree.parcelaNum}</td><td class="action_column"><button onclick="removeTree(${tree.id})">Eliminar</button></td>`; }); }
+        window.removeTree = function(id) { enteredTrees = enteredTrees.filter(tree => tree.id !== id); renderEnteredTrees(); updateSampledArea(); };
+        function clearTreeInput() { document.getElementById('inputDAP').value = ''; document.getElementById('inputAltTotal').value = ''; document.getElementById('inputAltFuste').value = ''; document.getElementById('inputParcelaNum').value = ''; document.getElementById('selEspecie').focus(); }
+        function actualizarSuperficientes() { actualizarSuperficiesGenerales(); }
+        function actualizarSuperficiesGenerales() {
+            const inputSinCat = document.getElementById('inputSinCategorizar');
+            const catRojo = parseFloat(document.getElementById('inputCatRojo').value) || 0;
+            const catAmarillo = parseFloat(document.getElementById('inputCatAmarillo').value) || 0;
+            const catVerde = parseFloat(document.getElementById('inputCatVerde').value) || 0;
+            const sinCat = parseFloat(inputSinCat.value) || 0;
+            const totalBoscosa = catRojo + catAmarillo + catVerde + sinCat;
+            document.getElementById('spanSupBosqueNativo').textContent = formatNumber(totalBoscosa);
+            const supPredio = parseFloat(document.getElementById('inputSupPredio').value) || 0;
+            inputSinCat.style.border = ''; 
+            if (supPredio > 0 && totalBoscosa > (supPredio + 0.001)) {
+                 alert(`¡Error de Validación!\n\nLa "Sup. Total Cobertura Boscosa" (${formatNumber(totalBoscosa)}) no puede superar la "Superficie Total del Predio" (${formatNumber(supPredio)}).\n\nPor favor, corrija el valor en 'Sin Categorizar'.`);
+                 inputSinCat.style.border = '2px solid red';
+            }
+        }
+        
+        function calculateForestryData() {
+            const validationResult = validatePlanSurfaces();
+            if (!validationResult.valid) {
+                if (validationResult.type === 'sinCat') {
+                    alert(`¡Error de Validación!\n\nLa superficie "Sin Categorizar" del área del plan (${formatNumber(validationResult.planSinCat)}) no puede ser mayor a la superficie "Sin Categorizar" total del predio (${formatNumber(validationResult.predioSinCat)}).`);
+                } else if (validationResult.type === 'suma') {
+                    // **MENSAJE DE ERROR CORREGIDO**
+                    alert(`¡Error de Validación!\n\nLa suma de superficies por categoría del plan (${formatNumber(validationResult.sumaPlan)}) no puede ser mayor que la "Superficie del Área del Proyecto" (${formatNumber(validationResult.supAreaProyecto)}).`);
+                }
+                return; 
+            }
+             
+            if (enteredTrees.length === 0) { alert('No se han ingresado árboles. Por favor, agregue datos de inventario.'); return; } 
+            const totalSampledAreaM2 = parseFloat(document.getElementById('supParcelasM2').value); 
+            if (totalSampledAreaM2 === 0) { alert('El área de muestreo es 0. Asegúrese de que los árboles tengan números de parcela asignados.'); return; } 
+            const expansionFactor = 10000 / totalSampledAreaM2; 
+            const treesWithCalculations = enteredTrees.map(tree => { 
+                const formulas = speciesFormulas[tree.especie]; 
+                if (!formulas) return { ...tree, volFuste: 0, volTotal: 0, areaBasal: 0 }; 
+                const d = tree.dap; const at = tree.altTotal; const af = tree.altFuste; 
+                let volFuste = (af > 0) ? formulas.volFuste(d, af) : 0; 
+                let volTotal = (at > 0) ? formulas.volTotal(d, at) : 0; 
+                if (volFuste > volTotal) volFuste = volTotal; 
+                const areaBasal = Math.PI * (d / 200) ** 2; 
+                return { ...tree, volFuste, volTotal, areaBasal }; 
+            }); 
+            let resultsBySpeciesDAP = {}; 
+            treesWithCalculations.forEach(tree => { 
+                const dapClass = dapClasses.find(c => tree.dap >= c.min && tree.dap < c.max); 
+                if (!dapClass) return; 
+                if (!resultsBySpeciesDAP[tree.especie]) { resultsBySpeciesDAP[tree.especie] = {}; } 
+                if (!resultsBySpeciesDAP[tree.especie][dapClass.name]) { resultsBySpeciesDAP[tree.especie][dapClass.name] = { count: 0, volFuste: 0, volTotal: 0, areaBasal: 0 }; } 
+                resultsBySpeciesDAP[tree.especie][dapClass.name].count++; 
+                resultsBySpeciesDAP[tree.especie][dapClass.name].volFuste += tree.volFuste; 
+                resultsBySpeciesDAP[tree.especie][dapClass.name].volTotal += tree.volTotal; 
+                resultsBySpeciesDAP[tree.especie][dapClass.name].areaBasal += tree.areaBasal; 
+            }); 
+            resultsBySpeciesDAPGlobal = resultsBySpeciesDAP; 
+            renderVolumeTable(resultsBySpeciesDAP, expansionFactor); 
+            renderAreaBasalTable(resultsBySpeciesDAP, expansionFactor);
+            renderDensityTable(resultsBySpeciesDAP, expansionFactor);
+            renderTonsTable(resultsBySpeciesDAP, expansionFactor); 
+            renderGeneralStatsTable(resultsBySpeciesDAP, expansionFactor); 
+            calculateAndRenderSamplingStats(treesWithCalculations); 
+            renderInventoryCharts(resultsBySpeciesDAP, expansionFactor); 
+            renderSummaryCharts(resultsBySpeciesDAP, expansionFactor); 
+            document.getElementById('inventoryResultsWrapper').style.display = 'block'; 
+            document.getElementById('graficosInventarioContainer').style.display = 'grid'; 
+            document.getElementById('firmas-section-plan').innerHTML = generateSignatureBlockHTML('plan');
+        }
+        function createDapClassHeader(table, mainTitle, extraColumns = []) { table.innerHTML = ''; const thead = table.createTHead(); const row1 = thead.insertRow(); const th_species = document.createElement('th'); th_species.textContent = 'ESPECIES'; th_species.rowSpan = 3; row1.appendChild(th_species); const th_classes = document.createElement('th'); th_classes.textContent = mainTitle; th_classes.colSpan = dapClasses.length; row1.appendChild(th_classes); extraColumns.forEach(col => { const th = document.createElement('th'); th.textContent = col.title; th.rowSpan = col.rowSpan || 3; row1.appendChild(th); }); const row2 = thead.insertRow(); dapClasses.forEach(c => { const th = document.createElement('th'); th.textContent = c.name.split(' ')[0]; row2.appendChild(th); }); const row3 = thead.insertRow(); dapClasses.forEach(c => { const th = document.createElement('th'); th.textContent = c.label; row3.appendChild(th); }); }
+        function renderVolumeTable(data, factor) { const table = document.getElementById('tableVolumen'); createDapClassHeader(table, 'CLASES DIAMETRICAS', [{ title: 'TOTAL', rowSpan: 3 }]); const tbody = table.createTBody(); const tfoot = table.createTFoot().insertRow(); tfoot.insertCell().textContent = 'TOTAL'; const totals = { ...Object.fromEntries(dapClasses.map(c => [c.name, 0])), 'TOTAL': 0 }; for (const especie in data) { const row = tbody.insertRow(); row.insertCell().textContent = especie; let totalEspecie = 0; dapClasses.forEach(dapClass => { const val = data[especie][dapClass.name] ? data[especie][dapClass.name].volFuste * factor : 0; row.insertCell().textContent = formatNumber(val); totalEspecie += val; totals[dapClass.name] += val; }); row.insertCell().textContent = formatNumber(totalEspecie); totals['TOTAL'] += totalEspecie; } dapClasses.forEach(c => tfoot.insertCell().textContent = formatNumber(totals[c.name])); tfoot.insertCell().textContent = formatNumber(totals['TOTAL']); }
+        function renderAreaBasalTable(data, factor) { const table = document.getElementById('tableAreaBasal'); createDapClassHeader(table, 'CLASES DIAMETRICAS', [{ title: 'TOTAL', rowSpan: 3 }]); const tbody = table.createTBody(); const tfoot = table.createTFoot().insertRow(); tfoot.insertCell().textContent = 'TOTAL'; const totals = { ...Object.fromEntries(dapClasses.map(c => [c.name, 0])), 'TOTAL': 0 }; for (const especie in data) { const row = tbody.insertRow(); row.insertCell().textContent = especie; let totalEspecie = 0; dapClasses.forEach(dapClass => { const ab = data[especie][dapClass.name] ? data[especie][dapClass.name].areaBasal * factor : 0; row.insertCell().textContent = formatNumber(ab); totalEspecie += ab; totals[dapClass.name] += ab; }); row.insertCell().textContent = formatNumber(totalEspecie); totals['TOTAL'] += totalEspecie; } dapClasses.forEach(c => tfoot.insertCell().textContent = formatNumber(totals[c.name])); tfoot.insertCell().textContent = formatNumber(totals['TOTAL']); }
+        function renderDensityTable(data, factor) { const table = document.getElementById('tableDensidad'); createDapClassHeader(table, 'CLASES DIAMETRICAS', [{ title: 'TOTAL', rowSpan: 3 }]); const tbody = table.createTBody(); const tfoot = table.createTFoot().insertRow(); tfoot.insertCell().textContent = 'TOTAL'; const totals = { ...Object.fromEntries(dapClasses.map(c => [c.name, 0])), 'TOTAL': 0 }; for (const especie in data) { const row = tbody.insertRow(); row.insertCell().textContent = especie; let totalEspecie = 0; dapClasses.forEach(dapClass => { const n = data[especie][dapClass.name] ? data[especie][dapClass.name].count * factor : 0; row.insertCell().textContent = formatNumber(n, 0); totalEspecie += n; totals[dapClass.name] += n; }); row.insertCell().textContent = formatNumber(totalEspecie, 0); totals['TOTAL'] += totalEspecie; } dapClasses.forEach(c => tfoot.insertCell().textContent = formatNumber(totals[c.name], 0)); tfoot.insertCell().textContent = formatNumber(totals['TOTAL'], 0); }
+        function renderTonsTable(data, factor) { const table = document.getElementById('tableToneladas'); createDapClassHeader(table, 'CLASES DIAMETRICAS', [{ title: 'TOTAL', rowSpan: 3 }]); const tbody = table.createTBody(); const tfoot = table.createTFoot().insertRow(); tfoot.insertCell().textContent = 'TOTAL'; const totals = { ...Object.fromEntries(dapClasses.map(c => [c.name, 0])), 'TOTAL': 0 }; for (const especie in data) { const row = tbody.insertRow(); row.insertCell().textContent = especie; const pesoEsp = speciesFormulas[especie].pesoEspecifico || 0.75; let totalEspecie = 0; dapClasses.forEach(dapClass => { const volTotal = data[especie][dapClass.name] ? data[especie][dapClass.name].volTotal * factor : 0; const tons = volTotal * pesoEsp; row.insertCell().textContent = formatNumber(tons); totalEspecie += tons; totals[dapClass.name] += tons; }); row.insertCell().textContent = formatNumber(totalEspecie); totals['TOTAL'] += totalEspecie; } dapClasses.forEach(c => tfoot.insertCell().textContent = formatNumber(totals[c.name])); tfoot.insertCell().textContent = formatNumber(totals['TOTAL']); }
+        function renderGeneralStatsTable(data, factor) { const tbody = document.getElementById('tableEstadisticosGenerales').querySelector('tbody'); tbody.innerHTML = ''; const commercialDapClasses = dapClasses.filter(c => c.min >= 10); let totalN = 0, totalAB = 0, totalVolFuste = 0, totalVolTotal = 0; for (const especie in data) { commercialDapClasses.forEach(dapClass => { const classData = data[especie][dapClass.name]; if (classData) { totalN += classData.count * factor; totalAB += classData.areaBasal * factor; totalVolFuste += classData.volFuste * factor; totalVolTotal += classData.volTotal * factor; } }); } const row = tbody.insertRow(); row.innerHTML = `<td>PROMEDIO</td><td>${formatNumber(totalN)}</td><td>${formatNumber(totalAB)}</td><td>${formatNumber(totalVolFuste)}</td><td>${formatNumber(totalVolTotal)}</td>`; row.style.fontWeight = 'bold'; row.style.backgroundColor = '#e9ecef'; }
+        function calculateAndRenderSamplingStats(treesWithCalculations) { const parcels = {}; treesWithCalculations.forEach(tree => { if (!parcels[tree.parcelaNum]) { parcels[tree.parcelaNum] = { nArboles: 0, ab: 0, volFuste: 0, volTotal: 0 }; } parcels[tree.parcelaNum].nArboles++; parcels[tree.parcelaNum].ab += tree.areaBasal; parcels[tree.parcelaNum].volFuste += tree.volFuste; parcels[tree.parcelaNum].volTotal += tree.volTotal; }); const numParcelas = Object.keys(parcels).length; if (numParcelas < 2) { document.getElementById('tableResumenParcelasAB').querySelector('tbody').innerHTML = `<tr><td colspan="3">Se necesitan al menos 2 parcelas para los cálculos estadísticos.</td></tr>`; document.getElementById('tableDetalleParcelasObservado').querySelector('tbody').innerHTML = ''; document.getElementById('tableDetalleParcelasHa').querySelector('tbody').innerHTML = ''; return; } const supParcelaHa = 1000 / 10000; const factorExpansionParcela = 1 / supParcelaHa; const abPorHa = Object.values(parcels).map(p => p.ab * factorExpansionParcela); const mediaAB = abPorHa.reduce((a, b) => a + b, 0) / numParcelas; const varianzaAB = abPorHa.reduce((sum, val) => sum + (val - mediaAB)**2, 0) / (numParcelas - 1); const desvioStdAB = Math.sqrt(varianzaAB); const errorStdAB = desvioStdAB / Math.sqrt(numParcelas); const tValue = getTValue(numParcelas - 1); const limiteErrorAB = tValue * errorStdAB; const errorMuestralAB = (mediaAB > 0) ? (limiteErrorAB / mediaAB) * 100 : 0; const errorObjetivoAB = parseFloat(document.getElementById('inputErrorEstablecidoAB').value) || 15; const intensidadNecesaria = (mediaAB > 0) ? ((tValue * desvioStdAB) / (errorObjetivoAB / 100 * mediaAB))**2 : 0; const tbodyResumen = document.getElementById('tableResumenParcelasAB').querySelector('tbody'); tbodyResumen.innerHTML = `<tr><td>Número de parcelas (n)</td><td>${formatNumber(numParcelas, 0)}</td><td>unid.</td></tr><tr><td>Media Área Basal (AB)</td><td>${formatNumber(mediaAB)}</td><td>m²/ha</td></tr><tr><td>Varianza</td><td>${formatNumber(varianzaAB)}</td><td></td></tr><tr><td>Desvío Estándar</td><td>${formatNumber(desvioStdAB)}</td><td></td></tr><tr><td>Error Estándar</td><td>${formatNumber(errorStdAB)}</td><td></td></tr><tr><td>Límite de Error para la Media</td><td>${formatNumber(limiteErrorAB)}</td><td>m²/ha</td></tr><tr style="font-weight:bold;"><td>Error Muestral (%)</td><td>${formatNumber(errorMuestralAB)}</td><td>%</td></tr><tr><td>Intensidad de Muestreo (n parcelas) para un error del ${errorObjetivoAB}%</td><td>${Math.ceil(intensidadNecesaria)}</td><td>unid.</td></tr>`; const tbodyObs = document.getElementById('tableDetalleParcelasObservado').querySelector('tbody'); const tbodyHa = document.getElementById('tableDetalleParcelasHa').querySelector('tbody'); tbodyObs.innerHTML = ''; tbodyHa.innerHTML = ''; Object.entries(parcels).forEach(([num, data]) => { tbodyObs.insertRow().innerHTML = `<td>${num}</td><td>${data.nArboles}</td><td>${formatNumber(data.ab, 4)}</td><td>${formatNumber(data.volFuste, 4)}</td><td>${formatNumber(data.volTotal, 4)}</td>`; tbodyHa.insertRow().innerHTML = `<td>${num}</td><td>${formatNumber(data.nArboles * factorExpansionParcela)}</td><td>${formatNumber(data.ab * factorExpansionParcela)}</td><td>${formatNumber(data.volFuste * factorExpansionParcela)}</td><td>${formatNumber(data.volTotal * factorExpansionParcela)}</td>`; }); }
+        
+        function renderInventoryCharts(data, factor) { 
+            const totalsByDAP = {}; 
+            dapClasses.forEach(c => { totalsByDAP[c.name] = { vol: 0, ab: 0, n: 0, tons: 0 }; }); 
+            for (const especie in data) { 
+                const pesoEsp = speciesFormulas[especie].pesoEspecifico || 0.75; 
+                for (const dapClassName in data[especie]) { 
+                    const classData = data[especie][dapClassName]; 
+                    totalsByDAP[dapClassName].vol += classData.volFuste; 
+                    totalsByDAP[dapClassName].ab += classData.areaBasal; 
+                    totalsByDAP[dapClassName].n += classData.count; 
+                    totalsByDAP[dapClassName].tons += classData.volTotal * pesoEsp; 
+                } 
+            } 
+            const labels = dapClasses.map(c => c.label); 
+            if(chartVolumenClaseDAPInstance) chartVolumenClaseDAPInstance.destroy(); 
+            chartVolumenClaseDAPInstance = new Chart(document.getElementById('chartVolumenClaseDAP'), { type: 'bar', data: { labels, datasets: [{ label: 'Volumen Fuste (m³/ha)', data: dapClasses.map(c => (totalsByDAP[c.name].vol * factor).toFixed(2)), backgroundColor: '#36A2EB' }] }, options: { responsive: true, maintainAspectRatio: true } }); 
+            
+            if(chartABClaseDAPInstance) chartABClaseDAPInstance.destroy();
+            chartABClaseDAPInstance = new Chart(document.getElementById('chartABClaseDAP'), {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Área Basal (m²/ha)',
+                        data: dapClasses.map(c => (totalsByDAP[c.name].ab * factor).toFixed(2)),
+                        backgroundColor: '#f907a8'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true }
+            });
+
+            if(chartDensidadClaseDAPInstance) chartDensidadClaseDAPInstance.destroy();
+            chartDensidadClaseDAPInstance = new Chart(document.getElementById('chartDensidadClaseDAP'), {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Densidad (N/ha)',
+                        data: dapClasses.map(c => (totalsByDAP[c.name].n * factor).toFixed(0)),
+                        backgroundColor: '#4BC0C0'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true }
+            });
+            
+            if(chartToneladasClaseDAPInstance) chartToneladasClaseDAPInstance.destroy(); 
+            chartToneladasClaseDAPInstance = new Chart(document.getElementById('chartToneladasClaseDAP'), { type: 'bar', data: { labels, datasets: [{ label: 'Toneladas Totales (Tn/ha)', data: dapClasses.map(c => (totalsByDAP[c.name].tons * factor).toFixed(2)), backgroundColor: '#FF6384' }] }, options: { responsive: true, maintainAspectRatio: true } }); 
+        }
+
+        function renderSummaryCharts(data, factor) { if (Object.keys(data).length === 0) return; const speciesLabels = Object.keys(data).sort(); const volumeBySpeciesData = speciesLabels.map(especie => { let totalVol = 0; for (const dapClass in data[especie]) { totalVol += data[especie][dapClass].volFuste; } return (totalVol * factor).toFixed(2); }); const densityBySpeciesData = speciesLabels.map(especie => { let totalCount = 0; for (const dapClass in data[especie]) { totalCount += data[especie][dapClass].count; } return (totalCount * factor).toFixed(2); }); const dapDistributionData = dapClasses.map(dapClass => { let totalInClass = 0; speciesLabels.forEach(especie => { if (data[especie][dapClass.name]) { totalInClass += data[especie][dapClass.name].count; } }); return (totalInClass * factor).toFixed(0); }); document.getElementById('graficosContainer').style.display = 'block'; if (chartVolumenEspecieInstance) chartVolumenEspecieInstance.destroy(); chartVolumenEspecieInstance = new Chart(document.getElementById('chartVolumenPorEspecie'), { type: 'bar', data: { labels: speciesLabels, datasets: [{ label: 'Volumen Fuste (m³/ha)', data: volumeBySpeciesData, backgroundColor: '#28a745' }] }, options: { responsive: true, maintainAspectRatio: true, indexAxis: 'y' } }); if (chartDensidadEspecieInstance) chartDensidadEspecieInstance.destroy(); chartDensidadEspecieInstance = new Chart(document.getElementById('chartDensidadPorEspecie'), { type: 'bar', data: { labels: speciesLabels, datasets: [{ label: 'Densidad (Arb/ha)', data: densityBySpeciesData, backgroundColor: '#ffc107' }] }, options: { responsive: true, maintainAspectRatio: true, indexAxis: 'y' } }); if (chartDistribucionDAPInstance) chartDistribucionDAPInstance.destroy(); chartDistribucionDAPInstance = new Chart(document.getElementById('chartDistribucionDAP'), { type: 'bar', data: { labels: dapClasses.map(c => c.label), datasets: [{ label: 'Número de Árboles por Hectárea', data: dapDistributionData, backgroundColor: '#6c757d' }] }, options: { responsive: true, maintainAspectRatio: true } }); }
+        function renderPlanillaCampo(trees) { const tbody = document.getElementById('tablePlanillaCampo').querySelector('tbody'); tbody.innerHTML = ''; trees.forEach((tree, index) => { const formula = speciesFormulas[tree.especie]; const scientificName = formula ? formula.scientificName : 'N/A'; const row = tbody.insertRow(); row.innerHTML = `<td>${index + 1}</td><td>${tree.especie} (${scientificName})</td><td>${formatNumber(tree.dap,1)}</td><td>${formatNumber(tree.altTotal,1)}</td><td>${formatNumber(tree.altFuste,1)}</td><td>${tree.parcelaNum}</td>`; }); }
+        
+        function prepararImpresion() {
+            if (!document.getElementById('checkAceptoDDJJ').checked) { alert('Debe aceptar los términos de la Declaración Jurada antes de imprimir.'); return; }
+            if(!validatePoaAreas()) { alert('No se puede imprimir. La suma de las superficies de los POAs excede la superficie total del plan. Por favor, corrija los valores.'); return; }
+            if(!document.getElementById('firmas-section-plan').innerHTML){ alert('Debe Calcular los Datos Forestales antes de imprimir para generar la sección de firmas.'); return;}
+            alert("Se abrirá el diálogo de impresión. Para guardar como PDF, seleccione 'Guardar como PDF' o 'Microsoft Print to PDF' en el destino de la impresora.");
+            
+            // Populate data for ALL signature blocks
+            const numPoas = parseInt(inputNumPoas.value, 10) || 0;
+            const suffixes = ['plan', ...Array.from({length: numPoas}, (_, i) => `poa${i + 1}`)];
+
+            suffixes.forEach(suffix => {
+                const checkRepLegalNoAplica = document.getElementById('checkRepLegalNoAplica').checked;
+                const titularNameEl = document.getElementById(`firmaPrintTitularProyecto-${suffix}`);
+                const titularCuitEl = document.getElementById(`firmaPrintTitularProyectoCUIT-${suffix}`);
+                if(titularNameEl) titularNameEl.textContent = checkRepLegalNoAplica ? (document.getElementById('inputTitularProyectoNombre').value || "..............................") : (document.getElementById('inputRepLegalNombre').value || "..............................");
+                if(titularCuitEl) titularCuitEl.textContent = checkRepLegalNoAplica ? (document.getElementById('inputTitularProyectoCUIT').value || "..............................") : (document.getElementById('inputRepLegalDNI').value || "..............................");
+                const tecnicoNombreEl = document.getElementById(`firmaPrintTecnicoNombre-${suffix}`);
+                if(tecnicoNombreEl) tecnicoNombreEl.textContent = document.getElementById('inputTecnicoNombre').value || "..............................";
+                const tecnicoMatriculaEl = document.getElementById(`firmaPrintTecnicoMatricula-${suffix}`);
+                if(tecnicoMatriculaEl) tecnicoMatriculaEl.textContent = document.getElementById('inputTecnicoMatricula').value || "..............................";
+                const establecimientoEl = document.getElementById(`firmaPrintEstablecimiento-${suffix}`);
+                if(establecimientoEl) establecimientoEl.textContent = document.getElementById('inputEstablecimiento').value || "..............................";
+                const partidaEl = document.getElementById(`firmaPrintPartidaInmobiliaria-${suffix}`);
+                if(partidaEl) partidaEl.textContent = document.getElementById('inputPartidaInmobiliaria').value || "..............................";
+                const deptoEl = document.getElementById(`firmaPrintDepartamento-${suffix}`);
+                if(deptoEl) deptoEl.textContent = document.getElementById('inputDepartamento').value || "..............................";
+            });
+
+            // Populate global header/footer data
+            document.getElementById('pageFooterEstablecimiento').textContent = document.getElementById('inputEstablecimiento').value || " ";
+            document.getElementById('pageFooterPartida').textContent = document.getElementById('inputPartidaInmobiliaria').value || " ";
+            document.getElementById('pageFooterDepartamento').textContent = document.getElementById('inputDepartamento').value || " ";
+            const printDateSpanGlobal = document.getElementById('printDateGlobal');
+            const today = new Date();
+            printDateSpanGlobal.textContent = 'Fecha de emisión: ' + today.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+            const datosPredioDiv = document.getElementById('datosPredioParaImprimir');
+            datosPredioDiv.innerHTML = `<p><strong>Establecimiento:</strong> ${document.getElementById('inputEstablecimiento').value || "-"} | <strong>Partida:</strong> ${document.getElementById('inputPartidaInmobiliaria').value || "-"} | <strong>Departamento:</strong> ${document.getElementById('inputDepartamento').value || "-"}</p>`;
+            
+            document.querySelectorAll('.auto-resize-textarea').forEach(textarea => { 
+                const printDiv = document.getElementById('print-' + textarea.id); 
+                if(printDiv) { 
+                    const placeholderText = textarea.getAttribute('data-placeholder');
+                    printDiv.textContent = (textarea.value.trim() === placeholderText || textarea.value.trim() === '') ? '' : textarea.value;
+                }
+            });
+            
+            renderPlanillaCampo(enteredTrees);
+            window.print();
+        }
+        function clearCalculations() { 
+            const tablesToClear = ['tableVolumen', 'tableAreaBasal', 'tableDensidad', 'tableToneladas', 'tableResumenParcelasAB', 'tableDetalleParcelasObservado', 'tableDetalleParcelasHa']; 
+            tablesToClear.forEach(id => { const table = document.getElementById(id); if (table) table.innerHTML = ''; }); 
+            document.getElementById('tableEstadisticosGenerales').querySelector('tbody').innerHTML = ''; 
+            if(chartVolumenClaseDAPInstance) chartVolumenClaseDAPInstance.destroy(); 
+            if(chartABClaseDAPInstance) chartABClaseDAPInstance.destroy(); 
+            if(chartDensidadClaseDAPInstance) chartDensidadClaseDAPInstance.destroy(); 
+            if(chartToneladasClaseDAPInstance) chartToneladasClaseDAPInstance.destroy(); 
+            if(chartVolumenEspecieInstance) chartVolumenEspecieInstance.destroy(); 
+            if(chartDensidadEspecieInstance) chartDensidadEspecieInstance.destroy(); 
+            if(chartDistribucionDAPInstance) chartDistribucionDAPInstance.destroy(); 
+            document.getElementById('graficosContainer').style.display = 'none'; 
+            document.getElementById('inventoryResultsWrapper').style.display = 'none'; 
+            document.getElementById('graficosInventarioContainer').style.display = 'none'; 
+            resultsBySpeciesDAPGlobal = {}; 
+            alert('Todos los cálculos y tablas generadas han sido borrados.'); 
+        }
+        function clearAllInputs() {
+            if (confirm('¿Está seguro que desea borrar TODOS los datos ingresados en el formulario, incluyendo la lista de árboles? Esta acción no se puede deshacer.')) {
+                document.querySelectorAll('input[type="text"], input[type="number"], input[type="email"], input[type="tel"], select, textarea').forEach(el => {
+                    if (el.readOnly || el.id === 'inputProvincia' || el.id === 'selectTipoPlan' || el.id === 'inputCoberturaArbustivaMin') return;
+                    if (el.type === 'checkbox') { el.checked = false; el.dispatchEvent(new Event('change'));}
+                    else if (el.tagName.toLowerCase() === 'textarea') { el.value = ''; } 
+                    else { el.value = el.type === 'number' ? '0' : ''; }
+                });
+                document.getElementById('inputProvincia').value = "CORRIENTES";
+                document.getElementById('inputNumPoas').value = '0';
+                poaContainer.innerHTML = '';
+                enteredTrees = [];
+                renderEnteredTrees();
+                updateSampledArea();
+                document.getElementById('btn-map-clear').click();
+                setupStaticTextareas(); // Re-initialize placeholder texts
+                alert('Todos los datos de entrada han sido borrados.');
+            }
+        }
+        
+        // --- Event Listeners ---
+        document.getElementById('btnAddTree').addEventListener('click', addTreeToList);
+        document.getElementById('btnCalcularDatosForestales').addEventListener('click', calculateForestryData);
+        document.getElementById('btnImprimirPDF').addEventListener('click', prepararImpresion);
+        document.getElementById('btnBorrarCalculosGenerados').addEventListener('click', clearCalculations);
+        document.getElementById('btnBorrarDatosIngresados').addEventListener('click', clearAllInputs);
+        document.getElementById('checkMismoTitularProyecto').addEventListener('change', (e) => { const fields = [ { from: 'inputTitular', to: 'inputTitularProyectoNombre' }, { from: 'inputDNI', to: 'inputTitularProyectoCUIT' }, { from: 'inputTitularDomicilio', to: 'inputTitularProyectoDomicilio' }, { from: 'inputTitularTelefono', to: 'inputTitularProyectoTelefono' }, { from: 'inputTitularEmail', to: 'inputTitularProyectoEmail' } ]; fields.forEach(f => { const toEl = document.getElementById(f.to); toEl.value = e.target.checked ? document.getElementById(f.from).value : ''; toEl.readOnly = e.target.checked; }); });
+        document.getElementById('checkRepLegalNoAplica').addEventListener('change', (e) => { const fields = ['inputRepLegalNombre', 'inputRepLegalDNI', 'inputRepLegalCargo', 'inputRepLegalDomicilio', 'inputRepLegalTelefono']; fields.forEach(id => { const el = document.getElementById(id); el.value = ''; el.disabled = e.target.checked; }); });
+        document.getElementById('inputSinCategorizar').addEventListener('input', actualizarSuperficientes);
+        document.getElementById('inputPlanSinCategorizar').addEventListener('input', validatePlanSurfaces);
+        document.getElementById('inputNumPoas').addEventListener('change', generatePoaSections);
+        document.getElementById('inputErrorEstablecidoAB').addEventListener('input', () => { if (enteredTrees.length > 0) { const treesWithCalculations = enteredTrees.map(t => ({...t, areaBasal: Math.PI * (t.dap / 200) ** 2})); calculateAndRenderSamplingStats(treesWithCalculations); } });
+        
+        // --- Inicialización ---
+        populateSpeciesDropdown(); 
+        populateLocationDropdown(); 
+        actualizarSuperficientes(); 
+        updateSampledArea();
+        loadDefaultOtbn();
+        
+        });
+    </script>
+</body>
+</html>
