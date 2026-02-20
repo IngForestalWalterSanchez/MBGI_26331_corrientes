@@ -850,46 +850,6 @@
             display: none;
             text-align: center;
         }
-        /* --- LEYENDA MAPA POA --- */
-        .poa-map-legend {
-            border-top: 1px solid #d0dce8;
-            background: #f8fbff;
-            padding: 7px 14px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-        .poa-map-legend-title {
-            font-size: 0.82em;
-            font-weight: bold;
-            color: #444;
-            white-space: nowrap;
-            margin-right: 4px;
-        }
-        .poa-map-legend-items {
-            display: flex;
-            gap: 18px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .poa-legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.83em;
-            color: #222;
-        }
-        .poa-legend-swatch {
-            display: inline-block;
-            width: 22px;
-            height: 12px;
-            border-radius: 2px;
-            opacity: 0.85;
-            flex-shrink: 0;
-        }
-        /* --- FIN LEYENDA MAPA POA --- */
-
         /* --- FIN ESTILOS MAPA POA --- */
 
         .firmas-section-print {
@@ -1047,11 +1007,10 @@
             .poa-map-print-snapshot {
                 display: block !important;
                 width: 100% !important;
-                height: auto !important;
-                object-fit: contain !important;
-                object-position: center center !important;
+                max-height: 280px;
+                object-fit: contain;
                 border: 1px solid #ccc;
-                margin: 0;
+                margin: 4px 0;
                 page-break-inside: avoid;
             }
             .poa-map-section {
@@ -1072,21 +1031,6 @@
             .poa-kml-plan, .poa-kml-poa, .poa-map-fit-btn, .poa-map-clear-btn {
                 display: none !important;
             }
-            /* Leyenda en impresión */
-            .poa-map-legend {
-                display: flex !important;
-                border-top: 1px solid #ccc !important;
-                background: #f5f5f5 !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-                padding: 4px 10px !important;
-                font-size: 8pt !important;
-            }
-            .poa-legend-swatch {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-            .poa-legend-empty { display: none !important; }
             /* --- FIN IMPRESIÓN MAPAS POA --- */
 
             .input-fieldset textarea,
@@ -2570,22 +2514,6 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                                         </div>
                                         <div id="poa-map-status-${i}" class="poa-map-status"></div>
                                         <div id="poa-map-${i}" class="poa-map-leaflet"></div>
-                                        <div class="poa-map-legend" id="poa-map-legend-${i}">
-                                            <div class="poa-map-legend-title">Referencias de Capas</div>
-                                            <div class="poa-map-legend-items">
-                                                <div class="poa-legend-item poa-legend-plan" id="poa-legend-plan-${i}" style="display:none;">
-                                                    <span class="poa-legend-swatch" style="background:#06f1f1; border:2px solid #06f1f1; opacity:0.9;"></span>
-                                                    <span class="poa-legend-label" id="poa-legend-plan-label-${i}">Plan Técnico</span>
-                                                </div>
-                                                <div class="poa-legend-item poa-legend-poa" id="poa-legend-poa-${i}" style="display:none;">
-                                                    <span class="poa-legend-swatch" style="background:#ff6600; border:2px solid #ff6600;"></span>
-                                                    <span class="poa-legend-label" id="poa-legend-poa-label-${i}">Área POA ${i}</span>
-                                                </div>
-                                                <div class="poa-legend-empty" id="poa-legend-empty-${i}">
-                                                    <em style="color:#999; font-size:0.85em;">Sin capas cargadas</em>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </fieldset>
                                 ${activitiesHtml}
@@ -2752,18 +2680,8 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                     if (bounds.length > 0) {
                         let combined = bounds[0];
                         bounds.forEach(b => { combined = combined.extend(b); });
-                        inst.map.fitBounds(combined, { paddingTopLeft: [20, 70], paddingBottomRight: [20, 5] });
+                        inst.map.fitBounds(combined, { padding: [20, 20] });
                     }
-                }
-
-                function updatePoaLegend() {
-                    const inst = poaMapsInstances[poaId];
-                    const elPlan  = document.getElementById(`poa-legend-plan-${poaId}`);
-                    const elPoa   = document.getElementById(`poa-legend-poa-${poaId}`);
-                    const elEmpty = document.getElementById(`poa-legend-empty-${poaId}`);
-                    if (elPlan)  elPlan.style.display  = inst.layers.plan ? 'flex' : 'none';
-                    if (elPoa)   elPoa.style.display   = inst.layers.poa  ? 'flex' : 'none';
-                    if (elEmpty) elEmpty.style.display = (!inst.layers.plan && !inst.layers.poa) ? 'block' : 'none';
                 }
 
                 function loadPoaKML(file, layerKey, style, labelName) {
@@ -2781,10 +2699,6 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                                     layer.bindPopup(`<strong>${name}</strong>`);
                                 }
                             }).addTo(inst.map);
-                            // Actualizar etiqueta leyenda con nombre real del archivo
-                            const labelEl = document.getElementById(`poa-legend-${layerKey}-label-${poaId}`);
-                            if (labelEl) labelEl.textContent = file.name.replace(/\.kml$/i, '') || labelName;
-                            updatePoaLegend();
                             fitPoaMap();
                             showPoaStatus(`✅ Capa "${labelName}" cargada.`, 'ok');
                         } catch(err) {
@@ -2813,7 +2727,6 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                     if (kmlPlanInput) kmlPlanInput.value = '';
                     if (kmlPoaInput)  kmlPoaInput.value  = '';
                     inst.map.setView([-28.5, -57.5], 8);
-                    updatePoaLegend();
                     showPoaStatus('Capas eliminadas.', 'info');
                 });
 
@@ -3033,17 +2946,18 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
             const snapshotPromises = Array.from(poaMapDivs).map(mapDiv => {
                 return new Promise(resolve => {
                     if (typeof html2canvas === 'undefined') { resolve(); return; }
+                    // Invalidar tamaño del mapa antes de capturar
                     const poaId = mapDiv.id.replace('poa-map-', '');
                     if (poaMapsInstances[poaId]) poaMapsInstances[poaId].map.invalidateSize();
-                    // Capturar solo el div del mapa (sin el header/controles — esos se reproducen via CSS)
-                    html2canvas(mapDiv, { useCORS: true, allowTaint: true, scale: 2, logging: false }).then(canvas => {
+                    html2canvas(mapDiv, { useCORS: true, allowTaint: true, scale: 1.5 }).then(canvas => {
                         const img = document.createElement('img');
                         img.src = canvas.toDataURL('image/png');
                         img.className = 'poa-map-print-snapshot';
+                        img.style.width = '100%';
+                        img.style.display = 'none'; // solo visible en impresión via CSS
                         // Eliminar snapshot previo si existe
                         const prev = mapDiv.parentNode.querySelector('.poa-map-print-snapshot');
                         if (prev) prev.remove();
-                        // Insertar la imagen justo antes del div del mapa
                         mapDiv.parentNode.insertBefore(img, mapDiv);
                         resolve();
                     }).catch(() => resolve());
@@ -3356,4 +3270,6 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
     </script>
 </body>
 </html>
-          
+
+
+
