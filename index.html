@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANEXO I - PLAN DE MANEJO MBGI</title>
+    <title>ANEXO I - FORMULARIO A - MBGI</title>
     <!-- Dependencias externas cargadas desde CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
     <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -787,6 +789,109 @@
             color: #555;
         }
 
+        /* --- ESTILOS MAPA POA --- */
+        .poa-map-section {
+            margin: 12px 0 18px 0;
+            border: 1px solid #b8daff;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #fff;
+        }
+        .poa-map-header {
+            background: #1a5276;
+            color: white;
+            padding: 8px 14px;
+            font-size: 0.95em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .poa-map-controls {
+            padding: 10px 14px;
+            background: #f0f4f8;
+            border-bottom: 1px solid #d0dce8;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        .poa-map-controls label {
+            font-size: 0.88em;
+            color: #333;
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            background: white;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 5px 10px;
+        }
+        .poa-map-controls label:hover { background: #e8f0fe; border-color: #4285f4; }
+        .poa-map-controls .btn-map-poa {
+            padding: 5px 12px;
+            font-size: 0.85em;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .poa-map-controls .btn-map-poa:hover { background: #5a6268; }
+        .poa-map-leaflet {
+            height: 320px;
+            width: 100%;
+        }
+        .poa-map-status {
+            font-size: 0.82em;
+            padding: 4px 10px;
+            display: none;
+            text-align: center;
+        }
+        /* --- LEYENDA MAPA POA --- */
+        .poa-map-legend {
+            border-top: 1px solid #d0dce8;
+            background: #f8fbff;
+            padding: 7px 14px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .poa-map-legend-title {
+            font-size: 0.82em;
+            font-weight: bold;
+            color: #444;
+            white-space: nowrap;
+            margin-right: 4px;
+        }
+        .poa-map-legend-items {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .poa-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.83em;
+            color: #222;
+        }
+        .poa-legend-swatch {
+            display: inline-block;
+            width: 22px;
+            height: 12px;
+            border-radius: 2px;
+            opacity: 0.85;
+            flex-shrink: 0;
+        }
+        /* --- FIN LEYENDA MAPA POA --- */
+
+        /* --- FIN ESTILOS MAPA POA --- */
+
         .firmas-section-print {
             display: none;
         }
@@ -926,6 +1031,63 @@
                 color: #000 !important;
             }
              /* --- FIN: REGLAS DE IMPRESIÓN PARA POAs --- */
+
+            /* --- IMPRESIÓN MAPAS POA --- */
+            /* Mostrar el fieldset de Datos Generales del POA en impresión (override de la regla que lo oculta) */
+            #poaSection .input-fieldset {
+                display: block !important;
+            }
+            /* Ocultar controles interactivos del mapa en impresión */
+            .poa-map-controls,
+            .poa-map-status,
+            .poa-map-leaflet {
+                display: none !important;
+            }
+            /* Mostrar el snapshot capturado */
+            .poa-map-print-snapshot {
+                display: block !important;
+                width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important;
+                object-position: center center !important;
+                border: 1px solid #ccc;
+                margin: 0;
+                page-break-inside: avoid;
+            }
+            .poa-map-section {
+                border: 1px solid #aaa !important;
+                page-break-inside: avoid;
+                margin-bottom: 4mm;
+            }
+            .poa-map-header {
+                background: #1a5276 !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                padding: 4px 10px !important;
+                font-size: 8.5pt !important;
+            }
+            /* Ocultar inputs KML y botones de mapa */
+            .poa-kml-plan, .poa-kml-poa, .poa-map-fit-btn, .poa-map-clear-btn {
+                display: none !important;
+            }
+            /* Leyenda en impresión */
+            .poa-map-legend {
+                display: flex !important;
+                border-top: 1px solid #ccc !important;
+                background: #f5f5f5 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                padding: 4px 10px !important;
+                font-size: 8pt !important;
+            }
+            .poa-legend-swatch {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .poa-legend-empty { display: none !important; }
+            /* --- FIN IMPRESIÓN MAPAS POA --- */
 
             .input-fieldset textarea,
             #poaContainer .auto-resize-textarea { 
@@ -1156,7 +1318,7 @@
         </div>
 
         <h1 id="pdfPrintMainTitle">
-            FORMULARIO: PLAN DE MANEJO DE BOSQUES CON GANADERÍA INTEGRADA (MBGI)
+            ANEXO I - FORMULARIO A<br><span style="font-size:0.82em;">MANEJO DE BOSQUES CON GANADERÍA INTEGRADA (MBGI)</span>
         </h1>
         <span id="printDateGlobal"></span>
         <div id="pdfPrintPageFooterStrings" style="display:none;">
@@ -1167,7 +1329,7 @@
         
         <img src="membrete_provincia.png" alt="Membrete Provincia" width="500" height="100">
         <div id="mainContainer">
-            <h1 id="appTitle">PLAN DE MANEJO DE BOSQUES CON GANADERÍA INTEGRADA (MBGI)</h1>
+            <h1 id="appTitle">ANEXO I - FORMULARIO A<br><small style="font-size:0.7em;font-weight:normal;">MANEJO DE BOSQUES CON GANADERÍA INTEGRADA (MBGI)</small></h1>
         
             <div id="pdfPrintHeaderWrapperForRunningElement" style="display: none;">
                 <div id="datosPredioParaImprimir">
@@ -1532,6 +1694,29 @@
                                 </tbody>
                             </table>
         
+                            <!-- ===== CARGA MASIVA POR ARCHIVO EXCEL/CSV ===== -->
+                            <div id="excelUploadSection" style="margin: 18px 0; padding: 18px 20px; background: #f0faf4; border: 2px dashed #2E7D32; border-radius: 8px;">
+                                <h4 style="margin-top:0; color:#1F7A4A; font-size:1.05em;">&#x1F4C2; Carga Masiva desde Planilla Excel / CSV</h4>
+                                <p style="font-size:0.88em; color:#555; margin:0 0 12px 0;">
+                                    Descargue la planilla modelo, complétela en Excel y cárguela aquí para importar todos los árboles automáticamente.
+                                    El archivo debe seguir el formato de la planilla oficial (hoja <strong>INVENTARIO</strong>).
+                                </p>
+                                <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+                                    <button id="btnDescargarPlanillaExcel" onclick="descargarPlanillaExcel()" style="background-color:#1F7A4A; color:white; padding:9px 18px; border:none; border-radius:5px; cursor:pointer; font-size:0.92em;">
+                                        &#x2B07; Descargar Planilla Modelo (.xlsx)
+                                    </button>
+                                    <label for="inputCargarExcel" style="background-color:#0d6efd; color:white; padding:9px 18px; border-radius:5px; cursor:pointer; font-size:0.92em; margin:0; font-weight:normal;">
+                                        &#x1F4E4; Cargar Planilla Excel / CSV
+                                    </label>
+                                    <input type="file" id="inputCargarExcel" accept=".xlsx,.xls,.csv" style="display:none;">
+                                    <button id="btnLimpiarCargaExcel" onclick="limpiarCargaExcel()" style="background-color:#dc3545; color:white; padding:9px 14px; border:none; border-radius:5px; cursor:pointer; font-size:0.92em; display:none;">
+                                        ✕ Limpiar carga
+                                    </button>
+                                </div>
+                                <div id="excelUploadStatus" style="margin-top:10px; font-size:0.9em; display:none; padding:8px 12px; border-radius:5px;"></div>
+                            </div>
+                            <!-- ===== FIN CARGA MASIVA ===== -->
+
                             <h4>Árboles Ingresados:</h4>
                             <table id="enteredTreesTable">
                                 <thead>
@@ -1659,7 +1844,6 @@
         
                     <div class="controls">
                         <button id="btnCalcularDatosForestales">Calcular Datos Forestales y Plan</button>
-                        <button id="btnDescargarDiccionario" onclick="descargarDiccionarioEspecies()" style="background-color:#17a2b8; color:white;">&#x2B07; Descargar Diccionario de Especies (CSV)</button>
                         <button id="btnBorrarDatosIngresados">Borrar Datos Ingresados</button>
                         <button id="btnBorrarCalculosGenerados">Borrar Cálculos Generados</button>
                     </div>
@@ -2284,7 +2468,7 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
         const T_VALUES_95_CI = { 1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 6: 2.447, 7: 2.365, 8: 2.306, 9: 2.262, 10: 2.228, 15: 2.131, 20: 2.086, 25: 2.060, 30: 2.042, Infinity: 1.96 };
         function getTValue(df) { if (df <= 0) return T_VALUES_95_CI[1]; if (df >= 30) return T_VALUES_95_CI.Infinity; if (T_VALUES_95_CI[df]) return T_VALUES_95_CI[df]; let closestDf = Object.keys(T_VALUES_95_CI).map(Number).filter(k => k !== Infinity && k <= df).pop(); return T_VALUES_95_CI[closestDf || 1]; }
         const locationData = { "ALVEAR": { dpto: "GENERAL ALVEAR" }, "BELLA VISTA": { dpto: "BELLA VISTA" }, "BERON DE ASTRADA": { dpto: "BERON DE ASTRADA" }, "CHAVARRIA": { dpto: "SAN ROQUE" }, "COLONIA CARLOS PELLEGRINI": { dpto: "SAN MARTIN" }, "COLONIA LIEBIGS": { dpto: "ITUZAINGO" }, "CONCEPCION": { dpto: "CONCEPCION" }, "CORRIENTES": { dpto: "CAPITAL" }, "CURUZU CUATIA": { dpto: "CURUZU CUATIA" }, "EL SOMBRERO": { dpto: "EMPEDRADO" }, "EMPEDRADO": { dpto: "EMPEDRADO" }, "ESQUINA": { dpto: "ESQUINA" }, "FELIPE YOFRE": { dpto: "MERCEDES" }, "GARRUCHOS": { dpto: "SANTO TOME" }, "GOBERNADOR AGR. VALENTIN VIRASORO": { dpto: "SANTO TOME" }, "GOBERNADOR JUAN E. MARTINEZ": { dpto: "LAVALLE" }, "GOYA": { dpto: "GOYA" }, "GUAVIRAVI": { dpto: "SAN MARTIN" }, "ITA IBATE": { dpto: "GENERAL PAZ" }, "ITATI": { dpto: "ITATI" }, "ITUZAINGO": { dpto: "ITUZAINGO" }, "LA CRUZ": { dpto: "SAN MARTIN" }, "LAGUNA BRAVA": { dpto: "CAPITAL" }, "LAVALLE": { dpto: "LAVALLE" }, "LORETO": { dpto: "SAN MIGUEL" }, "MARIANO I. LOZA": { dpto: "MERCEDES" }, "MBURUCUYA": { dpto: "MBURUCUYA" }, "MERCEDES": { dpto: "MERCEDES" }, "MOCORETA": { dpto: "MONTE CASEROS" }, "MONTE CASEROS": { dpto: "MONTE CASEROS" }, "NUESTRA SENORA DEL ROSARIO DE CAA CATI": { dpto: "GENERAL PAZ" }, "9 DE JULIO": { dpto: "SAN ROQUE" }, "PASO DE LA PATRIA": { dpto: "SAN COSME" }, "PASO DE LOS LIBRES": { dpto: "PASO DE LOS LIBRES" }, "PEDRO R. FERNANDEZ": { dpto: "SAN ROQUE" }, "PERUGORRIA": { dpto: "CURUZU CUATIA" }, "SALADAS": { dpto: "SALADAS" }, "SAN ANTONIO": { dpto: "ITUZAINGO" }, "SAN CARLOS": { dpto: "ITUZAINGO" }, "SAN COSME": { dpto: "SAN COSME" }, "SAN LORENZO": { dpto: "SALADAS" }, "SAN LUIS DEL PALMAR": { dpto: "SAN LUIS DEL PALMAR" }, "SAN MIGUEL": { dpto: "SAN MIGUEL" }, "SAN ROQUE": { dpto: "SAN ROQUE" }, "SANTA ANA": { dpto: "SAN COSME" }, "SANTA LUCIA": { dpto: "LAVALLE" }, "SANTA ROSA": { dpto: "CONCEPCION" }, "SANTO TOME": { dpto: "SANTO TOME" }, "SAUCE": { dpto: "SAUCE" }, "VILLA OLIVARI": { dpto: "ITUZAINGO" }, "YAPEYU": { dpto: "SAN MARTIN" }, };
-        const speciesFormulas = { 'Acacia aroma': { scientificName: 'Tusca', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acacia caven': { scientificName: 'Aromil; Espinillo; Churqui', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acacia furcatispina': { scientificName: 'Teatín', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acacia praecox': { scientificName: 'Garabato', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acacia visco': { scientificName: 'Arca; Visco', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acanthosyris falcata': { scientificName: 'Sacha pera; Saucillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acanthosyris spinescens': { scientificName: 'Quebrachillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Achatocarpus praecox': { scientificName: 'Palo tinta; Tala negro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Allophyllus edulis': { scientificName: 'Chal chal', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Alnus acuminata': { scientificName: 'Aliso del cerro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Amburana cearensis': { scientificName: 'Roble', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Anadenanthera colubrina': { scientificName: 'Cebil colorado; Horco cebil', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Aralia soratensis': { scientificName: 'Sacha paraiso', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Aspidosperma polyneuron': { scientificName: 'Palo rosa', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Aspidosperma quebracho-blanco': { scientificName: 'Quebracho blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Astronium balansae': { scientificName: 'Urunday', volFuste: (d, af) => Math.exp(-9.22955+1.933161*Math.log(d)+0.901548*Math.log(af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.8 }, 'Astronium urundeuva': { scientificName: 'Urundel', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Atamisquea emarginata': { scientificName: 'Atamisqui', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Athyana weinmannifolia': { scientificName: 'Quebrachillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Baccharis dracunculifolia': { scientificName: 'Alecrín', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bauhinia forficata': { scientificName: 'Pata de buey', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Blepharocalyx gigantea': { scientificName: 'Palo barroso; Molle', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bocconia pearcei': { scientificName: 'Suncho amargo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Borrichia frutescens': { scientificName: 'Saladillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bougainvillea spinosa': { scientificName: 'Montenegro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bougainvillea stipitata': { scientificName: 'Huanca; Alfilerillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bromelia hieronymi': { scientificName: 'Chaguar', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bulnesia bonariensis': { scientificName: 'Guacle', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bulnesia retama': { scientificName: 'Retamo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bulnesia sarmientoi': { scientificName: 'Palo santo', volFuste: (d, af) => Math.exp(-9.18113+0.950324*Math.log(d**2*af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.2 }, 'Bumelia obtusifolia': { scientificName: 'Molle negro; Guaranina', volFuste: (d, af) => Math.exp(-9.22955+1.933161*Math.log(d)+0.901548*Math.log(af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.8 }, 'Caesalpinia paraguariensis': { scientificName: 'Guayacán; Palo azul', volFuste: (d, af) => Math.exp(-9.22955+1.933161*Math.log(d)+0.901548*Math.log(af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.8 }, 'Calycophyllum multiflorum': { scientificName: 'Palo blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Capparis retusa': { scientificName: 'Sacha poroto', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Capparis salicisfolia': { scientificName: 'Sacha sandia', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Capparis speciosa': { scientificName: 'Bola verde', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Capparis tweediana': { scientificName: 'Sacha coca', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Carica quecifolia': { scientificName: 'Sacha higuera', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cascaronia astragalina': { scientificName: 'Cascarón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cassia carnaval': { scientificName: 'Carnaval', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Castela coccinea': { scientificName: 'Meloncillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cathormiom polyantha': { scientificName: 'Timbo blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cedrela balansae': { scientificName: 'Cedro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cedrela lilloi': { scientificName: 'Cedro rosado', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cedrela saltensis': { scientificName: 'Cedro saltensis', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ceiba chodatii': { scientificName: 'Palo borracho; Yuchán', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ceiba insignis': { scientificName: 'Palo borracho', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Celtis tala': { scientificName: 'Tala', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cercidium praecox': { scientificName: 'Brea', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cereus forbesii': { scientificName: 'Ucle', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cestrum parqui': { scientificName: 'Duraznillo negro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cethormion polyanthum': { scientificName: 'Palo flojo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Chloroleucon chacoense': { scientificName: 'Palo overo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Chlorophora tinctoria': { scientificName: 'Mora; Mora amarilla', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Chrysophyllum gonocarpum': { scientificName: 'Aguay', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Citharexylum montevidense': { scientificName: 'Espina de bañado', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cnidoscolus vitifolius': { scientificName: 'Ortiga', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Coccoloba tiliacia': { scientificName: 'Mandor', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Colletia spinosissima': { scientificName: 'Espino negro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Condalia microphylla': { scientificName: 'Piquillín', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Copernicia alba': { scientificName: 'Palma negra', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cordia trichotoma': { scientificName: 'Afata', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Croton sp.': { scientificName: 'Crotón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cupanea vernalis': { scientificName: 'Ramo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Diplokeleba floribunda': { scientificName: 'Palo Piedra', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Enterolobium contortisiliquum': { scientificName: 'Timbó; Pacará', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Erythrina falcata / crista-galli': { scientificName: 'Ceibo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Erythrina dominguensii': { scientificName: 'Ceibo salteño', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Eugenia mato': { scientificName: 'Horco mato', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Fagara coco': { scientificName: 'Fagara', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Fagara naranjillo': { scientificName: 'Naranjillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ficus maroma': { scientificName: 'Ficus', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ficus monckii': { scientificName: 'Higuerón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Geoffrea decorticans': { scientificName: 'Chañar', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Gleditsia amorphoides': { scientificName: 'Espina corona; Pipa', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Holocalyx balansae': { scientificName: 'Alecrín; Ibirá pepe', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Inga sp': { scientificName: 'Inga; Pacay', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Jacaranda mimosifolia': { scientificName: 'Jacaranda', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Jodina rhombifolia': { scientificName: 'Sombra de toro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Juglans australis': { scientificName: 'Nogal; Nogal criollo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Larrea sp (cuneifolia/divaricata/nitida)': { scientificName: 'Jarilla', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Lithraea molleoides': { scientificName: 'Molle de beber', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Lonchocarpus lilloi': { scientificName: 'Quina blanca; Sacha quina', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Loxopterygium grisebachii': { scientificName: 'Mara', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Luehea divaricata': { scientificName: 'Azota caballo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Maclura tinctoria': { scientificName: 'Mora amarilla', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Maytenus vitis-idaea': { scientificName: 'Carne gorda', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Mimosa detines / pilulifera': { scientificName: 'Garabato blanco / Espinillo manso', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Mimozyganthus carinatus': { scientificName: 'Latas', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Miroxylon peruiferum': { scientificName: 'Quina', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Myrcianthes mato': { scientificName: 'Arrayán', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Myrcianthes pungens': { scientificName: 'Mato; Guabiyú', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Myrsine laetevirens': { scientificName: 'San Antonio', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Nectandra saligna': { scientificName: 'Laurel Negro', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ocotea puberula': { scientificName: 'Laurel Blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Opuntia quimilo': { scientificName: 'Quimil', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Parapiptadenia excelsa': { scientificName: 'Horco cebil', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Parapiptadenia rigida': { scientificName: 'Anchico colorado', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Parkinsonia aculeata': { scientificName: 'Palo verde', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Patagonula americana': { scientificName: 'Guayaibí; Lanza blanca', volFuste: (d, af) => Math.exp(-9.5086+2.0041*Math.log(d)+0.973*Math.log(af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.0 }, 'Peltophorum dubium': { scientificName: 'Ibirá pitá', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pereskia sacharosa': { scientificName: 'Sacha rosa', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Phoebe porphyria': { scientificName: 'Laurel', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Phyllostyllon rhamnoides': { scientificName: 'Palo amarillo; Palo lanza', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pipper tucumanum': { scientificName: 'Matico', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pisonia zapallo': { scientificName: 'Zapallo caspi', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pithecellobium scalare': { scientificName: 'Tatané; Palo cascarudo', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pithecellobium multiflorum': { scientificName: 'Timbó blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Podocarpus parlatorei': { scientificName: 'Pino del cerro', volFuste: (d, af) => Math.exp(-8.3864+0.0551011*d-0.000533799*d**2-0.159762*af+1.34969*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'Polylepis australis': { scientificName: 'Queñoa', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis affinis': { scientificName: 'Ñandubay', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis alba': { scientificName: 'Algarrobo blanco', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis algarrobilla': { scientificName: 'Algarrobillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis kuntzei': { scientificName: 'Itín; Palo mataco', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis nigra': { scientificName: 'Algarrobo negro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis ruscifolia': { scientificName: 'Vinal', volFuste: (d, af) => Math.exp(-9.39969+1.9797*Math.log(d)+0.939584*Math.log(af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'Prosopis torquata': { scientificName: 'Tintitaco', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pterogine nitens': { scientificName: 'Tipa colorada; Viraró', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Randia armata': { scientificName: 'Sacha Naranjo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ruellia sp': { scientificName: 'Yuyo Paloma', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ruprechtia laxiflora': { scientificName: 'Viraró', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ruprechtia triflora': { scientificName: 'Duraznillo; Sacha membrillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Saccelium lanceolatum': { scientificName: 'Guayabil', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Salix humboldtiana': { scientificName: 'Sauce', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Sapindus saponaria': { scientificName: 'Palo jabon', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Sapium haematospermum': { scientificName: 'Lecherón; Curupí', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Schinopsis balansae': { scientificName: 'Quebracho colorado chaqueño', volFuste: (d, af) => Math.exp(-9.5086+2.0041*Math.log(d)+0.973*Math.log(af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.0 }, 'Schinopsis haenkeana': { scientificName: 'Horco Quebracho', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Schinopsis lorentzii': { scientificName: 'Quebracho colorado', volFuste: (d, af) => Math.exp(-9.5086+2.0041*Math.log(d)+0.973*Math.log(af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.0 }, 'Schinus areira / piliferus': { scientificName: 'Aguaribay / Horco molle', volFuste: (d, af) => Math.exp(-8.3864+0.0551011*d-0.000533799*d**2-0.159762*af+1.34969*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'Scutia buxifolia': { scientificName: 'Coronillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Senna corymbosa': { scientificName: 'Sen de campo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Sesbania punicea': { scientificName: 'Acacia mansa', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Sideroxylon obtusifolium': { scientificName: 'Molle; Guaraniná', volFuste: (d, af) => Math.exp(-8.3864+0.0551011*d-0.000533799*d**2-0.159762*af+1.34969*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'Solanum argentinum / riparium': { scientificName: 'Hediondilla; Tabaquillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Stetsonia coryne': { scientificName: 'Cardón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tabebuia ipe / impetiginosa': { scientificName: 'Lapacho negro; rosado', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tabebuia lapacho': { scientificName: 'Lapacho amarillo', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tabebuia nodosa': { scientificName: 'Palo cruz', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tecoma stans': { scientificName: 'Guarán', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Terminalia triflora': { scientificName: 'Lanza amarilla', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tessaria integrifolia': { scientificName: 'Palo bobo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tipuana tipu': { scientificName: 'Tipa; Tipa blanca', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Trema micrantha': { scientificName: 'Palo polvora', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Trithrinax biflabellata': { scientificName: 'Carandillo / Caranday', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Trithrinax schizophylla': { scientificName: 'Carandilla', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Urera basifera': { scientificName: 'Ortigón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Vallesia glabra': { scientificName: 'Ancoche', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ximenia americana': { scientificName: 'Pata pata', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Zanthoxylum coco': { scientificName: 'Cochucho', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Zizypus mistol': { scientificName: 'Mistol', volFuste: (d, af) => Math.exp(-8.3864+0.0551011*d-0.000533799*d**2-0.159762*af+1.34969*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'OTRAS': { scientificName: '(Genérico)', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 } };
+        window.speciesFormulas = { 'Acacia aroma': { scientificName: 'Tusca', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acacia caven': { scientificName: 'Aromil; Espinillo; Churqui', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acacia furcatispina': { scientificName: 'Teatín', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acacia praecox': { scientificName: 'Garabato', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acacia visco': { scientificName: 'Arca; Visco', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acanthosyris falcata': { scientificName: 'Sacha pera; Saucillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acanthosyris spinescens': { scientificName: 'Quebrachillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Achatocarpus praecox': { scientificName: 'Palo tinta; Tala negro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Allophyllus edulis': { scientificName: 'Chal chal', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Alnus acuminata': { scientificName: 'Aliso del cerro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Amburana cearensis': { scientificName: 'Roble', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Anadenanthera colubrina': { scientificName: 'Cebil colorado; Horco cebil', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Aralia soratensis': { scientificName: 'Sacha paraiso', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Aspidosperma polyneuron': { scientificName: 'Palo rosa', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Aspidosperma quebracho-blanco': { scientificName: 'Quebracho blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Astronium balansae': { scientificName: 'Urunday', volFuste: (d, af) => Math.exp(-9.22955+1.933161*Math.log(d)+0.901548*Math.log(af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.8 }, 'Astronium urundeuva': { scientificName: 'Urundel', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Atamisquea emarginata': { scientificName: 'Atamisqui', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Athyana weinmannifolia': { scientificName: 'Quebrachillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Baccharis dracunculifolia': { scientificName: 'Alecrín', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bauhinia forficata': { scientificName: 'Pata de buey', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Blepharocalyx gigantea': { scientificName: 'Palo barroso; Molle', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bocconia pearcei': { scientificName: 'Suncho amargo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Borrichia frutescens': { scientificName: 'Saladillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bougainvillea spinosa': { scientificName: 'Montenegro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bougainvillea stipitata': { scientificName: 'Huanca; Alfilerillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bromelia hieronymi': { scientificName: 'Chaguar', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bulnesia bonariensis': { scientificName: 'Guacle', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bulnesia retama': { scientificName: 'Retamo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bulnesia sarmientoi': { scientificName: 'Palo santo', volFuste: (d, af) => Math.exp(-9.18113+0.950324*Math.log(d**2*af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.2 }, 'Bumelia obtusifolia': { scientificName: 'Molle negro; Guaranina', volFuste: (d, af) => Math.exp(-9.22955+1.933161*Math.log(d)+0.901548*Math.log(af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.8 }, 'Caesalpinia paraguariensis': { scientificName: 'Guayacán; Palo azul', volFuste: (d, af) => Math.exp(-9.22955+1.933161*Math.log(d)+0.901548*Math.log(af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.8 }, 'Calycophyllum multiflorum': { scientificName: 'Palo blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Capparis retusa': { scientificName: 'Sacha poroto', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Capparis salicisfolia': { scientificName: 'Sacha sandia', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Capparis speciosa': { scientificName: 'Bola verde', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Capparis tweediana': { scientificName: 'Sacha coca', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Carica quecifolia': { scientificName: 'Sacha higuera', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cascaronia astragalina': { scientificName: 'Cascarón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cassia carnaval': { scientificName: 'Carnaval', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Castela coccinea': { scientificName: 'Meloncillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cathormiom polyantha': { scientificName: 'Timbo blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cedrela balansae': { scientificName: 'Cedro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cedrela lilloi': { scientificName: 'Cedro rosado', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cedrela saltensis': { scientificName: 'Cedro saltensis', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ceiba chodatii': { scientificName: 'Palo borracho; Yuchán', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ceiba insignis': { scientificName: 'Palo borracho', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Celtis tala': { scientificName: 'Tala', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cercidium praecox': { scientificName: 'Brea', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cereus forbesii': { scientificName: 'Ucle', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cestrum parqui': { scientificName: 'Duraznillo negro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cethormion polyanthum': { scientificName: 'Palo flojo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Chloroleucon chacoense': { scientificName: 'Palo overo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Chlorophora tinctoria': { scientificName: 'Mora; Mora amarilla', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Chrysophyllum gonocarpum': { scientificName: 'Aguay', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Citharexylum montevidense': { scientificName: 'Espina de bañado', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cnidoscolus vitifolius': { scientificName: 'Ortiga', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Coccoloba tiliacia': { scientificName: 'Mandor', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Colletia spinosissima': { scientificName: 'Espino negro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Condalia microphylla': { scientificName: 'Piquillín', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Copernicia alba': { scientificName: 'Palma negra', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cordia trichotoma': { scientificName: 'Afata', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Croton sp.': { scientificName: 'Crotón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cupanea vernalis': { scientificName: 'Ramo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Diplokeleba floribunda': { scientificName: 'Palo Piedra', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Enterolobium contortisiliquum': { scientificName: 'Timbó; Pacará', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Erythrina falcata / crista-galli': { scientificName: 'Ceibo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Erythrina dominguensii': { scientificName: 'Ceibo salteño', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Eugenia mato': { scientificName: 'Horco mato', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Fagara coco': { scientificName: 'Fagara', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Fagara naranjillo': { scientificName: 'Naranjillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ficus maroma': { scientificName: 'Ficus', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ficus monckii': { scientificName: 'Higuerón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Geoffrea decorticans': { scientificName: 'Chañar', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Gleditsia amorphoides': { scientificName: 'Espina corona; Pipa', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Holocalyx balansae': { scientificName: 'Alecrín; Ibirá pepe', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Inga sp': { scientificName: 'Inga; Pacay', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Jacaranda mimosifolia': { scientificName: 'Jacaranda', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Jodina rhombifolia': { scientificName: 'Sombra de toro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Juglans australis': { scientificName: 'Nogal; Nogal criollo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Larrea sp (cuneifolia/divaricata/nitida)': { scientificName: 'Jarilla', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Lithraea molleoides': { scientificName: 'Molle de beber', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Lonchocarpus lilloi': { scientificName: 'Quina blanca; Sacha quina', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Loxopterygium grisebachii': { scientificName: 'Mara', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Luehea divaricata': { scientificName: 'Azota caballo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Maclura tinctoria': { scientificName: 'Mora amarilla', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Maytenus vitis-idaea': { scientificName: 'Carne gorda', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Mimosa detines / pilulifera': { scientificName: 'Garabato blanco / Espinillo manso', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Mimozyganthus carinatus': { scientificName: 'Latas', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Miroxylon peruiferum': { scientificName: 'Quina', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Myrcianthes mato': { scientificName: 'Arrayán', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Myrcianthes pungens': { scientificName: 'Mato; Guabiyú', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Myrsine laetevirens': { scientificName: 'San Antonio', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Nectandra saligna': { scientificName: 'Laurel Negro', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ocotea puberula': { scientificName: 'Laurel Blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Opuntia quimilo': { scientificName: 'Quimil', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Parapiptadenia excelsa': { scientificName: 'Horco cebil', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Parapiptadenia rigida': { scientificName: 'Anchico colorado', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Parkinsonia aculeata': { scientificName: 'Palo verde', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Patagonula americana': { scientificName: 'Guayaibí; Lanza blanca', volFuste: (d, af) => Math.exp(-9.5086+2.0041*Math.log(d)+0.973*Math.log(af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.0 }, 'Peltophorum dubium': { scientificName: 'Ibirá pitá', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pereskia sacharosa': { scientificName: 'Sacha rosa', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Phoebe porphyria': { scientificName: 'Laurel', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Phyllostyllon rhamnoides': { scientificName: 'Palo amarillo; Palo lanza', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pipper tucumanum': { scientificName: 'Matico', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pisonia zapallo': { scientificName: 'Zapallo caspi', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pithecellobium scalare': { scientificName: 'Tatané; Palo cascarudo', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pithecellobium multiflorum': { scientificName: 'Timbó blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Podocarpus parlatorei': { scientificName: 'Pino del cerro', volFuste: (d, af) => Math.exp(-8.3864+0.0551011*d-0.000533799*d**2-0.159762*af+1.34969*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'Polylepis australis': { scientificName: 'Queñoa', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis affinis': { scientificName: 'Ñandubay', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis alba': { scientificName: 'Algarrobo blanco', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis algarrobilla': { scientificName: 'Algarrobillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis kuntzei': { scientificName: 'Itín; Palo mataco', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis nigra': { scientificName: 'Algarrobo negro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis ruscifolia': { scientificName: 'Vinal', volFuste: (d, af) => Math.exp(-9.39969+1.9797*Math.log(d)+0.939584*Math.log(af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'Prosopis torquata': { scientificName: 'Tintitaco', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pterogine nitens': { scientificName: 'Tipa colorada; Viraró', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Randia armata': { scientificName: 'Sacha Naranjo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ruellia sp': { scientificName: 'Yuyo Paloma', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ruprechtia laxiflora': { scientificName: 'Viraró', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ruprechtia triflora': { scientificName: 'Duraznillo; Sacha membrillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Saccelium lanceolatum': { scientificName: 'Guayabil', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Salix humboldtiana': { scientificName: 'Sauce', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Sapindus saponaria': { scientificName: 'Palo jabon', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Sapium haematospermum': { scientificName: 'Lecherón; Curupí', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Schinopsis balansae': { scientificName: 'Quebracho colorado chaqueño', volFuste: (d, af) => Math.exp(-9.5086+2.0041*Math.log(d)+0.973*Math.log(af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.0 }, 'Schinopsis haenkeana': { scientificName: 'Horco Quebracho', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Schinopsis lorentzii': { scientificName: 'Quebracho colorado', volFuste: (d, af) => Math.exp(-9.5086+2.0041*Math.log(d)+0.973*Math.log(af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.0 }, 'Schinus areira / piliferus': { scientificName: 'Aguaribay / Horco molle', volFuste: (d, af) => Math.exp(-8.3864+0.0551011*d-0.000533799*d**2-0.159762*af+1.34969*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'Scutia buxifolia': { scientificName: 'Coronillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Senna corymbosa': { scientificName: 'Sen de campo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Sesbania punicea': { scientificName: 'Acacia mansa', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Sideroxylon obtusifolium': { scientificName: 'Molle; Guaraniná', volFuste: (d, af) => Math.exp(-8.3864+0.0551011*d-0.000533799*d**2-0.159762*af+1.34969*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'Solanum argentinum / riparium': { scientificName: 'Hediondilla; Tabaquillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Stetsonia coryne': { scientificName: 'Cardón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tabebuia ipe / impetiginosa': { scientificName: 'Lapacho negro; rosado', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tabebuia lapacho': { scientificName: 'Lapacho amarillo', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tabebuia nodosa': { scientificName: 'Palo cruz', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tecoma stans': { scientificName: 'Guarán', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Terminalia triflora': { scientificName: 'Lanza amarilla', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tessaria integrifolia': { scientificName: 'Palo bobo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tipuana tipu': { scientificName: 'Tipa; Tipa blanca', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Trema micrantha': { scientificName: 'Palo polvora', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Trithrinax biflabellata': { scientificName: 'Carandillo / Caranday', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Trithrinax schizophylla': { scientificName: 'Carandilla', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Urera basifera': { scientificName: 'Ortigón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Vallesia glabra': { scientificName: 'Ancoche', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ximenia americana': { scientificName: 'Pata pata', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Zanthoxylum coco': { scientificName: 'Cochucho', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Zizypus mistol': { scientificName: 'Mistol', volFuste: (d, af) => Math.exp(-8.3864+0.0551011*d-0.000533799*d**2-0.159762*af+1.34969*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'OTRAS': { scientificName: '(Genérico)', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 } };
         const dapClasses = [ { name: 'I (<10cm)', min: 0, max: 9.99, label: "< 10 cm" }, { name: 'II (10-14.9cm)', min: 10, max: 14.99, label: "10-14,9 cm" }, { name: 'III (15-19.9cm)', min: 15, max: 19.99, label: "15-19,9 cm" }, { name: 'IV (20-24.9cm)', min: 20, max: 24.99, label: "20-24,9 cm" }, { name: 'V (25-29.9cm)', min: 25, max: 29.99, label: "25-29,9 cm" }, { name: 'VI (30-34.9cm)', min: 30, max: 34.99, label: "30-34,9 cm" }, { name: 'VII (35-39.9cm)', min: 35, max: 39.99, label: "35-39,9 cm" }, { name: 'VIII (40-44.9cm)', min: 40, max: 44.99, label: "40-44,9 cm" }, { name: 'IX (45-49.9cm)', min: 45, max: 49.99, label: "45-49,9 cm" }, { name: 'X (>50cm)', min: 50, max: Infinity, label: ">50 cm" } ];
         let enteredTrees = []; let chartVolumenEspecieInstance = null; let chartDensidadEspecieInstance = null; let chartDistribucionDAPInstance = null; let chartVolumenClaseDAPInstance = null; let chartABClaseDAPInstance = null; let chartDensidadClaseDAPInstance = null; let chartToneladasClaseDAPInstance = null; let resultsBySpeciesDAPGlobal = {}; 
         
@@ -2366,6 +2550,42 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                                     <div class="form-grid" style="grid-template-columns: max-content 1fr;">
                                         <label for="inputPoaArea_${i}">Superficie del POA (ha):</label>
                                         <input type="number" id="inputPoaArea_${i}" class="poa-area-input" step="0.01" value="0">
+                                    </div>
+                                    <!-- MAPA POA -->
+                                    <div class="poa-map-section">
+                                        <div class="poa-map-header">
+                                            🗺️ Mapa de Localización del POA ${i}
+                                        </div>
+                                        <div class="poa-map-controls">
+                                            <label title="Cargar KML del área del Plan Técnico">
+                                                📋 KML Plan Técnico:
+                                                <input type="file" accept=".kml" class="poa-kml-plan" data-poa="${i}" style="width:160px; font-size:0.82em;">
+                                            </label>
+                                            <label title="Cargar KML específico del área del POA ${i}">
+                                                📌 KML Área POA ${i}:
+                                                <input type="file" accept=".kml" class="poa-kml-poa" data-poa="${i}" style="width:160px; font-size:0.82em;">
+                                            </label>
+                                            <button class="btn-map-poa poa-map-fit-btn" data-poa="${i}" title="Ajustar vista a capas cargadas">⤢ Ajustar Vista</button>
+                                            <button class="btn-map-poa poa-map-clear-btn" data-poa="${i}" style="background:#dc3545;" title="Limpiar capas">✕ Limpiar</button>
+                                        </div>
+                                        <div id="poa-map-status-${i}" class="poa-map-status"></div>
+                                        <div id="poa-map-${i}" class="poa-map-leaflet"></div>
+                                        <div class="poa-map-legend" id="poa-map-legend-${i}">
+                                            <div class="poa-map-legend-title">Referencias de Capas</div>
+                                            <div class="poa-map-legend-items">
+                                                <div class="poa-legend-item poa-legend-plan" id="poa-legend-plan-${i}" style="display:none;">
+                                                    <span class="poa-legend-swatch" style="background:#06f1f1; border:2px solid #06f1f1; opacity:0.9;"></span>
+                                                    <span class="poa-legend-label" id="poa-legend-plan-label-${i}">Plan Técnico</span>
+                                                </div>
+                                                <div class="poa-legend-item poa-legend-poa" id="poa-legend-poa-${i}" style="display:none;">
+                                                    <span class="poa-legend-swatch" style="background:#ff6600; border:2px solid #ff6600;"></span>
+                                                    <span class="poa-legend-label" id="poa-legend-poa-label-${i}">Área POA ${i}</span>
+                                                </div>
+                                                <div class="poa-legend-empty" id="poa-legend-empty-${i}">
+                                                    <em style="color:#999; font-size:0.85em;">Sin capas cargadas</em>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </fieldset>
                                 ${activitiesHtml}
@@ -2485,6 +2705,127 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                         e.target.value = '';
                     }
                 });
+            });
+
+            // --- Inicializar mini-mapas de POA ---
+            initPoaMaps();
+        }
+
+        // Almacena instancias de mapas POA para no reinicializar
+        const poaMapsInstances = {};
+
+        function initPoaMaps() {
+            document.querySelectorAll('.poa-map-leaflet').forEach(mapDiv => {
+                const poaId = mapDiv.id.replace('poa-map-', '');
+                if (poaMapsInstances[poaId]) return; // ya inicializado
+
+                const poaMap = L.map(mapDiv.id, { zoomControl: true }).setView([-28.5, -57.5], 8);
+                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Tiles © Esri'
+                }).addTo(poaMap);
+                L.control.scale({ imperial: false, metric: true }).addTo(poaMap);
+
+                poaMapsInstances[poaId] = {
+                    map: poaMap,
+                    layers: { plan: null, poa: null }
+                };
+
+                // Estilos de capas
+                const stylePlan = { color: '#06f1f1', weight: 2, opacity: 0.9, fillOpacity: 0.15 };
+                const stylePoa  = { color: '#ff6600', weight: 3, opacity: 1,   fillOpacity: 0.25 };
+
+                function showPoaStatus(msg, tipo) {
+                    const el = document.getElementById(`poa-map-status-${poaId}`);
+                    if (!el) return;
+                    el.textContent = msg;
+                    el.style.display = 'block';
+                    el.style.background = tipo === 'ok' ? '#d4edda' : tipo === 'err' ? '#f8d7da' : '#fff3cd';
+                    el.style.color = tipo === 'ok' ? '#155724' : tipo === 'err' ? '#721c24' : '#856404';
+                    setTimeout(() => { el.style.display = 'none'; }, 4000);
+                }
+
+                function fitPoaMap() {
+                    const inst = poaMapsInstances[poaId];
+                    const bounds = [];
+                    if (inst.layers.plan) bounds.push(inst.layers.plan.getBounds());
+                    if (inst.layers.poa)  bounds.push(inst.layers.poa.getBounds());
+                    if (bounds.length > 0) {
+                        let combined = bounds[0];
+                        bounds.forEach(b => { combined = combined.extend(b); });
+                        inst.map.fitBounds(combined, { paddingTopLeft: [20, 70], paddingBottomRight: [20, 5] });
+                    }
+                }
+
+                function updatePoaLegend() {
+                    const inst = poaMapsInstances[poaId];
+                    const elPlan  = document.getElementById(`poa-legend-plan-${poaId}`);
+                    const elPoa   = document.getElementById(`poa-legend-poa-${poaId}`);
+                    const elEmpty = document.getElementById(`poa-legend-empty-${poaId}`);
+                    if (elPlan)  elPlan.style.display  = inst.layers.plan ? 'flex' : 'none';
+                    if (elPoa)   elPoa.style.display   = inst.layers.poa  ? 'flex' : 'none';
+                    if (elEmpty) elEmpty.style.display = (!inst.layers.plan && !inst.layers.poa) ? 'block' : 'none';
+                }
+
+                function loadPoaKML(file, layerKey, style, labelName) {
+                    if (!file) return;
+                    const inst = poaMapsInstances[poaId];
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            if (inst.layers[layerKey]) inst.map.removeLayer(inst.layers[layerKey]);
+                            const geojson = omnivore.kml.parse(e.target.result).toGeoJSON();
+                            inst.layers[layerKey] = L.geoJSON(geojson, {
+                                style: style,
+                                onEachFeature: (feature, layer) => {
+                                    const name = (feature.properties && feature.properties.name) ? feature.properties.name : labelName;
+                                    layer.bindPopup(`<strong>${name}</strong>`);
+                                }
+                            }).addTo(inst.map);
+                            // Actualizar etiqueta leyenda con nombre real del archivo
+                            const labelEl = document.getElementById(`poa-legend-${layerKey}-label-${poaId}`);
+                            if (labelEl) labelEl.textContent = file.name.replace(/\.kml$/i, '') || labelName;
+                            updatePoaLegend();
+                            fitPoaMap();
+                            showPoaStatus(`✅ Capa "${labelName}" cargada.`, 'ok');
+                        } catch(err) {
+                            showPoaStatus(`Error al cargar ${labelName}: ` + err.message, 'err');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+
+                // Inputs KML de este POA
+                const kmlPlanInput = document.querySelector(`.poa-kml-plan[data-poa="${poaId}"]`);
+                const kmlPoaInput  = document.querySelector(`.poa-kml-poa[data-poa="${poaId}"]`);
+                if (kmlPlanInput) kmlPlanInput.addEventListener('change', e => loadPoaKML(e.target.files[0], 'plan', stylePlan, 'Plan Técnico'));
+                if (kmlPoaInput)  kmlPoaInput.addEventListener('change',  e => loadPoaKML(e.target.files[0], 'poa',  stylePoa,  `Área POA ${poaId}`));
+
+                // Botón ajustar vista
+                const fitBtn = document.querySelector(`.poa-map-fit-btn[data-poa="${poaId}"]`);
+                if (fitBtn) fitBtn.addEventListener('click', fitPoaMap);
+
+                // Botón limpiar
+                const clearBtn = document.querySelector(`.poa-map-clear-btn[data-poa="${poaId}"]`);
+                if (clearBtn) clearBtn.addEventListener('click', () => {
+                    const inst = poaMapsInstances[poaId];
+                    if (inst.layers.plan) { inst.map.removeLayer(inst.layers.plan); inst.layers.plan = null; }
+                    if (inst.layers.poa)  { inst.map.removeLayer(inst.layers.poa);  inst.layers.poa  = null; }
+                    if (kmlPlanInput) kmlPlanInput.value = '';
+                    if (kmlPoaInput)  kmlPoaInput.value  = '';
+                    inst.map.setView([-28.5, -57.5], 8);
+                    updatePoaLegend();
+                    showPoaStatus('Capas eliminadas.', 'info');
+                });
+
+                // Invalidar tamaño cuando el <details> se abre (el mapa puede inicializar oculto)
+                const detailsEl = mapDiv.closest('details');
+                if (detailsEl) {
+                    detailsEl.addEventListener('toggle', () => {
+                        if (detailsEl.open) setTimeout(() => poaMap.invalidateSize(), 100);
+                    });
+                }
+                // Invalidar tamaño inicial por si ya estaba abierto
+                setTimeout(() => poaMap.invalidateSize(), 200);
             });
         }
 
@@ -2686,7 +3027,36 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
             });
             
             renderPlanillaCampo(enteredTrees);
-            window.print();
+            
+            // --- Capturar mapas POA como imágenes para impresión ---
+            const poaMapDivs = document.querySelectorAll('.poa-map-leaflet');
+            const snapshotPromises = Array.from(poaMapDivs).map(mapDiv => {
+                return new Promise(resolve => {
+                    if (typeof html2canvas === 'undefined') { resolve(); return; }
+                    const poaId = mapDiv.id.replace('poa-map-', '');
+                    if (poaMapsInstances[poaId]) poaMapsInstances[poaId].map.invalidateSize();
+                    // Capturar solo el div del mapa (sin el header/controles — esos se reproducen via CSS)
+                    html2canvas(mapDiv, { useCORS: true, allowTaint: true, scale: 2, logging: false }).then(canvas => {
+                        const img = document.createElement('img');
+                        img.src = canvas.toDataURL('image/png');
+                        img.className = 'poa-map-print-snapshot';
+                        // Eliminar snapshot previo si existe
+                        const prev = mapDiv.parentNode.querySelector('.poa-map-print-snapshot');
+                        if (prev) prev.remove();
+                        // Insertar la imagen justo antes del div del mapa
+                        mapDiv.parentNode.insertBefore(img, mapDiv);
+                        resolve();
+                    }).catch(() => resolve());
+                });
+            });
+            
+            Promise.all(snapshotPromises).then(() => {
+                window.print();
+                // Limpiar snapshots después de imprimir
+                setTimeout(() => {
+                    document.querySelectorAll('.poa-map-print-snapshot').forEach(img => img.remove());
+                }, 2000);
+            });
         }
         function clearCalculations() { 
             const tablesToClear = ['tableVolumen', 'tableAreaBasal', 'tableDensidad', 'tableToneladas', 'tableResumenParcelasAB', 'tableDetalleParcelasObservado', 'tableDetalleParcelasHa']; 
@@ -2738,6 +3108,105 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
         document.getElementById('inputNumPoas').addEventListener('change', generatePoaSections);
         document.getElementById('inputErrorEstablecidoAB').addEventListener('input', () => { if (enteredTrees.length > 0) { const treesWithCalculations = enteredTrees.map(t => ({...t, areaBasal: Math.PI * (t.dap / 200) ** 2})); calculateAndRenderSamplingStats(treesWithCalculations); } });
         
+        // --- Listener carga Excel (dentro del scope para acceder a enteredTrees) ---
+        document.getElementById('inputCargarExcel').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (typeof XLSX === 'undefined') {
+                mostrarEstadoCarga('Error: librería SheetJS no disponible. Verifique su conexión.', 'error');
+                return;
+            }
+            mostrarEstadoCarga('Procesando archivo...', 'info');
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const data = new Uint8Array(evt.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+
+                    let sheetName = 'INVENTARIO';
+                    if (!workbook.SheetNames.includes(sheetName)) {
+                        sheetName = workbook.SheetNames[0];
+                    }
+                    const ws = workbook.Sheets[sheetName];
+                    const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+
+                    if (rows.length < 2) {
+                        mostrarEstadoCarga('El archivo no contiene datos suficientes.', 'error');
+                        return;
+                    }
+
+                    let headerRow = -1;
+                    let colEspecie = -1, colDAP = -1, colAltTotal = -1, colAltFuste = -1, colParcela = -1;
+
+                    for (let r = 0; r < Math.min(rows.length, 10); r++) {
+                        const row = rows[r].map(c => String(c).trim().toUpperCase());
+                        const espIdx = row.findIndex(c => c.includes('ESPECIE'));
+                        if (espIdx >= 0) {
+                            headerRow = r;
+                            colEspecie = espIdx;
+                            colDAP = row.findIndex(c => c.includes('DAP'));
+                            colAltTotal = row.findIndex(c => c.includes('ALT') && c.includes('TOTAL'));
+                            colAltFuste = row.findIndex(c => c.includes('ALT') && c.includes('FUSTE'));
+                            colParcela = row.findIndex(c => c.includes('PARCELA'));
+                            break;
+                        }
+                    }
+
+                    if (headerRow < 0 || colEspecie < 0) {
+                        mostrarEstadoCarga('No se encontró la columna ESPECIE en los encabezados. Verifique que está usando la planilla oficial.', 'error');
+                        return;
+                    }
+                    if (colDAP < 0 || colAltTotal < 0 || colAltFuste < 0 || colParcela < 0) {
+                        mostrarEstadoCarga(`Columnas faltantes. DAP:${colDAP>=0?'OK':'falta'}, Alt.Total:${colAltTotal>=0?'OK':'falta'}, Alt.Fuste:${colAltFuste>=0?'OK':'falta'}, Parcela:${colParcela>=0?'OK':'falta'}`, 'error');
+                        return;
+                    }
+
+                    const validSpecies = new Set(Object.keys(speciesFormulas));
+                    const newTrees = [];
+                    const errors = [];
+
+                    for (let r = headerRow + 1; r < rows.length; r++) {
+                        const row = rows[r];
+                        const especie = String(row[colEspecie] || '').trim();
+                        if (!especie) continue;
+
+                        const dap = parseFloat(String(row[colDAP]).replace(',', '.'));
+                        const altTotal = parseFloat(String(row[colAltTotal]).replace(',', '.'));
+                        const altFuste = parseFloat(String(row[colAltFuste]).replace(',', '.'));
+                        const parcelaNum = parseInt(String(row[colParcela]));
+
+                        if (!validSpecies.has(especie)) { errors.push(`Fila ${r+1}: Especie "${especie}" no reconocida.`); continue; }
+                        if (isNaN(dap) || dap <= 0) { errors.push(`Fila ${r+1}: DAP inválido.`); continue; }
+                        if (isNaN(altTotal) || altTotal <= 0) { errors.push(`Fila ${r+1}: Alt. Total inválida.`); continue; }
+                        if (isNaN(altFuste) || altFuste < 0) { errors.push(`Fila ${r+1}: Alt. Fuste inválida.`); continue; }
+                        if (isNaN(parcelaNum) || parcelaNum <= 0) { errors.push(`Fila ${r+1}: Parcela N° inválida.`); continue; }
+                        if (altFuste > altTotal) { errors.push(`Fila ${r+1}: Alt. Fuste > Alt. Total.`); continue; }
+
+                        newTrees.push({ id: Date.now() + r, especie, dap, altTotal, altFuste, parcelaNum });
+                    }
+
+                    if (newTrees.length === 0) {
+                        mostrarEstadoCarga(`No se importó ningún árbol válido. ${errors.length > 0 ? 'Primeros errores: ' + errors.slice(0,3).join(' | ') : ''}`, 'error');
+                        return;
+                    }
+
+                    const prevCount = enteredTrees.length;
+                    enteredTrees.push(...newTrees);
+                    renderEnteredTrees();
+                    updateSampledArea();
+                    document.getElementById('btnLimpiarCargaExcel').style.display = 'inline-block';
+
+                    let msg = `✅ Se importaron ${newTrees.length} árbol(es). Total en lista: ${enteredTrees.length}.`;
+                    if (errors.length > 0) msg += ` ⚠️ ${errors.length} fila(s) omitidas por errores.`;
+                    mostrarEstadoCarga(msg, 'success');
+
+                } catch(err) {
+                    mostrarEstadoCarga('Error al leer el archivo: ' + err.message, 'error');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
         // --- Inicialización ---
         populateSpeciesDropdown(); 
         populateLocationDropdown(); 
@@ -2764,6 +3233,127 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
             URL.revokeObjectURL(url);
         }
 
+        // ===== FUNCIONES PARA PLANILLA EXCEL (SheetJS) =====
+
+        function descargarPlanillaExcel() {
+            if (typeof XLSX === 'undefined') {
+                alert('Error: la librería SheetJS no está disponible. Verifique su conexión a internet.');
+                return;
+            }
+            const wb = XLSX.utils.book_new();
+
+            // ---- Hoja INSTRUCCIONES ----
+            const instrData = [
+                ['PLANILLA DE INVENTARIO FORESTAL - PLAN DE MANEJO MBGI'],
+                ['INSTRUCCIONES DE USO'],
+                ['1.', 'Vaya a la hoja INVENTARIO para ingresar los datos de los árboles medidos.'],
+                ['2.', 'Cada fila representa un árbol individual del inventario.'],
+                ['3.', 'El campo ESPECIE debe coincidir EXACTAMENTE con los nombres de la hoja ESPECIES_VALIDAS.'],
+                ['4.', 'El campo PARCELA N° es obligatorio e indica a qué parcela pertenece el árbol (número entero positivo).'],
+                ['5.', 'Los valores de DAP, Alt. Total y Alt. Fuste deben ser números positivos en cm/metros.'],
+                ['6.', 'Alt. Fuste no puede ser mayor que Alt. Total.'],
+                ['7.', 'Una vez completada, GUARDE el archivo y cárguelo desde la página web usando el botón Cargar Planilla Excel.'],
+                ['8.', 'No modifique la estructura de columnas ni los nombres de los encabezados.'],
+            ];
+            const wsInst = XLSX.utils.aoa_to_sheet(instrData);
+            wsInst['!cols'] = [{ wch: 5 }, { wch: 80 }];
+            XLSX.utils.book_append_sheet(wb, wsInst, 'INSTRUCCIONES');
+
+            // ---- Hoja INVENTARIO ----
+            const invHeaders = ['N°', 'ESPECIE', 'NOMBRE VULGAR (referencia)', 'DAP (cm)', 'ALT. TOTAL (m)', 'ALT. FUSTE (m)', 'PARCELA N° (Obligatorio)'];
+            const invData = [invHeaders];
+            for (let i = 1; i <= 200; i++) invData.push([i, '', '', '', '', '', '']);
+            const wsInv = XLSX.utils.aoa_to_sheet(invData);
+            wsInv['!cols'] = [{ wch: 6 }, { wch: 42 }, { wch: 30 }, { wch: 12 }, { wch: 14 }, { wch: 14 }, { wch: 18 }];
+            wsInv['!freeze'] = { xSplit: 0, ySplit: 1 };
+            XLSX.utils.book_append_sheet(wb, wsInv, 'INVENTARIO');
+
+            // ---- Hoja ESPECIES_VALIDAS ----
+            const spHeaders = ['NOMBRE CIENTÍFICO (usar en planilla)', 'NOMBRE VULGAR (referencia)'];
+            const spData = [spHeaders];
+            Object.keys(speciesFormulas).sort().forEach(key => {
+                spData.push([key, speciesFormulas[key].scientificName]);
+            });
+            const wsSp = XLSX.utils.aoa_to_sheet(spData);
+            wsSp['!cols'] = [{ wch: 45 }, { wch: 45 }];
+            XLSX.utils.book_append_sheet(wb, wsSp, 'ESPECIES_VALIDAS');
+
+            // ---- Hoja FORMULAS_VOLUMEN ----
+            // Mapeo legible de cada fórmula según su función JS
+            function describeFórmula(fn) {
+                const s = fn.toString();
+                if (s.includes('-9.5086+2.0041') && s.includes('0.973*Math.log(af)'))
+                    return 'ln(V) = -9.5086 + 2.0041·ln(d) + 0.973·ln(hf)';
+                if (s.includes('-9.22955+1.933161') && s.includes('0.901548'))
+                    return 'ln(V) = -9.22955 + 1.933161·ln(d) + 0.901548·ln(hf)';
+                if (s.includes('-9.44933+0.983515'))
+                    return 'ln(V) = -9.44933 + 0.983515·ln(d²·hf)';
+                if (s.includes('-9.18113+0.950324'))
+                    return 'ln(V) = -9.18113 + 0.950324·ln(d²·hf)';
+                if (s.includes('-9.39969+1.9797'))
+                    return 'ln(V) = -9.39969 + 1.9797·ln(d) + 0.939584·ln(hf)';
+                if (s.includes('-8.3864+0.0551011'))
+                    return 'ln(V) = -8.3864 + 0.0551011·d - 0.000533799·d² - 0.159762·hf + 1.34969·ln(d·hf)';
+                if (s.includes('0.000033 * d**2.3455'))
+                    return 'V = 0.000033 · d^2.3455 · ht^0.687553';
+                if (s.includes('-9.5086+2.0041') && s.includes('0.687553'))
+                    return 'V = 0.000033 · d^2.3455 · ht^0.687553';
+                // Fórmula general más común
+                return 'ln(V) = -9.49642 - 0.00145081·d + 0.824921·ln(d²·hf) + 0.366708·ln(d·hf)';
+            }
+            function describeFórmulaTotal(fn) {
+                const s = fn.toString();
+                if (s.includes('0.000033 * d**2.3455'))
+                    return 'V = 0.000033 · d^2.3455 · ht^0.687553';
+                if (s.includes('-10.78979'))
+                    return 'ln(V) = -10.78979 + 1.07129·ln(d²·ht)';
+                if (s.includes('-10.976'))
+                    return 'ln(V) = -10.976 + 1.11062·ln(d²·ht)';
+                if (s.includes('-10.79166'))
+                    return 'ln(V) = -10.79166 + 1.091557·ln(d²·ht)';
+                return 'ln(V) = -10.78979 + 1.07129·ln(d²·ht)';
+            }
+
+            const fvHeaders = [
+                'ESPECIE (Nombre Científico)', 'NOMBRE VULGAR', 
+                'ECUACIÓN VOLUMEN DE FUSTE', 'ECUACIÓN VOLUMEN TOTAL', 'PESO ESPECÍFICO (t/m³)',
+                'Referencias: d=DAP(cm), hf=Alt.Fuste(m), ht=Alt.Total(m), V=Volumen(m³)'
+            ];
+            const fvData = [fvHeaders];
+            Object.keys(speciesFormulas).sort().forEach(key => {
+                const sp = speciesFormulas[key];
+                fvData.push([
+                    key,
+                    sp.scientificName,
+                    describeFórmula(sp.volFuste),
+                    describeFórmulaTotal(sp.volTotal),
+                    sp.pesoEspecifico
+                ]);
+            });
+            const wsFv = XLSX.utils.aoa_to_sheet(fvData);
+            wsFv['!cols'] = [{ wch: 42 }, { wch: 32 }, { wch: 58 }, { wch: 42 }, { wch: 20 }, { wch: 60 }];
+            XLSX.utils.book_append_sheet(wb, wsFv, 'FORMULAS_VOLUMEN');
+
+            XLSX.writeFile(wb, 'Planilla_Inventario_Forestal_MBGI.xlsx');
+        }
+
+        function mostrarEstadoCarga(mensaje, tipo) {
+            const el = document.getElementById('excelUploadStatus');
+            el.style.display = 'block';
+            el.style.backgroundColor = tipo === 'success' ? '#d4edda' : tipo === 'error' ? '#f8d7da' : '#fff3cd';
+            el.style.color = tipo === 'success' ? '#155724' : tipo === 'error' ? '#721c24' : '#856404';
+            el.style.border = `1px solid ${tipo === 'success' ? '#c3e6cb' : tipo === 'error' ? '#f5c6cb' : '#ffeeba'}`;
+            el.textContent = mensaje;
+        }
+
+        function limpiarCargaExcel() {
+            document.getElementById('inputCargarExcel').value = '';
+            document.getElementById('excelUploadStatus').style.display = 'none';
+            document.getElementById('btnLimpiarCargaExcel').style.display = 'none';
+        }
+
+        // ===== FIN FUNCIONES EXCEL =====
     </script>
 </body>
 </html>
+          
