@@ -1221,7 +1221,8 @@
                 }
 
                 @bottom-center {
-                    content: "Dirección de Recursos Forestales - Perú 1120 C.P.: W3400CQF Corrientes bosquesnativos@corrientes.gob.ar  |  Hoja " counter(page) " de " counter(pages);
+                    content: "Dirección de Recursos Forestales - Perú 1120 C.P.: W3400CQF Corrientes bosquesnativos@corrientes.gob.ar  |  Hoja " counter(page) " de " counter(pages) "\A Desarrollador: Ing. Ftal. Walter Hugo Sanchez";
+                    white-space: pre;
                     font-size: 7.5pt;
                     color: #555;
                     padding-top: 3mm;
@@ -1980,7 +1981,10 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                         <input type="checkbox" id="checkAceptoDDJJ"> Acepto los términos de la declaración jurada.
                     </label>
                 </div>
-    
+
+                <!-- Bloque de firmas de la Declaración Jurada -->
+                <div class="firmas-section-print" id="firmas-section-ddjj"></div>
+
                 <div class="controls" style="border-bottom: none; border-top: 1px solid #dee2e6;">
                     <button id="btnImprimirPDF">Imprimir / Guardar PDF</button>
                 </div>
@@ -2098,6 +2102,9 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                                 </td>
                             </tr>
                         </table>
+                        <div style="text-align: center; font-size: 7.5pt; color: #555; margin-top: 12px; padding-top: 4px; border-top: 0.5px solid #ddd;">
+                            Desarrollador: Ing. Ftal. Walter Hugo Sanchez
+                        </div>
                     </div>`;
             }
 
@@ -2832,6 +2839,7 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
             document.getElementById('inventoryResultsWrapper').style.display = 'block'; 
             document.getElementById('graficosInventarioContainer').style.display = 'grid'; 
             document.getElementById('firmas-section-plan').innerHTML = generateSignatureBlockHTML('plan');
+            document.getElementById('firmas-section-ddjj').innerHTML = generateSignatureBlockHTML('ddjj');
         }
         function createDapClassHeader(table, mainTitle, extraColumns = []) { table.innerHTML = ''; const thead = table.createTHead(); const row1 = thead.insertRow(); const th_species = document.createElement('th'); th_species.textContent = 'ESPECIES'; th_species.rowSpan = 3; row1.appendChild(th_species); const th_classes = document.createElement('th'); th_classes.textContent = mainTitle; th_classes.colSpan = dapClasses.length; row1.appendChild(th_classes); extraColumns.forEach(col => { const th = document.createElement('th'); th.textContent = col.title; th.rowSpan = col.rowSpan || 3; row1.appendChild(th); }); const row2 = thead.insertRow(); dapClasses.forEach(c => { const th = document.createElement('th'); th.textContent = c.name.split(' ')[0]; row2.appendChild(th); }); const row3 = thead.insertRow(); dapClasses.forEach(c => { const th = document.createElement('th'); th.textContent = c.label; row3.appendChild(th); }); }
         function renderVolumeTable(data, factor) { const table = document.getElementById('tableVolumen'); createDapClassHeader(table, 'CLASES DIAMETRICAS', [{ title: 'TOTAL', rowSpan: 3 }]); const tbody = table.createTBody(); const tfoot = table.createTFoot().insertRow(); tfoot.insertCell().textContent = 'TOTAL'; const totals = { ...Object.fromEntries(dapClasses.map(c => [c.name, 0])), 'TOTAL': 0 }; for (const especie in data) { const row = tbody.insertRow(); row.insertCell().textContent = especie; let totalEspecie = 0; dapClasses.forEach(dapClass => { const val = data[especie][dapClass.name] ? data[especie][dapClass.name].volFuste * factor : 0; row.insertCell().textContent = formatNumber(val); totalEspecie += val; totals[dapClass.name] += val; }); row.insertCell().textContent = formatNumber(totalEspecie); totals['TOTAL'] += totalEspecie; } dapClasses.forEach(c => tfoot.insertCell().textContent = formatNumber(totals[c.name])); tfoot.insertCell().textContent = formatNumber(totals['TOTAL']); }
@@ -2901,7 +2909,7 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
             
             // Populate data for ALL signature blocks
             const numPoas = parseInt(inputNumPoas.value, 10) || 0;
-            const suffixes = ['plan', ...Array.from({length: numPoas}, (_, i) => `poa${i + 1}`)];
+            const suffixes = ['plan', 'ddjj', ...Array.from({length: numPoas}, (_, i) => `poa${i + 1}`)];
 
             suffixes.forEach(suffix => {
                 const checkRepLegalNoAplica = document.getElementById('checkRepLegalNoAplica').checked;
@@ -3270,6 +3278,11 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
     </script>
 </body>
 </html>
+
+
+
+
+
 
 
 
