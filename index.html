@@ -1,17 +1,14 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANEXO I - FORMULARIO A - MBGI</title>
-    <!-- Dependencias externas cargadas desde CDN -->
+    <title>ANEXO I - FORMULARIO A: PLAN DE CONSERVACIÓN</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
-    <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'></script>
+    <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -613,7 +610,7 @@
         }
         .map-controls-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Ajustado para 3 columnas */
             gap: 15px;
             margin-bottom: 15px;
         }
@@ -789,74 +786,23 @@
             color: #555;
         }
 
-        /* --- ESTILOS MAPA POA --- */
-        .poa-map-section {
-            margin: 12px 0 18px 0;
-            border: 1px solid #b8daff;
-            border-radius: 6px;
-            overflow: hidden;
-            background: #fff;
-        }
-        .poa-map-header {
-            background: #1a5276;
-            color: white;
-            padding: 8px 14px;
-            font-size: 0.95em;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .poa-map-controls {
-            padding: 10px 14px;
-            background: #f0f4f8;
-            border-bottom: 1px solid #d0dce8;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
-        }
-        .poa-map-controls label {
-            font-size: 0.88em;
-            color: #333;
-            font-weight: normal;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            background: white;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            padding: 5px 10px;
-        }
-        .poa-map-controls label:hover { background: #e8f0fe; border-color: #4285f4; }
-        .poa-map-controls .btn-map-poa {
-            padding: 5px 12px;
-            font-size: 0.85em;
-            background: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .poa-map-controls .btn-map-poa:hover { background: #5a6268; }
-        .poa-map-leaflet {
-            height: 320px;
-            width: 100%;
-        }
-        .poa-map-status {
-            font-size: 0.82em;
-            padding: 4px 10px;
-            display: none;
-            text-align: center;
-        }
-        /* --- FIN ESTILOS MAPA POA --- */
-
         .firmas-section-print {
             display: none;
         }
 
         /* --- FIN: ESTILOS PARA POAs DINÁMICOS --- */
+
+        /* --- ESTILOS MAPA POA --- */
+        .poa-map-section { border: 1px solid #c8d8e8; border-radius: 6px; margin: 14px 0; overflow: hidden; }
+        .poa-map-header { background: #1a5276; color: white; padding: 8px 14px; font-weight: bold; font-size: 0.95em; }
+        .poa-map-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 14px; background: #f4f8fc; border-bottom: 1px solid #d6e4ef; }
+        .poa-map-controls label { display: flex; flex-direction: column; font-size: 0.83em; color: #333; gap: 3px; border: 1px solid #b0c4d8; border-radius: 4px; padding: 5px 8px; background: #fff; cursor: pointer; }
+        .poa-map-controls label:hover { background: #e8f0fe; border-color: #4285f4; }
+        .poa-map-controls .btn-map-poa { background: #495057; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 0.83em; }
+        .poa-map-controls .btn-map-poa:hover { background: #5a6268; }
+        .poa-map-leaflet { height: 320px; width: 100%; }
+        .poa-map-status { font-size: 0.88em; padding: 6px 14px; display: none; }
+        /* --- FIN ESTILOS MAPA POA --- */
 
         @media print {
             /* Ocultar el login en la impresión */
@@ -991,47 +937,6 @@
                 color: #000 !important;
             }
              /* --- FIN: REGLAS DE IMPRESIÓN PARA POAs --- */
-
-            /* --- IMPRESIÓN MAPAS POA --- */
-            /* Mostrar el fieldset de Datos Generales del POA en impresión (override de la regla que lo oculta) */
-            #poaSection .input-fieldset {
-                display: block !important;
-            }
-            /* Ocultar controles interactivos del mapa en impresión */
-            .poa-map-controls,
-            .poa-map-status,
-            .poa-map-leaflet {
-                display: none !important;
-            }
-            /* Mostrar el snapshot capturado */
-            .poa-map-print-snapshot {
-                display: block !important;
-                width: 100% !important;
-                max-height: 280px;
-                object-fit: contain;
-                border: 1px solid #ccc;
-                margin: 4px 0;
-                page-break-inside: avoid;
-            }
-            .poa-map-section {
-                border: 1px solid #aaa !important;
-                page-break-inside: avoid;
-                margin-bottom: 4mm;
-            }
-            .poa-map-header {
-                background: #1a5276 !important;
-                color: white !important;
-                -webkit-print-color-adjust: exact !important;
-                color-adjust: exact !important;
-                print-color-adjust: exact !important;
-                padding: 4px 10px !important;
-                font-size: 8.5pt !important;
-            }
-            /* Ocultar inputs KML y botones de mapa */
-            .poa-kml-plan, .poa-kml-poa, .poa-map-fit-btn, .poa-map-clear-btn {
-                display: none !important;
-            }
-            /* --- FIN IMPRESIÓN MAPAS POA --- */
 
             .input-fieldset textarea,
             #poaContainer .auto-resize-textarea { 
@@ -1221,8 +1126,7 @@
                 }
 
                 @bottom-center {
-                    content: "Dirección de Recursos Forestales - Perú 1120 C.P.: W3400CQF Corrientes bosquesnativos@corrientes.gob.ar  |  Hoja " counter(page) " de " counter(pages) "\A Desarrollador: Ing. Ftal. Walter Hugo Sanchez";
-                    white-space: pre;
+                    content: "Dirección de Recursos Forestales - Perú 1120 C.P.: W3400 Corrientes bosquesnativos@corrientes.gob.ar  |  Hoja " counter(page) " de " counter(pages);
                     font-size: 7.5pt;
                     color: #555;
                     padding-top: 3mm;
@@ -1240,7 +1144,7 @@
         <div id="loginFormContainer">
             <img src="membrete_provincia.png" alt="Logo Provincia" id="loginLogo">
             <form id="loginForm">
-                <h2>PLAN DE MANEJO MBGI</h2>
+                <h2>ANEXO I - FORMULARIO A</h2>
                 <div class="input-group">
                     <label for="inputUsername">Usuario</label>
                     <input type="text" id="inputUsername" name="username" required>
@@ -1263,7 +1167,7 @@
         </div>
 
         <h1 id="pdfPrintMainTitle">
-            ANEXO I - FORMULARIO A<br><span style="font-size:0.82em;">MANEJO DE BOSQUES CON GANADERÍA INTEGRADA (MBGI)</span>
+            ANEXO I - FORMULARIO A: PLAN DE CONSERVACIÓN
         </h1>
         <span id="printDateGlobal"></span>
         <div id="pdfPrintPageFooterStrings" style="display:none;">
@@ -1274,7 +1178,7 @@
         
         <img src="membrete_provincia.png" alt="Membrete Provincia" width="500" height="100">
         <div id="mainContainer">
-            <h1 id="appTitle">ANEXO I - FORMULARIO A<br><small style="font-size:0.7em;font-weight:normal;">MANEJO DE BOSQUES CON GANADERÍA INTEGRADA (MBGI)</small></h1>
+            <h1 id="appTitle">ANEXO I - FORMULARIO A: PLAN DE CONSERVACIÓN</h1>
         
             <div id="pdfPrintHeaderWrapperForRunningElement" style="display: none;">
                 <div id="datosPredioParaImprimir">
@@ -1282,40 +1186,26 @@
             </div>
 
             <!-- ========= INICIO: SECCIÓN DEL PLAN TÉCNICO ========= -->
-<div id="planTecnicoSection">
-    
-    <!-- ===== INICIO: BLOQUE DE TEXTO CON TEXTO JUSTIFICADO ===== -->
-    <div class="static-text-section" style="text-align: justify;">
-        <h4>DE LOS PLANES DE MANEJO DE BOSQUES CON GANADERIA INTEGRADA (M.B.G.I)</h4>
-        <p style="font-size: 0.85em; font-style: italic;">
-            (Disposición de la Secretaria de Desarrollo Foresto Industrial 031/2022; Disposición de la Dirección de Recursos Forestales 034/2014 y Resoluciones COFEMA 277/2014; 360/2018; 497/2022).
-        </p>
-        <ol type="a" style="padding-left: 20px;">
-            <li>El Plan de Manejo de Bosques con Ganadería Integrada (M.B.G.I) es el documento que sintetiza la organización, medios y recursos, en el tiempo y en el espacio, de las medidas específicas para mantener o incrementar los atributos de conservación de un bosque nativo o grupo de bosques nativos y/o del aprovechamiento sostenible de sus recursos no maderables y servicios, para lo cual debe incluir una descripción pormenorizada del terreno forestal en sus aspectos ecológicos, legales, sociales y económicos y, en particular, un inventario forestal y/o del recurso no maderable objeto de aprovechamiento con un nivel de detalle tal que permita la toma de decisiones en cuanto a la silvicultura o conjunto de pautas de uso a aplicar en cada una de las unidades de bosque nativo. En caso de existir presencia de herbívora, debe probarse que la carga no disminuye los valores de conservación o, en caso contrario, prever las medidas para que esto no suceda.</li>
-            <li>Los Planes M.B.G.I, pueden ser presentados por beneficiarios para bosques clasificados categoría de conservación II y III (amarillo y verde) correspondiente a contemplada en Ley provincial N.º 5974.</li>
-            <li>Los objetivos y actividades propuestas en los Planes M.B.G.I deben asegurar, que el manejo productivo deberá contener prácticas que aseguren la integridad del paisaje y el cumplimiento de los principios de sostenibilidad establecidos en las Ley de Presupuestos Mínimos para la Protección Ambiental de los Bosques Nativos N° 26.331.</li>
-            <li>Los Planes M.B.G.I, deben contemplar los puntos fundamentales propuestos en la Resolución Conjunta 2/2022, del MINISTERIO DE AMBIENTE Y DESARROLLO SOSTENIBLE y MINISTERIO DE AGRICULTURA, GANADERÍA Y PESCA:
-                <ol style="margin-top: 10px; padding-left: 25px;">
-                    <li>Los PMBGI mantienen un área exclusiva para la conservación de biodiversidad, el mantenimiento de la conectividad, preservación del acervo genético de las especies que ocupan el predio y el resguardo de la fauna asociada.</li>
-                    <li>Todos los estratos que forman parte de la estructura vertical de un bosque constituyen elementos vitales en el funcionamiento del ecosistema y del sistema productivo, manejo del estrato arbustivo con fines de mejorar la oferta forrajera, puede realizarse de forma manual o mecánica, asegurando la permanencia de un mínimo de 30%.</li>
-                    <li>La organización de actividades incluye un plan de manejo forestal que permita conducir la estructura del bosque y monitorear su estado periódicamente.</li>
-                    <li>El manejo ganadero explicitado en el plan de manejo integral, debe adecuarse a las posibilidades reales del sistema, en un horizonte temporal que tenga en cuenta la variabilidad interanual de las condiciones ambientales.</li>
-                    <li>Los planes de M.B.G.I deben contar con un sistema de prevención y control de incendios forestales y de pastizales asociados.</li>
-                    <li>Los planes de M.B.G.I, deben contar con un diseño apropiado de aguadas para lograr un uso productivo eficiente sin perjuicio del funcionamiento del bosque.</li>
-                </ol>
-            </li>
-            <li>El lineamiento técnico estratégico en que se encuadra, es el de MANEJO DE BOSQUES CON GANADERIA INTEGRADA (M.B.G.I), como su nombre lo indica.</li>
-        </ol>
-    </div>
-    <!-- ===== FIN: BLOQUE DE TEXTO ===== -->
+            <div id="planTecnicoSection">
+                <div class="static-text-section">
+                    <h4>DE LOS PLANES DE CONSERVACIÓN (PC) <span style="font-weight:normal; font-size:0.9em;">(Disposición de la Secretaria de Desarrollo Foresto Industrial 031/2022; Disposición de la Dirección de Recursos Forestales 034/2014 y Resoluciones COFEMA 277/2014; 360/2018; 497/2022).</span></h4>
+                    <p><b>a)</b> El Plan de Conservación es el documento que sintetiza la organización, medios y recursos, en el tiempo y en el espacio, de las medidas específicas para mantener o incrementar los atributos de conservación de un bosque nativo o grupo de bosques nativos y/o del aprovechamiento sostenible de sus recursos no maderables y servicios, para lo cual debe incluir una descripción pormenorizada del terreno forestal en sus aspectos ecológicos, legales, sociales y económicos y, en particular, un inventario forestal y/o del recurso no maderable objeto de aprovechamiento con un nivel de detalle tal que permita la toma de decisiones en cuanto a la silvicultura o conjunto de pautas de uso a aplicar en cada una de las unidades de bosque nativo. En caso de existir presencia de herbívora, debe probarse que la carga no disminuye los valores de conservación o, en caso contrario, prever las medidas para que esto no suceda.</p>
+                    <p><b>b)</b> Los Planes de Conservación (PC) pueden ser presentados por beneficiarios para bosques clasificados en cualquier categoría de conservación.</p>
+                    <p><b>c)</b> Los objetivos y actividades propuestas en los PC deben asegurar: Que no se ejecuta para aprovechar comercialmente la madera (aunque pudiera comercializarse la madera extraída con otros objetivos). Que cualquier actividad que se realice, ya sea con fines comerciales o sin ellos, mantenga o incremente los atributos de conservación.</p>
+                    <p><b>d)</b> Modalidades o variantes de un PC: aprovechamiento de productos no madereros y servicios (PNMyS); mantenimiento del potencial de conservación (CON); recuperación del potencial de conservación mediante enriquecimiento, restauración u otras (REC).</p>
+                    <p><b>e)</b> Los lineamientos técnicos estratégico en los cuales se pueden incluir los planes de conservación son: Restauración de Bosques Degradados (Según la Ley N° 26.331, se entiende por bosque nativo degradado o en proceso de degradación a aquel bosque que, con respecto al original, ha perdido su estructura, funciones, composición de especies y/o su productividad) . Uso sustentable de la Biodiversidad y Fortalecimiento de Áreas de Conservación. (Predios o territorios colindantes a Áreas Protegidas, orientados al desarrollo de productos no madereros, fomento del ecoturismo, restauración entre otros usos múltiples, con el fin de aportar a la función estratégica de conservación asignada al área protegida).</p>
+                </div>
         
                 <div class="input-section">
                     <h2 class="main-section-title">1. LINEAMIENTO TECNICO ESTRATÉGICO </h2>
                     <fieldset class="input-fieldset">
-                        <legend>Tipo de Plan de Manejo</legend>
+                        <legend>Seleccione Lineamiento</legend>
                         <div class="form-grid" style="grid-template-columns: max-content 1fr;"> 
                             <label for="selectTipoPlan">Tipo de Lineamiento:</label>
-                            <input type="text" id="selectTipoPlan" value="Manejo de Bosques con Ganadería Integrada (MBGI)" readonly>
+                            <select id="selectTipoPlan">
+                                <option value="conservacion_restauracion">Restauración de Bosques degradados</option>
+                                <option value="conservacion_sustentable">Uso sustentable de la biodiversidad y fortalecimiento de Áreas de Conservación</option>
+                            </select>
                         </div>
                     </fieldset>
         
@@ -1498,14 +1388,11 @@
                         <legend>Superficies Relevantes</legend>
                          <div class="form-grid">
                             <label for="inputSupPredio">Superficie Total del Predio (ha):</label>
-                            <input type="number" id="inputSupPredio" step="0.01" value="0" readonly>
+                            <input type="number" id="inputSupPredio" step="0.01" readonly>
         
                             <label for="inputSupAreaProyecto" style="font-weight: bold;">Superficie del Área del Proyecto (ha):</label>
                             <input type="number" id="inputSupAreaProyecto" step="0.01" value="0" readonly>
-                            
-                            <label for="inputSupAreaConservacion" style="font-weight: bold; color: #28a745;">Área Exclusiva para Conservación (ha):</label>
-                            <input type="number" id="inputSupAreaConservacion" step="0.01" value="0">
-
+        
                             <label style="font-weight: bold;">Sup. Total Cobertura Boscosa en Predio (ha):</label>
                             <span id="spanSupBosqueNativo" class="calculated-span">0,00</span> 
                         </div>
@@ -1541,57 +1428,12 @@
                             Se considera bosque nativo a los ambientes con: 0,5 ha de ocupación continua, 3 m de altura mínima y 20% de cobertura de copas mínima.
                         </p>
                     </fieldset>
-
-                    <h2 class="main-section-title">10. DIAGNÓSTICO E PROPUESTA DE MANEJO MBGI</h2>
-                    <fieldset class="input-fieldset">
-                        <legend>Diagnóstico Inicial y Propuesta Técnica</legend>
-
-                        <h3 class="sub-section-title">10.1. Diagnóstico Inicial Ambiental y Productivo</h3>
-                        <fieldset class="input-fieldset" style="background-color: #f7f9fc;">
-                            <legend>Diagnóstico Productivo</legend>
-                            <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
-                                <label for="inputCargaAnimal">Capacidad de Carga Inicial (UG/ha):</label>
-                                <input type="number" id="inputCargaAnimal" step="0.01" value="0">
-                                <label for="inputOfertaForrajera">Oferta Forrajera Inicial (kg MS/ha):</label>
-                                <input type="number" id="inputOfertaForrajera" step="1" value="0">
-                                <label for="inputIndiceDestete">Índice de Destete Inicial (%):</label>
-                                <input type="number" id="inputIndiceDestete" step="0.1" value="0">
-                                <label for="inputGananciaPeso">Ganancia de Peso Promedio (kg/día):</label>
-                                <input type="number" id="inputGananciaPeso" step="0.01" value="0">
-                            </div>
-                        </fieldset>
-                        <textarea id="textDiagnosticoAmbiental" class="auto-resize-textarea">Descripción del Diagnóstico Ambiental: Detallar estado actual del bosque (estructura, regeneración, biodiversidad, disponibilidad de sombra y agua), condiciones climáticas históricas y proyectadas (lluvias, sequías), y características del suelo (fertilidad, susceptibilidad a la erosión).</textarea>
-                        <div id="print-textDiagnosticoAmbiental" class="textarea-print-content"></div>
-
-                        <h3 class="sub-section-title">10.2. Manejo del Estrato Arbustivo</h3>
-                        <div class="form-grid" style="max-width: 600px;">
-                           <label for="inputCoberturaArbustivaMin" style="font-weight: bold;">Cobertura Mínima de Estrato Arbustivo a Mantener (%):</label>
-                           <input type="number" id="inputCoberturaArbustivaMin" value="30" readonly>
-                        </div>
-                        <p style="font-size:0.9em; color:#555; margin-top:-5px; margin-bottom:15px;">
-                           El valor del 30% corresponde al requisito mínimo según el Lineamiento 2.3.3 A.1. Se podrá proponer un valor superior.
-                        </p>
-                        <textarea id="textManejoArbustivo" class="auto-resize-textarea">Descripción de Prácticas de Manejo del Estrato Arbustivo: Detallar métodos a utilizar (manejo selectivo, podas, raleos) para equilibrar la producción forrajera y la conservación, garantizando la funcionalidad del ecosistema y la conectividad.</textarea>
-                        <div id="print-textManejoArbustivo" class="textarea-print-content"></div>
-
-                        <h3 class="sub-section-title">10.3. Propuesta de Manejo Ganadero Sostenible</h3>
-                        <textarea id="textManejoGanadero" class="auto-resize-textarea">Planificación del Sistema de Pastoreo y Estrategias Adaptativas: Describir el sistema de pastoreo (ej. rotativo, diferido), la categorización del ganado, el aprovechamiento de fuentes forrajeras, y las estrategias de manejo adaptativo para afrontar la variabilidad climática. Incluir los indicadores de monitoreo productivos y de impacto sobre el bosque (ej. regeneración, estado del suelo).</textarea>
-                        <div id="print-textManejoGanadero" class="textarea-print-content"></div>
-                        
-                        <h3 class="sub-section-title">10.4. Diseño de Aguadas y Fuentes de Agua</h3>
-                        <textarea id="textDiseñoAguadas" class="auto-resize-textarea">Diagnóstico y Diseño de Aguadas: Detallar el relevamiento de fuentes de agua existentes, el diseño de nuevas aguadas (ubicación estratégica, características, acceso controlado), y los planes para la protección y/o restauración de fuentes de agua naturales (arroyos, lagunas), incluyendo la creación de franjas de amortiguamiento.</textarea>
-                        <div id="print-textDiseñoAguadas" class="textarea-print-content"></div>
-
-                        <h3 class="sub-section-title">10.5. Estrategias de Mitigación (Sequías e Incendios)</h3>
-                        <textarea id="textEstrategiasMitigacion" class="auto-resize-textarea">Medidas de Mitigación ante Sequías e Incendios: Describir el plan de prevención de incendios (reducción de combustible, cortafuegos, monitoreo). Detallar las estrategias ante sequías prolongadas (reservas hídricas y forrajeras, áreas de refugio, ajustes en la carga animal).</textarea>
-                        <div id="print-textEstrategiasMitigacion" class="textarea-print-content"></div>
-                    </fieldset>
         
-                    <h2 class="main-section-title">11. DATOS DE INVENTARIO FORESTAL</h2>
+                    <h2 class="main-section-title">10. DATOS DE INVENTARIO FORESTAL</h2>
                     <fieldset class="input-fieldset">
                         <legend>Datos de Parcela, Árboles y Resultados</legend>
         
-                        <h3 class="sub-section-title">11.1. Metodología de Muestreo y Caracterización de Parcelas</h3>
+                        <h3 class="sub-section-title">10.1. Metodología de Muestreo y Caracterización de Parcelas</h3>
                         <div class="static-text-section">
                             <p>Las Unidades de Muestreos (UM) se componen de parcelas circulares, para el relevamiento de individuos leñosos de diferentes tamaños.</p>
                             <p>Cada parcela tiene una superficie de 1.000 m² (con un radio de 17,8 metros). Se recolectaron datos, incluidos parámetros dasométricos que permiten calcular estimadores de la masa forestal como volumen, área basal y toneladas.</p>
@@ -1605,7 +1447,7 @@
                             <p>Las alturas a registrar de cada individuo dentro de la parcela son altura total y altura de fuste.</p>
                         </div>
         
-                        <h3 class="sub-section-title">11.2. Registro de Datos de Campo</h3>
+                        <h3 class="sub-section-title">10.2. Registro de Datos de Campo</h3>
                         <div id="sup-parcela-container-wrapper">
                             <div class="sup-parcela-container">
                                 <label for="supParcelasM2">SUP. TOTAL MUESTREADA (m²):</label>
@@ -1679,7 +1521,7 @@
                             </table>
                         </div>
         
-                        <h3 class="sub-section-title">11.3. Resultados del Inventario (por Hectárea)</h3>
+                        <h3 class="sub-section-title">10.3. Resultados del Inventario (por Hectárea)</h3>
                         <div class="inventory-results-section" id="inventoryResultsWrapper">
                             <div id="resultadosVolumen" class="result-table-container">
                                 <h3>PLANILLA DE VOLUMEN (POR HECTÁREA)</h3>
@@ -1723,12 +1565,8 @@
                                     <canvas id="chartVolumenClaseDAP"></canvas>
                                 </div>
                                 <div class="chart-container">
-                                    <h4>Área Basal por Clase Diamétrica (m²/ha)</h4>
-                                    <canvas id="chartABClaseDAP"></canvas>
-                                </div>
-                                <div class="chart-container">
-                                    <h4>Densidad por Clase Diamétrica (N/ha)</h4>
-                                    <canvas id="chartDensidadClaseDAP"></canvas>
+                                    <h4>Área Basal y Densidad por Clase Diamétrica (/ha)</h4>
+                                    <canvas id="chartABDensidadClaseDAP"></canvas>
                                 </div>
                                 <div class="chart-container">
                                     <h4>Toneladas por Clase Diamétrica (Tn/ha)</h4>
@@ -1737,7 +1575,7 @@
                             </div>
                         </div>
                         
-                        <h3 class="sub-section-title">11.4. Estadísticos del Muestreo por Parcelas</h3>
+                        <h3 class="sub-section-title">10.4. Estadísticos del Muestreo por Parcelas</h3>
                         <fieldset class="input-fieldset">
                              <legend>Análisis Estadístico del Muestreo</legend>
                              <div class="form-grid" style="grid-template-columns: max-content auto;">
@@ -1795,19 +1633,19 @@
                 </div>
                 
                 <div class="static-text-section-wrapper">
-                    <h2 class="main-section-title">12. CONTENIDOS GENERALES DEL PLAN</h2>
+                    <h2 class="main-section-title">11. CONTENIDOS GENERALES DEL PLAN</h2>
                     <fieldset class="input-fieldset">
                         <legend>Descripciones Generales</legend>
                 
                         <h3 class="sub-section-title">OBJETIVOS GENERALES.</h3>
-                        <textarea id="textPlanObjGenerales" class="auto-resize-textarea">Integrar la producción ganadera con la conservación de los bosques nativos, asegurando la sostenibilidad del ecosistema y la viabilidad económica del establecimiento, reconociendo la importancia de estos ecosistemas como proveedores de servicios ambientales fundamentales.</textarea>
+                        <textarea id="textPlanObjGenerales" class="auto-resize-textarea">Haga clic aquí para escribir texto:</textarea>
                         <div id="print-textPlanObjGenerales" class="textarea-print-content"></div>
                 
                         <h3 class="sub-section-title">OBJETIVOS ESPECIFICOS.</h3>
-                        <textarea id="textPlanObjEspecificos" class="auto-resize-textarea">Haga clic aquí para escribir los objetivos específicos (ej: Mantener una cobertura arbórea del X%, mejorar la oferta forrajera en un Y%, establecer Z hectáreas de áreas de conservación, etc.).</textarea>
+                        <textarea id="textPlanObjEspecificos" class="auto-resize-textarea">Haga clic aquí para escribir texto:</textarea>
                         <div id="print-textPlanObjEspecificos" class="textarea-print-content"></div>
                 
-                        <h3 class="sub-section-title">DESCRIPCIÓN DE ANTECEDENTES RELACIONADOS AL USO DE LA TIERRA E DE LAS CONDICIONES SOCIOECONÓMICAS DE LA REGIÓN.</h3>
+                        <h3 class="sub-section-title">DESCRIPCIÓN DE ANTECEDENTES RELACIONADOS AL USO DE LA TIERRA Y DE LAS CONDICIONES SOCIOECONÓMICAS DE LA REGIÓN.</h3>
                         <textarea id="textPlanAntecedentes" class="auto-resize-textarea">“Hace referencia a información sobre cómo ha sido utilizada la tierra en términos de actividades productivas, como la agricultura, la ganadería, la producción forestal u otras actividades económicas. Esto incluiría datos sobre los cultivos que se han cultivado históricamente en la región, los métodos agrícolas utilizados, la productividad de la tierra, los tipos de ganado criados, los sistemas de manejo forestal empleados, entre otros aspectos. Además, también se considerarían las condiciones socioeconómicas de la región que han influido en la producción, como la disponibilidad de mano de obra, el acceso a recursos naturales, las políticas agrícolas y económicas, la infraestructura disponible, entre otros factores.”</textarea>
                         <div id="print-textPlanAntecedentes" class="textarea-print-content"></div>
                 
@@ -1820,7 +1658,7 @@
                         <div id="print-textPlanInventario" class="textarea-print-content"></div>
                 
                         <h3 class="sub-section-title">DESCRIPCIÓN DEL SISTEMA SILVICULTURAL U OTRO SISTEMA DE MANEJO, O DE LAS TÉCNICAS DE RECUPERACIÓN.</h3>
-                        <textarea id="textPlanSilvicultural" class="auto-resize-textarea">“El diseño del sistema de manejo se basa en la información recopilada durante el inventario forestal y los diagnósticos productivos y ambientales. Con esta información, se definen las acciones de manejo silvopastoril, como el raleo selectivo de árboles, el manejo del estrato arbustivo para mejorar la oferta forrajera, y la planificación del pastoreo para asegurar la regeneración natural y la salud del ecosistema.”</textarea>
+                        <textarea id="textPlanSilvicultural" class="auto-resize-textarea">“El diseño del sistema de manejo se basa en la información recopilada durante el inventario forestal, que incluye datos sobre la cantidad, calidad y distribución de los recursos forestales, así como sobre la biodiversidad y los servicios ambientales que brindan los bosques. Con esta información, se calcula la posibilidad de llevar a cabo ciertas acciones de manejo, como la tala selectiva de árboles, la regeneración natural de especies, la protección de áreas sensibles, entre otras.”</textarea>
                         <div id="print-textPlanSilvicultural" class="textarea-print-content"></div>
                         
                         <h3 class="sub-section-title">DESCRIPCIÓN DE LOS ASPECTOS SOCIALES RELEVANTES Y DEL IMPACTO SOCIAL POSITIVO PREVISTO.</h3>
@@ -1828,37 +1666,40 @@
                         <div id="print-textPlanSocial" class="textarea-print-content"></div>
                 
                         <h3 class="sub-section-title">DECLARACIÓN JURADA POR PARTE DEL TITULAR DE LOS IMPACTOS AMBIENTALES PREVISTOS EN EL PLAN.</h3>
-                        <textarea id="textPlanImpactoAmbientalDJ" class="auto-resize-textarea">“Declaración de los impactos ambientales previstos en el Plan, para facilitar el análisis por parte de la Autoridad de Aplicación de la Ley 26331, quien determinará la necesidad de efectuar un estudio de impacto ambiental (EIA). En el caso que los riesgos ambientales no ameriten un EIA se incluirán en el plan de manejo las medidas preventivas y correctivas de los tratamientos que alteren el ecosistema.”</textarea>
+                        <textarea id="textPlanImpactoAmbientalDJ" class="auto-resize-textarea">“Declaración de los impactos ambientales previstos en el Plan, para facilitar el análisis por parte de la Autoridad de Aplicación de la Ley 36331, quien determinará la necesidad de efectuar un estudio de impacto ambiental (EIA). En el caso que los riesgos ambientales no ameriten un EIA se incluirán en el plan de manejo las medidas preventivas y correctivas de los tratamientos que alteren el ecosistema.”</textarea>
                         <div id="print-textPlanImpactoAmbientalDJ" class="textarea-print-content"></div>
                     </fieldset>
     
-                    <h2 class="main-section-title">13. ACTIVIDADES GENERALES DEL PLAN</h2>
+                    <h2 class="main-section-title">12. ACTIVIDADES GENERALES DEL PLAN</h2>
                      <fieldset class="input-fieldset">
                         <legend>Descripciones de Actividades Generales</legend>
                         <p style="font-size:0.9em; color:#2e0b4f; margin-bottom:15px;">Escriba aquí las descripciones generales para las actividades del plan. Luego, en cada POA, podrá elegir si usar este texto general o escribir uno específico para ese año.</p>
     
                         <h3 class="sub-section-title">DESCRIPCIÓN Y JUSTIFICACIÓN DE LAS TÉCNICAS A IMPLEMENTAR Y DEL EQUIPAMIENTO UTILIZADO.</h3>
-                        <textarea id="textPlanTecnicas" class="auto-resize-textarea">“Descripción detallada de las técnicas y equipamiento para el manejo forestal (raleo, podas) y ganadero (alambrados eléctricos, aguadas móviles). Se justificará la elección en función de su eficacia para lograr los objetivos de producción y conservación, minimizando el impacto ambiental (ej. uso de maquinaria de bajo impacto) y maximizando la eficiencia de las tareas.”</textarea>
+                        <textarea id="textPlanTecnicas" class="auto-resize-textarea">“Descripción detallada y la justificación de las técnicas y el equipamiento que se utilizarán en el manejo forestal o conservación. Aquí se explican las razones detrás de la elección de ciertas técnicas y herramientas, así como cómo se espera que contribuyan al logro de los objetivos del manejo forestal. Por ejemplo, si se va a implementar un sistema de manejo silvicultural, describir en detalle cómo se llevará a cabo la tala selectiva de árboles, la regeneración de especies, el control de plagas y enfermedades, entre otras técnicas. Se justificaría la elección de estas técnicas en función de su eficacia para lograr los objetivos de manejo, como la mejora de la calidad de la madera, la conservación de la biodiversidad o la protección de los recursos hídricos. En cuanto al equipamiento utilizado, se describirían los tipos de herramientas y maquinaria necesarios para llevar a cabo las técnicas de manejo descritas. Se justificaría la elección de este equipamiento en función de su capacidad para realizar las tareas requeridas de manera eficiente y segura.”</textarea>
                         <div id="print-textPlanTecnicas" class="textarea-print-content"></div>
                 
                         <h3 class="sub-section-title">PRESCRIPCIÓN DE TÉCNICAS Y MEDIDAS DE PROTECCIÓN AMBIENTAL.</h3>
-                        <textarea id="textPlanProteccionAmbiental" class="auto-resize-textarea">“Se detallan las medidas para minimizar los impactos ambientales:
-1. Silvicultura sostenible: Asegurar la regeneración natural y evitar la sobreexplotación de los recursos forestales.
-2. Conservación de la biodiversidad: Proteger especies y hábitats críticos, manteniendo la conectividad del paisaje.
-3. Control de la erosión: Implementar medidas para prevenir la pérdida de suelo, especialmente en áreas de pendiente o suelos frágiles.
-4. Manejo del agua: Proteger las fuentes de agua y la vegetación ribereña para mantener la calidad y cantidad del recurso hídrico.
-5. Gestión de residuos: Aplicar prácticas de minimización, reciclaje y compostaje para reducir la contaminación.
-6. Manejo de Carga Animal: Ajustar la carga ganadera a la capacidad del sistema para evitar el sobrepastoreo y la compactación del suelo.”</textarea>
+                        <textarea id="textPlanProteccionAmbiental" class="auto-resize-textarea">“La prescripción de técnicas y medidas de protección ambiental tiene como objetivo principal preservar los recursos naturales involucrados en un emprendimiento forestal. Estas técnicas y medidas se diseñan para minimizar los impactos negativos en el medio ambiente y garantizar la conservación de los recursos naturales a largo plazo.
+Algunas de las técnicas y medidas comunes incluyen:
+1. Silvicultura sostenible: Implementación de prácticas de manejo forestal que aseguren la regeneración natural de los bosques y la diversidad biológica, evitando la sobreexplotación de los recursos.
+2. Conservación de la biodiversidad: Protección de especies vegetales y animales en peligro de extinción, así como de ecosistemas frágiles o únicos.
+3. Control de erosión: Implementación de medidas para prevenir la pérdida de suelo y la degradación de la tierra, como la construcción de terrazas, la siembra de cobertura vegetal y la reforestación de áreas degradadas.
+4. Manejo del agua: Protección de fuentes de agua, como ríos, arroyos y lagos, a través de la conservación de la vegetación ribereña y la implementación de prácticas de manejo que eviten la contaminación del agua.
+5. Gestión de residuos: Implementación de medidas para minimizar la generación de residuos y gestionar adecuadamente aquellos que se generen, como el compostaje de residuos orgánicos y el reciclaje de residuos sólidos.
+Estas técnicas y medidas de protección ambiental deben ser parte integral del plan de manejo forestal y deben ser implementadas de manera efectiva y monitoreadas regularmente para garantizar su eficacia. “</textarea>
                         <div id="print-textPlanProteccionAmbiental" class="textarea-print-content"></div>
                 
                         <h3 class="sub-section-title">MEDIDAS PARA EL MONITOREO DEL CRECIMIENTO Y DINÁMICA DEL BOSQUE.</h3>
-                        <textarea id="textPlanMonitoreo" class="auto-resize-textarea">“Para garantizar la sostenibilidad del sistema MBGI, se implementarán las siguientes medidas de monitoreo:
-1. Parcelas permanentes de monitoreo: Para medir el crecimiento de los árboles, la regeneración natural y la dinámica general del bosque.
-2. Monitoreo de la biodiversidad: Realizar seguimiento de especies clave de flora y fauna para evaluar el estado de conservación.
-3. Monitoreo de la calidad del agua y el suelo: Realizar análisis periódicos para detectar posibles impactos de las actividades de manejo.
-4. Monitoreo de la oferta forrajera: Evaluar la disponibilidad y calidad de la pastura para ajustar la carga animal y el plan de pastoreo.
-5. Monitoreo de fauna: Realizar seguimiento de la presencia y abundancia de especies animales indicadoras de la salud del ecosistema.
-Estas medidas permitirán una gestión adaptativa y la toma de decisiones informadas.”</textarea>
+                        <textarea id="textPlanMonitoreo" class="auto-resize-textarea">“Para monitorear el crecimiento, la dinámica del bosque y los impactos ambientales ocasionados por un emprendimiento forestal, se pueden implementar diversas medidas.
+Algunas de las más comunes incluyen:
+1. Parcelas permanentes de muestreo: Establecimiento de parcelas donde se mide regularmente el crecimiento de los árboles, la regeneración natural y otros indicadores de la salud del bosque.
+2. Monitoreo de la biodiversidad: Seguimiento de la diversidad de especies vegetales y animales en el área afectada por el emprendimiento, para detectar cambios significativos y tomar medidas correctivas si es necesario.
+3. Monitoreo de la calidad del agua: Análisis regular de la calidad del agua en ríos, arroyos y otras fuentes de agua cercanas al emprendimiento, para detectar posibles impactos de la actividad forestal en el recurso hídrico.
+4. Monitoreo de la erosión: Evaluación regular de la erosión del suelo en áreas deforestadas o afectadas por actividades de manejo forestal, para implementar medidas de control si es necesario.
+5. Monitoreo de la fauna: Seguimiento de la presencia y abundancia de especies animales clave en el ecosistema forestal, para evaluar el impacto de la actividad humana en su hábitat.
+6. Monitoreo de incendios forestales: Seguimiento de la incidencia de incendios forestales y su impacto en el área forestal, para mejorar las medidas de prevención y control.
+Estas medidas de monitoreo deben ser parte integral del plan de manejo forestal y deben llevarse a cabo de manera regular y sistemática para garantizar la sostenibilidad de la actividad forestal y minimizar su impacto ambiental.”</textarea>
                         <div id="print-textPlanMonitoreo" class="textarea-print-content"></div>
                 
                         <h3 class="sub-section-title">MEDIDAS DE PREVENCIÓN E MITIGACIÓN DE IMPACTOS AMBIENTALES.</h3>
@@ -1948,7 +1789,7 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
 
             <!-- ========= INICIO: SECCIÓN DE POAs ========= -->
             <div id="poaSection">
-                <h2 class="main-section-title">14. PLANES OPERATIVOS ANUALES (POA)</h2>
+                <h2 class="main-section-title">13. PLANES OPERATIVOS ANUALES (POA)</h2>
                 <fieldset class="input-fieldset">
                     <legend>Configuración de POAs</legend>
                      <div class="form-grid" style="grid-template-columns: max-content 1fr; max-width: 400px;">
@@ -1966,7 +1807,7 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
             <!-- ========= FIN: SECCIÓN DE POAs ========= -->
 
              <div class="static-text-section-wrapper">
-                <h2 class="main-section-title">15. DOCUMENTACION LEGAL QUE DEBE ACOMPAÑAR AL PRESENTE FORMULARIO AL MOMENTO DE LA PRESENTACIÓN.</h2>
+                <h2 class="main-section-title">14. DOCUMENTACION LEGAL QUE DEBE ACOMPAÑAR AL PRESENTE FORMULARIO AL MOMENTO DE LA PRESENTACIÓN.</h2>
                 <div class="static-text-section">
                     <p>Las solicitudes deberán ser acompañadas de documentación que acredite los derechos sobre los inmuebles a desarrollarse los proyectos. Los Titulares Dominiales o Adquirientes por Boletos de Compra Venta, deberán presentar copia certificada del título de propiedad o boleto de compraventa, según corresponda. En caso de sucesiones se deberá presentar copia certificada de Declaratoria de Herederos, copia certificada de designación de Administrador Judicial y Aceptación del cargo o autorización de todos los herederos declarados. En caso de Condominio, se deberá presentar la conformidad de todos los condóminos o designación de apoderado. En caso de Arrendatarios copia certificada del contrato vigente. Para personas jurídicas, copia certificadas, del Estatuto Social o Contrato Social, Acta de Asamblea vigente, poder del representante legal en caso de designación. Copia de DNI y Constancia de CUIT o CUIL, tanto de titulares como de Representante Legal. En caso de ser el Titular, un organismo estatal, deberá presentar copia autenticada del acto administrativo que autoriza al funcionario a actuar en representación del organismo. Cuando los predios se encontraran bajo el dominio estatal, deberá presentar copia autenticada del acto administrativo autorizando la realización dicho emprendimiento.</p>
                     <p>El presente FORMULARIO, deberán ser confeccionado en forma completa y con la documentación legal solicitada.</p>
@@ -1974,17 +1815,14 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                     <p>Las solicitudes que no se presenten con documentación legal completa requerida, para cada caso en particular y detallada en el ítems 13, del presente formulario, quedaran pendientes de evaluación por parte de la Dirección de Recursos Forestales del Ministerio de Producción, hasta la cumplimentación de las mismas.</p>
                 </div>
     
-                <h2 class="main-section-title">16. DECLARACIÓN JURADA</h2>
+                <h2 class="main-section-title">15. DECLARACIÓN JURADA</h2>
                 <div class="static-text-section">
                     <p>El/los que subscribe/n, con poder suficiente para este acto, manifiesta/n en calidad de declaración jurada y asumiendo toda la responsabilidad civil, penal y administrativa por cualquier falsedad, omisión u ocultamiento que se verificare, que la información contenida en el presente formulario y en la documentación anexa es veraz y exacta y subsiste al tiempo de efectuarse esta presentación.</p>
                     <label class="inline-checkbox-label" style="margin-top: 15px; font-weight: bold;">
                         <input type="checkbox" id="checkAceptoDDJJ"> Acepto los términos de la declaración jurada.
                     </label>
                 </div>
-
-                <!-- Bloque de firmas de la Declaración Jurada -->
-                <div class="firmas-section-print" id="firmas-section-ddjj"></div>
-
+    
                 <div class="controls" style="border-bottom: none; border-top: 1px solid #dee2e6;">
                     <button id="btnImprimirPDF">Imprimir / Guardar PDF</button>
                 </div>
@@ -2045,17 +1883,12 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
             }
 
             function setupStaticTextareas() {
-                document.querySelectorAll('.auto-resize-textarea').forEach(textarea => {
+                document.querySelectorAll('.static-text-section-wrapper .auto-resize-textarea').forEach(textarea => {
                     const placeholderText = textarea.value.trim();
                     textarea.setAttribute('data-placeholder', placeholderText);
-                    if (textarea.value.trim() === '' || textarea.value.trim() === placeholderText) {
-                         textarea.classList.add('textarea-placeholder-style');
-                         textarea.value = placeholderText;
-                    }
-
+                    textarea.classList.add('textarea-placeholder-style');
 
                     textarea.addEventListener('focus', () => {
-                         if (textarea.readOnly) return;
                         if (textarea.value === placeholderText) {
                             textarea.value = '';
                             textarea.classList.remove('textarea-placeholder-style');
@@ -2063,7 +1896,6 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                     });
 
                     textarea.addEventListener('blur', () => {
-                         if (textarea.readOnly) return;
                         if (textarea.value.trim() === '') {
                             textarea.value = placeholderText;
                             textarea.classList.add('textarea-placeholder-style');
@@ -2107,8 +1939,8 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
 
             // --- FIN: FUNCIONES AUXILIARES ---
 
-            // --- MAPA, DATOS GEOGRÁFICOS Y DE ESPECIES ---
-            var map = L.map('mapa-kml').setView([-28.5, -57.5], 8);
+            // --- MAPA, DATOS GEOGRÁFICOS Y DE ESPECIES (sin cambios) ---
+            var map = L.map('mapa-kml').setView([-27.4698, -58.8306], 8);
             var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             });
@@ -2149,117 +1981,87 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                 setTimeout(() => { statusEl.style.display = 'none'; }, 5000);
             }
 
-            function processKMLData(kmlText, layerName) {
-                try {
-                    if (mapLayers[layerName]) map.removeLayer(mapLayers[layerName]);
-                    const geojson = omnivore.kml.parse(kmlText).toGeoJSON();
-                    if (layerName === 'predio') { predioGeoJSON = geojson; } else if (layerName === 'plan') { planGeoJSON = geojson; }
-                    mapLayers[layerName] = L.geoJSON(geojson, {
-                        style: mapStyles[layerName],
-                        pointToLayer: (feature, latlng) => L.circleMarker(latlng, mapStyles.parcelas),
-                        onEachFeature: (feature, layer) => {
-                            let popupContent = `<strong>${mapLayerTitles[layerName]}</strong>`;
-                            if (feature && feature.properties) { for (const key in feature.properties) { popupContent += `<br><strong>${key}:</strong> ${feature.properties[key]}`; } }
-                            layer.bindPopup(popupContent);
-                        }
-                    });
-                    
-                    updateLayerControl();
-                    mapLayers[layerName].addTo(map);
-
-                    showMapStatus(`Capa "${mapLayerTitles[layerName]}" cargada.`, 'success');
-                    if (layerName === 'predio') {
-                        const center = mapLayers.predio.getBounds().getCenter();
-                        document.getElementById('map-coordinates-display').innerHTML = `Lat: ${center.lat.toFixed(6)}, Lng: ${center.lng.toFixed(6)}`;
-                        calcularInterseccionesYSuperficies(); 
-                    } else if (layerName === 'plan') {
-                        calcularSuperficiePlan();
+            function loadOrdenamientoFromServer() {
+                fetch('Ordenamiento.geojson')
+                    .then(response => { if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); } return response.json(); })
+                    .then(data => {
+                        ordenamientoGeoJSON = data;
+                        mapLayers.ordenamiento = L.geoJSON(data, {
+                           style: mapStyles.ordenamiento,
+                           onEachFeature: (feature, layer) => { layer.bindPopup(`<strong>Categoría:</strong> ${feature.properties.Categoria || 'N/A'}`); }
+                        }).addTo(map);
+                        var overlayLayers = { ...getVisibleUserLayers(), "Ordenamiento Territorial": mapLayers.ordenamiento };
+                        updateLayerControl(overlayLayers);
+                        showMapStatus('Capa de Ordenamiento cargada desde el servidor.', 'success');
+                        calcularInterseccionesYSuperficies();
                         calculatePlanCategoriesIntersection(); 
-                    }
-                    fitToLayers();
-                } catch (error) { showMapStatus(`Error al procesar KML para ${layerName}: ` + error.message, 'error'); }
+                    })
+                    .catch(error => { console.error('Error al cargar Ordenamiento.json:', error); showMapStatus('Error al cargar la capa de Ordenamiento desde el servidor.', 'error'); });
             }
             
+            let layerControl = L.control.layers(baseLayers).addTo(map);
+
+            function updateLayerControl(overlayLayers) {
+                map.removeControl(layerControl);
+                layerControl = L.control.layers(baseLayers, overlayLayers).addTo(map);
+            }
+            
+            function getVisibleUserLayers() {
+                let visibleLayers = {};
+                for (const key in mapLayers) {
+                    if (mapLayers[key] && map.hasLayer(mapLayers[key]) && mapLayerTitles[key]) {
+                        visibleLayers[mapLayerTitles[key]] = mapLayers[key];
+                    }
+                }
+                return visibleLayers;
+            }
+
+            loadOrdenamientoFromServer();
+
             function loadKML(file, layerName) {
                 if (!file) return;
                 var reader = new FileReader();
-                reader.onload = (e) => processKMLData(e.target.result, layerName);
+                reader.onload = function(e) {
+                    try {
+                        if (mapLayers[layerName]) map.removeLayer(mapLayers[layerName]);
+                        const geojson = omnivore.kml.parse(e.target.result).toGeoJSON();
+                        if (layerName === 'predio') { predioGeoJSON = geojson; } else if (layerName === 'plan') { planGeoJSON = geojson; }
+                        mapLayers[layerName] = L.geoJSON(geojson, {
+                            style: mapStyles[layerName],
+                            pointToLayer: (feature, latlng) => L.circleMarker(latlng, mapStyles.parcelas),
+                            onEachFeature: (feature, layer) => {
+                                 let popupContent = `<strong>${mapLayerTitles[layerName]}</strong>`;
+                                if (feature && feature.properties) { for (const key in feature.properties) { popupContent += `<br><strong>${key}:</strong> ${feature.properties[key]}`; } }
+                                layer.bindPopup(popupContent);
+                            }
+                        }).addTo(map);
+                        updateLayerControl({ ...getVisibleUserLayers(), "Ordenamiento Territorial": mapLayers.ordenamiento });
+                        showMapStatus(`Capa "${mapLayerTitles[layerName]}" cargada.`, 'success');
+                        if (layerName === 'predio') {
+                            const center = mapLayers.predio.getBounds().getCenter();
+                            document.getElementById('map-coordinates-display').innerHTML = `Lat: ${center.lat.toFixed(6)}, Lng: ${center.lng.toFixed(6)}`;
+                            calcularInterseccionesYSuperficies(); 
+                        } else if (layerName === 'plan') {
+                            calcularSuperficiePlan();
+                            calculatePlanCategoriesIntersection(); 
+                        }
+                        fitToLayers();
+                    } catch (error) { showMapStatus('Error al cargar KML: ' + error.message, 'error'); }
+                };
                 reader.readAsText(file);
             }
-            
-            function loadDefaultOtbn() {
-                fetch('Ordenamiento.geojson') 
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Archivo de Ordenamiento (Ordenamiento.geojson) no encontrado. La capa no se cargará.');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        processOrdenamientoData(data);
-                    })
-                    .catch(error => {
-                        console.error('Error al cargar la capa de OTBN por defecto:', error);
-                        showMapStatus(error.message, 'error');
-                    });
-            }
 
-            function processOrdenamientoData(data) {
-                if (mapLayers.ordenamiento) map.removeLayer(mapLayers.ordenamiento);
-                ordenamientoGeoJSON = data;
-                mapLayers.ordenamiento = L.geoJSON(data, {
-                   style: mapStyles.ordenamiento,
-                   onEachFeature: (feature, layer) => { layer.bindPopup(`<strong>Categoría:</strong> ${feature.properties.Categoria || 'N/A'}`); }
-                });
-                
-                updateLayerControl();
-                mapLayers.ordenamiento.addTo(map); 
-
-                showMapStatus('Capa de Ordenamiento cargada.', 'success');
-                calcularInterseccionesYSuperficies();
-                calculatePlanCategoriesIntersection();
-            }
-            
-            let layerControl = L.control.layers(baseLayers, {}, { collapsed: false }).addTo(map);
-
-            function updateLayerControl() {
-                if (layerControl) {
-                    map.removeControl(layerControl);
-                }
-                const overlayLayers = {};
-                if(mapLayers.predio) overlayLayers['Polígono del Predio'] = mapLayers.predio;
-                if(mapLayers.plan) overlayLayers['Área del Plan Técnico'] = mapLayers.plan;
-                if(mapLayers.parcelas) overlayLayers['Parcelas de Muestreo'] = mapLayers.parcelas;
-                if(mapLayers.ordenamiento) overlayLayers['Ordenamiento Territorial'] = mapLayers.ordenamiento;
-
-                layerControl = L.control.layers(baseLayers, overlayLayers, { collapsed: false }).addTo(map);
-            }
-            
             function toggleLayer(layerName, visible) {
-                if (mapLayers[layerName]) { 
-                    if (visible) { 
-                        if (!map.hasLayer(mapLayers[layerName])) mapLayers[layerName].addTo(map);
-                    } else { 
-                        if (map.hasLayer(mapLayers[layerName])) map.removeLayer(mapLayers[layerName]);
-                    } 
-                }
+                if (mapLayers[layerName]) { if (visible) { mapLayers[layerName].addTo(map); } else { map.removeLayer(mapLayers[layerName]); } }
             }
 
             function fitToLayers() {
                 var group = new L.featureGroup();
                 var hasLayers = false;
                 ['predio', 'plan', 'parcelas'].forEach(key => {
-                    if (mapLayers[key] && map.hasLayer(mapLayers[key])) {
-                        group.addLayer(mapLayers[key]);
-                        hasLayers = true;
-                    }
+                    if (mapLayers[key] && map.hasLayer(mapLayers[key])) { group.addLayer(mapLayers[key]); hasLayers = true; }
                 });
-                if (hasLayers) {
-                    const bounds = group.getBounds();
-                    if (bounds.isValid()) {
-                        map.fitBounds(bounds, { padding: [30, 30] });
-                    }
-                }
+                if (hasLayers) { map.fitBounds(group.getBounds(), { paddingTopLeft: [20, 20], paddingBottomRight: [500, 30] }); }
             }
             
             function calcularSuperficiePlan() {
@@ -2303,7 +2105,7 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                                     else if (Categoria.includes('AMARILLO')) { areaAmarilloM2 += areaInterseccionM2; } 
                                     else if (Categoria.includes('VERDE')) { areaVerdeM2 += areaInterseccionM2; }
                                 }
-                            } catch (e) { /* Ignorar errores de topología */ }
+                            } catch (e) { /* Ignorar errores */ }
                         });
                     });
                     document.getElementById('inputCatRojo').value = (areaRojoM2 / 10000).toFixed(2);
@@ -2336,7 +2138,7 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                                     else if (Categoria.includes('AMARILLO')) { areaAmarilloM2 += areaInterseccionM2; } 
                                     else if (Categoria.includes('VERDE')) { areaVerdeM2 += areaInterseccionM2; }
                                 }
-                            } catch (e) { /* Ignorar errores de topología */ }
+                            } catch (e) { /* Ignorar errores */ }
                         });
                     });
                     document.getElementById('spanPlanCatRojo').textContent = formatNumber(areaRojoM2 / 10000);
@@ -2349,27 +2151,24 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
             function validatePlanSurfaces() {
                 const inputPlanSinCat = document.getElementById('inputPlanSinCategorizar');
                 inputPlanSinCat.style.border = '';
-
                 const predioSinCat = parseFloat(document.getElementById('inputSinCategorizar').value) || 0;
                 const planSinCat = parseFloat(inputPlanSinCat.value) || 0;
-                if (planSinCat > (predioSinCat + 0.001)) {
+                if (planSinCat > (predioSinCat + 0.001) ) {
+                    alert(`¡Error de Validación!\n\nLa superficie "Sin Categorizar" del área del plan (${formatNumber(planSinCat)}) no puede ser mayor a la superficie "Sin Categorizar" total del predio (${formatNumber(predioSinCat)}).`);
                     inputPlanSinCat.style.border = '2px solid red';
-                    return { valid: false, type: 'sinCat', planSinCat, predioSinCat };
+                    return false;
                 }
-
                 const supAreaProyecto = parseFloat(document.getElementById('inputSupAreaProyecto').value) || 0;
                 const planRojo = parseFloat(document.getElementById('spanPlanCatRojo').textContent.replace(/\./g, '').replace(',', '.')) || 0;
                 const planAmarillo = parseFloat(document.getElementById('spanPlanCatAmarillo').textContent.replace(/\./g, '').replace(',', '.')) || 0;
                 const planVerde = parseFloat(document.getElementById('spanPlanCatVerde').textContent.replace(/\./g, '').replace(',', '.')) || 0;
                 const sumaPlan = planRojo + planAmarillo + planVerde + planSinCat;
-                
-                // **CORRECCIÓN DE LÓGICA**: La suma de las categorías del plan NO DEBE SUPERAR el área del proyecto.
-                if (sumaPlan > (supAreaProyecto + 0.01)) { // Se usa una tolerancia de 0.01ha para errores de redondeo.
+                if (supAreaProyecto > 0 && sumaPlan > (supAreaProyecto + 0.001)) {
+                    alert(`¡Error de Validación!\n\nLa suma de superficies por categoría del plan (${formatNumber(sumaPlan)}) no puede exceder la "Superficie del Área del Proyecto" (${formatNumber(supAreaProyecto)}).`);
                     inputPlanSinCat.style.border = '2px solid orange';
-                    return { valid: false, type: 'suma', sumaPlan, supAreaProyecto };
+                    return false;
                 }
-
-                return { valid: true };
+                return true;
             }
 
             document.getElementById('kml-predio-file').addEventListener('change', (e) => loadKML(e.target.files[0], 'predio'));
@@ -2378,47 +2177,34 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
             document.getElementById('kml-predio-visible').addEventListener('change', (e) => toggleLayer('predio', e.target.checked));
             document.getElementById('kml-plan-visible').addEventListener('change', (e) => toggleLayer('plan', e.target.checked));
             document.getElementById('kml-parcelas-visible').addEventListener('change', (e) => toggleLayer('parcelas', e.target.checked));
-            
             document.getElementById('btn-map-clear').addEventListener('click', () => {
-                ['predio', 'plan', 'parcelas', 'ordenamiento'].forEach(key => { 
-                    if (mapLayers[key]) { map.removeLayer(mapLayers[key]); mapLayers[key] = null; } 
-                });
-                predioGeoJSON = null; planGeoJSON = null; ordenamientoGeoJSON = null;
-                document.getElementById('kml-predio-file').value = ''; 
-                document.getElementById('kml-plan-file').value = ''; 
-                document.getElementById('kml-parcelas-file').value = '';
-                document.getElementById('inputSupPredio').value = '0'; 
-                document.getElementById('inputSupAreaProyecto').value = '0';
-                document.getElementById('inputCatRojo').value = '0'; 
-                document.getElementById('inputCatAmarillo').value = '0'; 
-                document.getElementById('inputCatVerde').value = '0';
-                document.getElementById('spanPlanCatRojo').textContent = '0,00'; 
-                document.getElementById('spanPlanCatAmarillo').textContent = '0,00'; 
-                document.getElementById('spanPlanCatVerde').textContent = '0,00';
+                ['predio', 'plan', 'parcelas'].forEach(key => { if (mapLayers[key]) { map.removeLayer(mapLayers[key]); mapLayers[key] = null; } });
+                predioGeoJSON = null; planGeoJSON = null; 
+                document.getElementById('kml-predio-file').value = ''; document.getElementById('kml-plan-file').value = ''; document.getElementById('kml-parcelas-file').value = '';
+                document.getElementById('inputSupPredio').value = '0'; document.getElementById('inputSupAreaProyecto').value = '0';
+                document.getElementById('inputCatRojo').value = '0'; document.getElementById('inputCatAmarillo').value = '0'; document.getElementById('inputCatVerde').value = '0';
+                document.getElementById('spanPlanCatRojo').textContent = '0,00'; document.getElementById('spanPlanCatAmarillo').textContent = '0,00'; document.getElementById('spanPlanCatVerde').textContent = '0,00';
                 document.getElementById('inputPlanSinCategorizar').value = '0';
                 actualizarSuperficientes();
-                updateLayerControl();
+                updateLayerControl({ ...getVisibleUserLayers(), "Ordenamiento Territorial": mapLayers.ordenamiento });
                 document.getElementById('map-coordinates-display').innerHTML = `Lat: ---, Lng: ---`;
-                showMapStatus('Todas las capas han sido removidas.', 'success');
-                loadDefaultOtbn(); 
+                showMapStatus('Capas de usuario removidas.', 'success');
             });
-
             document.getElementById('btn-map-fit').addEventListener('click', fitToLayers);
             document.getElementById('btn-map-fix').addEventListener('click', () => {
-            map.panBy([120, 0]);
-            map.dragging.disable(); map.touchZoom.disable(); map.doubleClickZoom.disable();
-            map.scrollWheelZoom.disable(); map.boxZoom.disable(); map.keyboard.disable();
-            if (map.tap) map.tap.disable();
-            if(layerControl) map.removeControl(layerControl);
-            showMapStatus('Vista del mapa fijada y desplazada. Lista para imprimir.', 'success');
+                map.dragging.disable(); map.touchZoom.disable(); map.doubleClickZoom.disable();
+                map.scrollWheelZoom.disable(); map.boxZoom.disable(); map.keyboard.disable();
+                if (map.tap) map.tap.disable();
+                map.removeControl(layerControl);
+                showMapStatus('Vista del mapa fijada. Lista para imprimir.', 'success');
             });
         
         const T_VALUES_95_CI = { 1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 6: 2.447, 7: 2.365, 8: 2.306, 9: 2.262, 10: 2.228, 15: 2.131, 20: 2.086, 25: 2.060, 30: 2.042, Infinity: 1.96 };
         function getTValue(df) { if (df <= 0) return T_VALUES_95_CI[1]; if (df >= 30) return T_VALUES_95_CI.Infinity; if (T_VALUES_95_CI[df]) return T_VALUES_95_CI[df]; let closestDf = Object.keys(T_VALUES_95_CI).map(Number).filter(k => k !== Infinity && k <= df).pop(); return T_VALUES_95_CI[closestDf || 1]; }
         const locationData = { "ALVEAR": { dpto: "GENERAL ALVEAR" }, "BELLA VISTA": { dpto: "BELLA VISTA" }, "BERON DE ASTRADA": { dpto: "BERON DE ASTRADA" }, "CHAVARRIA": { dpto: "SAN ROQUE" }, "COLONIA CARLOS PELLEGRINI": { dpto: "SAN MARTIN" }, "COLONIA LIEBIGS": { dpto: "ITUZAINGO" }, "CONCEPCION": { dpto: "CONCEPCION" }, "CORRIENTES": { dpto: "CAPITAL" }, "CURUZU CUATIA": { dpto: "CURUZU CUATIA" }, "EL SOMBRERO": { dpto: "EMPEDRADO" }, "EMPEDRADO": { dpto: "EMPEDRADO" }, "ESQUINA": { dpto: "ESQUINA" }, "FELIPE YOFRE": { dpto: "MERCEDES" }, "GARRUCHOS": { dpto: "SANTO TOME" }, "GOBERNADOR AGR. VALENTIN VIRASORO": { dpto: "SANTO TOME" }, "GOBERNADOR JUAN E. MARTINEZ": { dpto: "LAVALLE" }, "GOYA": { dpto: "GOYA" }, "GUAVIRAVI": { dpto: "SAN MARTIN" }, "ITA IBATE": { dpto: "GENERAL PAZ" }, "ITATI": { dpto: "ITATI" }, "ITUZAINGO": { dpto: "ITUZAINGO" }, "LA CRUZ": { dpto: "SAN MARTIN" }, "LAGUNA BRAVA": { dpto: "CAPITAL" }, "LAVALLE": { dpto: "LAVALLE" }, "LORETO": { dpto: "SAN MIGUEL" }, "MARIANO I. LOZA": { dpto: "MERCEDES" }, "MBURUCUYA": { dpto: "MBURUCUYA" }, "MERCEDES": { dpto: "MERCEDES" }, "MOCORETA": { dpto: "MONTE CASEROS" }, "MONTE CASEROS": { dpto: "MONTE CASEROS" }, "NUESTRA SENORA DEL ROSARIO DE CAA CATI": { dpto: "GENERAL PAZ" }, "9 DE JULIO": { dpto: "SAN ROQUE" }, "PASO DE LA PATRIA": { dpto: "SAN COSME" }, "PASO DE LOS LIBRES": { dpto: "PASO DE LOS LIBRES" }, "PEDRO R. FERNANDEZ": { dpto: "SAN ROQUE" }, "PERUGORRIA": { dpto: "CURUZU CUATIA" }, "SALADAS": { dpto: "SALADAS" }, "SAN ANTONIO": { dpto: "ITUZAINGO" }, "SAN CARLOS": { dpto: "ITUZAINGO" }, "SAN COSME": { dpto: "SAN COSME" }, "SAN LORENZO": { dpto: "SALADAS" }, "SAN LUIS DEL PALMAR": { dpto: "SAN LUIS DEL PALMAR" }, "SAN MIGUEL": { dpto: "SAN MIGUEL" }, "SAN ROQUE": { dpto: "SAN ROQUE" }, "SANTA ANA": { dpto: "SAN COSME" }, "SANTA LUCIA": { dpto: "LAVALLE" }, "SANTA ROSA": { dpto: "CONCEPCION" }, "SANTO TOME": { dpto: "SANTO TOME" }, "SAUCE": { dpto: "SAUCE" }, "VILLA OLIVARI": { dpto: "ITUZAINGO" }, "YAPEYU": { dpto: "SAN MARTIN" }, };
-        window.speciesFormulas = { 'Acacia aroma': { scientificName: 'Tusca', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acacia caven': { scientificName: 'Aromil; Espinillo; Churqui', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acacia furcatispina': { scientificName: 'Teatín', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acacia praecox': { scientificName: 'Garabato', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acacia visco': { scientificName: 'Arca; Visco', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acanthosyris falcata': { scientificName: 'Sacha pera; Saucillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acanthosyris spinescens': { scientificName: 'Quebrachillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Achatocarpus praecox': { scientificName: 'Palo tinta; Tala negro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Allophyllus edulis': { scientificName: 'Chal chal', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Alnus acuminata': { scientificName: 'Aliso del cerro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Amburana cearensis': { scientificName: 'Roble', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Anadenanthera colubrina': { scientificName: 'Cebil colorado; Horco cebil', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Aralia soratensis': { scientificName: 'Sacha paraiso', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Aspidosperma polyneuron': { scientificName: 'Palo rosa', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Aspidosperma quebracho-blanco': { scientificName: 'Quebracho blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Astronium balansae': { scientificName: 'Urunday', volFuste: (d, af) => Math.exp(-9.22955+1.933161*Math.log(d)+0.901548*Math.log(af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.8 }, 'Astronium urundeuva': { scientificName: 'Urundel', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Atamisquea emarginata': { scientificName: 'Atamisqui', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Athyana weinmannifolia': { scientificName: 'Quebrachillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Baccharis dracunculifolia': { scientificName: 'Alecrín', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bauhinia forficata': { scientificName: 'Pata de buey', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Blepharocalyx gigantea': { scientificName: 'Palo barroso; Molle', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bocconia pearcei': { scientificName: 'Suncho amargo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Borrichia frutescens': { scientificName: 'Saladillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bougainvillea spinosa': { scientificName: 'Montenegro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bougainvillea stipitata': { scientificName: 'Huanca; Alfilerillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bromelia hieronymi': { scientificName: 'Chaguar', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bulnesia bonariensis': { scientificName: 'Guacle', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bulnesia retama': { scientificName: 'Retamo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bulnesia sarmientoi': { scientificName: 'Palo santo', volFuste: (d, af) => Math.exp(-9.18113+0.950324*Math.log(d**2*af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.2 }, 'Bumelia obtusifolia': { scientificName: 'Molle negro; Guaranina', volFuste: (d, af) => Math.exp(-9.22955+1.933161*Math.log(d)+0.901548*Math.log(af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.8 }, 'Caesalpinia paraguariensis': { scientificName: 'Guayacán; Palo azul', volFuste: (d, af) => Math.exp(-9.22955+1.933161*Math.log(d)+0.901548*Math.log(af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.8 }, 'Calycophyllum multiflorum': { scientificName: 'Palo blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Capparis retusa': { scientificName: 'Sacha poroto', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Capparis salicisfolia': { scientificName: 'Sacha sandia', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Capparis speciosa': { scientificName: 'Bola verde', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Capparis tweediana': { scientificName: 'Sacha coca', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Carica quecifolia': { scientificName: 'Sacha higuera', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cascaronia astragalina': { scientificName: 'Cascarón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cassia carnaval': { scientificName: 'Carnaval', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Castela coccinea': { scientificName: 'Meloncillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cathormiom polyantha': { scientificName: 'Timbo blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cedrela balansae': { scientificName: 'Cedro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cedrela lilloi': { scientificName: 'Cedro rosado', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cedrela saltensis': { scientificName: 'Cedro saltensis', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ceiba chodatii': { scientificName: 'Palo borracho; Yuchán', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ceiba insignis': { scientificName: 'Palo borracho', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Celtis tala': { scientificName: 'Tala', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cercidium praecox': { scientificName: 'Brea', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cereus forbesii': { scientificName: 'Ucle', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cestrum parqui': { scientificName: 'Duraznillo negro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cethormion polyanthum': { scientificName: 'Palo flojo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Chloroleucon chacoense': { scientificName: 'Palo overo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Chlorophora tinctoria': { scientificName: 'Mora; Mora amarilla', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Chrysophyllum gonocarpum': { scientificName: 'Aguay', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Citharexylum montevidense': { scientificName: 'Espina de bañado', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cnidoscolus vitifolius': { scientificName: 'Ortiga', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Coccoloba tiliacia': { scientificName: 'Mandor', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Colletia spinosissima': { scientificName: 'Espino negro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Condalia microphylla': { scientificName: 'Piquillín', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Copernicia alba': { scientificName: 'Palma negra', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cordia trichotoma': { scientificName: 'Afata', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Croton sp.': { scientificName: 'Crotón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cupanea vernalis': { scientificName: 'Ramo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Diplokeleba floribunda': { scientificName: 'Palo Piedra', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Enterolobium contortisiliquum': { scientificName: 'Timbó; Pacará', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Erythrina falcata / crista-galli': { scientificName: 'Ceibo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Erythrina dominguensii': { scientificName: 'Ceibo salteño', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Eugenia mato': { scientificName: 'Horco mato', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Fagara coco': { scientificName: 'Fagara', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Fagara naranjillo': { scientificName: 'Naranjillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ficus maroma': { scientificName: 'Ficus', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ficus monckii': { scientificName: 'Higuerón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Geoffrea decorticans': { scientificName: 'Chañar', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Gleditsia amorphoides': { scientificName: 'Espina corona; Pipa', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Holocalyx balansae': { scientificName: 'Alecrín; Ibirá pepe', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Inga sp': { scientificName: 'Inga; Pacay', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Jacaranda mimosifolia': { scientificName: 'Jacaranda', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Jodina rhombifolia': { scientificName: 'Sombra de toro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Juglans australis': { scientificName: 'Nogal; Nogal criollo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Larrea sp (cuneifolia/divaricata/nitida)': { scientificName: 'Jarilla', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Lithraea molleoides': { scientificName: 'Molle de beber', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Lonchocarpus lilloi': { scientificName: 'Quina blanca; Sacha quina', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Loxopterygium grisebachii': { scientificName: 'Mara', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Luehea divaricata': { scientificName: 'Azota caballo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Maclura tinctoria': { scientificName: 'Mora amarilla', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Maytenus vitis-idaea': { scientificName: 'Carne gorda', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Mimosa detines / pilulifera': { scientificName: 'Garabato blanco / Espinillo manso', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Mimozyganthus carinatus': { scientificName: 'Latas', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Miroxylon peruiferum': { scientificName: 'Quina', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Myrcianthes mato': { scientificName: 'Arrayán', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Myrcianthes pungens': { scientificName: 'Mato; Guabiyú', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Myrsine laetevirens': { scientificName: 'San Antonio', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Nectandra saligna': { scientificName: 'Laurel Negro', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ocotea puberula': { scientificName: 'Laurel Blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Opuntia quimilo': { scientificName: 'Quimil', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Parapiptadenia excelsa': { scientificName: 'Horco cebil', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Parapiptadenia rigida': { scientificName: 'Anchico colorado', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Parkinsonia aculeata': { scientificName: 'Palo verde', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Patagonula americana': { scientificName: 'Guayaibí; Lanza blanca', volFuste: (d, af) => Math.exp(-9.5086+2.0041*Math.log(d)+0.973*Math.log(af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.0 }, 'Peltophorum dubium': { scientificName: 'Ibirá pitá', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pereskia sacharosa': { scientificName: 'Sacha rosa', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Phoebe porphyria': { scientificName: 'Laurel', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Phyllostyllon rhamnoides': { scientificName: 'Palo amarillo; Palo lanza', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pipper tucumanum': { scientificName: 'Matico', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pisonia zapallo': { scientificName: 'Zapallo caspi', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pithecellobium scalare': { scientificName: 'Tatané; Palo cascarudo', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pithecellobium multiflorum': { scientificName: 'Timbó blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Podocarpus parlatorei': { scientificName: 'Pino del cerro', volFuste: (d, af) => Math.exp(-8.3864+0.0551011*d-0.000533799*d**2-0.159762*af+1.34969*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'Polylepis australis': { scientificName: 'Queñoa', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis affinis': { scientificName: 'Ñandubay', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis alba': { scientificName: 'Algarrobo blanco', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis algarrobilla': { scientificName: 'Algarrobillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis kuntzei': { scientificName: 'Itín; Palo mataco', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis nigra': { scientificName: 'Algarrobo negro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis ruscifolia': { scientificName: 'Vinal', volFuste: (d, af) => Math.exp(-9.39969+1.9797*Math.log(d)+0.939584*Math.log(af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'Prosopis torquata': { scientificName: 'Tintitaco', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pterogine nitens': { scientificName: 'Tipa colorada; Viraró', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Randia armata': { scientificName: 'Sacha Naranjo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ruellia sp': { scientificName: 'Yuyo Paloma', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ruprechtia laxiflora': { scientificName: 'Viraró', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ruprechtia triflora': { scientificName: 'Duraznillo; Sacha membrillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Saccelium lanceolatum': { scientificName: 'Guayabil', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Salix humboldtiana': { scientificName: 'Sauce', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Sapindus saponaria': { scientificName: 'Palo jabon', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Sapium haematospermum': { scientificName: 'Lecherón; Curupí', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Schinopsis balansae': { scientificName: 'Quebracho colorado chaqueño', volFuste: (d, af) => Math.exp(-9.5086+2.0041*Math.log(d)+0.973*Math.log(af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.0 }, 'Schinopsis haenkeana': { scientificName: 'Horco Quebracho', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Schinopsis lorentzii': { scientificName: 'Quebracho colorado', volFuste: (d, af) => Math.exp(-9.5086+2.0041*Math.log(d)+0.973*Math.log(af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.0 }, 'Schinus areira / piliferus': { scientificName: 'Aguaribay / Horco molle', volFuste: (d, af) => Math.exp(-8.3864+0.0551011*d-0.000533799*d**2-0.159762*af+1.34969*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'Scutia buxifolia': { scientificName: 'Coronillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Senna corymbosa': { scientificName: 'Sen de campo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Sesbania punicea': { scientificName: 'Acacia mansa', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Sideroxylon obtusifolium': { scientificName: 'Molle; Guaraniná', volFuste: (d, af) => Math.exp(-8.3864+0.0551011*d-0.000533799*d**2-0.159762*af+1.34969*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'Solanum argentinum / riparium': { scientificName: 'Hediondilla; Tabaquillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Stetsonia coryne': { scientificName: 'Cardón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tabebuia ipe / impetiginosa': { scientificName: 'Lapacho negro; rosado', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tabebuia lapacho': { scientificName: 'Lapacho amarillo', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tabebuia nodosa': { scientificName: 'Palo cruz', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tecoma stans': { scientificName: 'Guarán', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Terminalia triflora': { scientificName: 'Lanza amarilla', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tessaria integrifolia': { scientificName: 'Palo bobo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tipuana tipu': { scientificName: 'Tipa; Tipa blanca', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Trema micrantha': { scientificName: 'Palo polvora', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Trithrinax biflabellata': { scientificName: 'Carandillo / Caranday', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Trithrinax schizophylla': { scientificName: 'Carandilla', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Urera basifera': { scientificName: 'Ortigón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Vallesia glabra': { scientificName: 'Ancoche', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ximenia americana': { scientificName: 'Pata pata', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Zanthoxylum coco': { scientificName: 'Cochucho', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Zizypus mistol': { scientificName: 'Mistol', volFuste: (d, af) => Math.exp(-8.3864+0.0551011*d-0.000533799*d**2-0.159762*af+1.34969*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'OTRAS': { scientificName: '(Genérico)', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 } };
+        const speciesFormulas = { 'Acacia aroma': { scientificName: 'Tusca', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acacia caven': { scientificName: 'Aromil; Espinillo; Churqui', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acacia furcatispina': { scientificName: 'Teatín', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acacia praecox': { scientificName: 'Garabato', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acacia visco': { scientificName: 'Arca; Visco', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acanthosyris falcata': { scientificName: 'Sacha pera; Saucillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Acanthosyris spinescens': { scientificName: 'Quebrachillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Achatocarpus praecox': { scientificName: 'Palo tinta; Tala negro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Allophyllus edulis': { scientificName: 'Chal chal', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Alnus acuminata': { scientificName: 'Aliso del cerro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Amburana cearensis': { scientificName: 'Roble', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Anadenanthera colubrina': { scientificName: 'Cebil colorado; Horco cebil', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Aralia soratensis': { scientificName: 'Sacha paraiso', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Aspidosperma polyneuron': { scientificName: 'Palo rosa', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Aspidosperma quebracho-blanco': { scientificName: 'Quebracho blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Astronium balansae': { scientificName: 'Urunday', volFuste: (d, af) => Math.exp(-9.22955+1.933161*Math.log(d)+0.901548*Math.log(af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.8 }, 'Astronium urundeuva': { scientificName: 'Urundel', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Atamisquea emarginata': { scientificName: 'Atamisqui', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Athyana weinmannifolia': { scientificName: 'Quebrachillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Baccharis dracunculifolia': { scientificName: 'Alecrín', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bauhinia forficata': { scientificName: 'Pata de buey', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Blepharocalyx gigantea': { scientificName: 'Palo barroso; Molle', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bocconia pearcei': { scientificName: 'Suncho amargo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Borrichia frutescens': { scientificName: 'Saladillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bougainvillea spinosa': { scientificName: 'Montenegro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bougainvillea stipitata': { scientificName: 'Huanca; Alfilerillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bromelia hieronymi': { scientificName: 'Chaguar', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bulnesia bonariensis': { scientificName: 'Guacle', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bulnesia retama': { scientificName: 'Retamo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Bulnesia sarmientoi': { scientificName: 'Palo santo', volFuste: (d, af) => Math.exp(-9.18113+0.950324*Math.log(d**2*af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.2 }, 'Bumelia obtusifolia': { scientificName: 'Molle negro; Guaranina', volFuste: (d, af) => Math.exp(-9.22955+1.933161*Math.log(d)+0.901548*Math.log(af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.8 }, 'Caesalpinia paraguariensis': { scientificName: 'Guayacán; Palo azul', volFuste: (d, af) => Math.exp(-9.22955+1.933161*Math.log(d)+0.901548*Math.log(af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.8 }, 'Calycophyllum multiflorum': { scientificName: 'Palo blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Capparis retusa': { scientificName: 'Sacha poroto', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Capparis salicisfolia': { scientificName: 'Sacha sandia', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Capparis speciosa': { scientificName: 'Bola verde', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Capparis tweediana': { scientificName: 'Sacha coca', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Carica quecifolia': { scientificName: 'Sacha higuera', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cascaronia astragalina': { scientificName: 'Cascarón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cassia carnaval': { scientificName: 'Carnaval', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Castela coccinea': { scientificName: 'Meloncillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cathormiom polyantha': { scientificName: 'Timbo blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cedrela balansae': { scientificName: 'Cedro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cedrela lilloi': { scientificName: 'Cedro rosado', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cedrela saltensis': { scientificName: 'Cedro saltensis', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ceiba chodatii': { scientificName: 'Palo borracho; Yuchán', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ceiba insignis': { scientificName: 'Palo borracho', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Celtis tala': { scientificName: 'Tala', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cercidium praecox': { scientificName: 'Brea', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cereus forbesii': { scientificName: 'Ucle', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cestrum parqui': { scientificName: 'Duraznillo negro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cethormion polyanthum': { scientificName: 'Palo flojo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Chloroleucon chacoense': { scientificName: 'Palo overo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Chlorophora tinctoria': { scientificName: 'Mora; Mora amarilla', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Chrysophyllum gonocarpum': { scientificName: 'Aguay', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Citharexylum montevidense': { scientificName: 'Espina de bañado', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cnidoscolus vitifolius': { scientificName: 'Ortiga', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Coccoloba tiliacia': { scientificName: 'Mandor', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Colletia spinosissima': { scientificName: 'Espino negro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Condalia microphylla': { scientificName: 'Piquillín', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Copernicia alba': { scientificName: 'Palma negra', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cordia trichotoma': { scientificName: 'Afata', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Croton sp.': { scientificName: 'Crotón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Cupanea vernalis': { scientificName: 'Ramo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Diplokeleba floribunda': { scientificName: 'Palo Piedra', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Enterolobium contortisiliquum': { scientificName: 'Timbó; Pacará', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Erythrina falcata / crista-galli': { scientificName: 'Ceibo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Erythrina dominguensii': { scientificName: 'Ceibo salteño', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Eugenia mato': { scientificName: 'Horco mato', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Fagara coco': { scientificName: 'Fagara', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Fagara naranjillo': { scientificName: 'Naranjillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ficus maroma': { scientificName: 'Ficus', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ficus monckii': { scientificName: 'Higuerón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Geoffrea decorticans': { scientificName: 'Chañar', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Gleditsia amorphoides': { scientificName: 'Espina corona; Pipa', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Holocalyx balansae': { scientificName: 'Alecrín; Ibirá pepe', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Inga sp': { scientificName: 'Inga; Pacay', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Jacaranda mimosifolia': { scientificName: 'Jacaranda', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Jodina rhombifolia': { scientificName: 'Sombra de toro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Juglans australis': { scientificName: 'Nogal; Nogal criollo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Larrea sp (cuneifolia/divaricata/nitida)': { scientificName: 'Jarilla', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Lithraea molleoides': { scientificName: 'Molle de beber', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Lonchocarpus lilloi': { scientificName: 'Quina blanca; Sacha quina', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Loxopterygium grisebachii': { scientificName: 'Mara', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Luehea divaricata': { scientificName: 'Azota caballo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Maclura tinctoria': { scientificName: 'Mora amarilla', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Maytenus vitis-idaea': { scientificName: 'Carne gorda', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Mimosa detines / pilulifera': { scientificName: 'Garabato blanco / Espinillo manso', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Mimozyganthus carinatus': { scientificName: 'Latas', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Miroxylon peruiferum': { scientificName: 'Quina', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Myrcianthes mato': { scientificName: 'Arrayán', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Myrcianthes pungens': { scientificName: 'Mato; Guabiyú', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Myrsine laetevirens': { scientificName: 'San Antonio', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Nectandra saligna': { scientificName: 'Laurel Negro', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ocotea puberula': { scientificName: 'Laurel Blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Opuntia quimilo': { scientificName: 'Quimil', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Parapiptadenia excelsa': { scientificName: 'Horco cebil', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Parapiptadenia rigida': { scientificName: 'Anchico colorado', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Parkinsonia aculeata': { scientificName: 'Palo verde', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Patagonula americana': { scientificName: 'Guayaibí; Lanza blanca', volFuste: (d, af) => Math.exp(-9.5086+2.0041*Math.log(d)+0.973*Math.log(af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.0 }, 'Peltophorum dubium': { scientificName: 'Ibirá pitá', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pereskia sacharosa': { scientificName: 'Sacha rosa', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Phoebe porphyria': { scientificName: 'Laurel', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Phyllostyllon rhamnoides': { scientificName: 'Palo amarillo; Palo lanza', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pipper tucumanum': { scientificName: 'Matico', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pisonia zapallo': { scientificName: 'Zapallo caspi', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pithecellobium scalare': { scientificName: 'Tatané; Palo cascarudo', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pithecellobium multiflorum': { scientificName: 'Timbó blanco', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Podocarpus parlatorei': { scientificName: 'Pino del cerro', volFuste: (d, af) => Math.exp(-8.3864+0.0551011*d-0.000533799*d**2-0.159762*af+1.34969*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'Polylepis australis': { scientificName: 'Queñoa', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis affinis': { scientificName: 'Ñandubay', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis alba': { scientificName: 'Algarrobo blanco', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis algarrobilla': { scientificName: 'Algarrobillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis kuntzei': { scientificName: 'Itín; Palo mataco', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis nigra': { scientificName: 'Algarrobo negro', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Prosopis ruscifolia': { scientificName: 'Vinal', volFuste: (d, af) => Math.exp(-9.39969+1.9797*Math.log(d)+0.939584*Math.log(af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'Prosopis torquata': { scientificName: 'Tintitaco', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Pterogine nitens': { scientificName: 'Tipa colorada; Viraró', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Randia armata': { scientificName: 'Sacha Naranjo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ruellia sp': { scientificName: 'Yuyo Paloma', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ruprechtia laxiflora': { scientificName: 'Viraró', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ruprechtia triflora': { scientificName: 'Duraznillo; Sacha membrillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Saccelium lanceolatum': { scientificName: 'Guayabil', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Salix humboldtiana': { scientificName: 'Sauce', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Sapindus saponaria': { scientificName: 'Palo jabon', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Sapium haematospermum': { scientificName: 'Lecherón; Curupí', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Schinopsis balansae': { scientificName: 'Quebracho colorado chaqueño', volFuste: (d, af) => Math.exp(-9.5086+2.0041*Math.log(d)+0.973*Math.log(af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.0 }, 'Schinopsis haenkeana': { scientificName: 'Horco Quebracho', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Schinopsis lorentzii': { scientificName: 'Quebracho colorado', volFuste: (d, af) => Math.exp(-9.5086+2.0041*Math.log(d)+0.973*Math.log(af)), volTotal: (d, at) => 0.000033 * d**2.3455 * at**0.687553, pesoEspecifico: 1.0 }, 'Schinus areira / piliferus': { scientificName: 'Aguaribay / Horco molle', volFuste: (d, af) => Math.exp(-8.3864+0.0551011*d-0.000533799*d**2-0.159762*af+1.34969*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'Scutia buxifolia': { scientificName: 'Coronillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Senna corymbosa': { scientificName: 'Sen de campo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Sesbania punicea': { scientificName: 'Acacia mansa', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Sideroxylon obtusifolium': { scientificName: 'Molle; Guaraniná', volFuste: (d, af) => Math.exp(-8.3864+0.0551011*d-0.000533799*d**2-0.159762*af+1.34969*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'Solanum argentinum / riparium': { scientificName: 'Hediondilla; Tabaquillo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Stetsonia coryne': { scientificName: 'Cardón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tabebuia ipe / impetiginosa': { scientificName: 'Lapacho negro; rosado', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tabebuia lapacho': { scientificName: 'Lapacho amarillo', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tabebuia nodosa': { scientificName: 'Palo cruz', volFuste: (d, af) => Math.exp(-9.44933+0.983515*Math.log(d**2*af)), volTotal: (d, at) => Math.exp(-10.976 + 1.11062 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tecoma stans': { scientificName: 'Guarán', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Terminalia triflora': { scientificName: 'Lanza amarilla', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tessaria integrifolia': { scientificName: 'Palo bobo', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Tipuana tipu': { scientificName: 'Tipa; Tipa blanca', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Trema micrantha': { scientificName: 'Palo polvora', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Trithrinax biflabellata': { scientificName: 'Carandillo / Caranday', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Trithrinax schizophylla': { scientificName: 'Carandilla', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Urera basifera': { scientificName: 'Ortigón', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Vallesia glabra': { scientificName: 'Ancoche', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Ximenia americana': { scientificName: 'Pata pata', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Zanthoxylum coco': { scientificName: 'Cochucho', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 }, 'Zizypus mistol': { scientificName: 'Mistol', volFuste: (d, af) => Math.exp(-8.3864+0.0551011*d-0.000533799*d**2-0.159762*af+1.34969*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.79166 + 1.091557 * Math.log(d**2 * at)), pesoEspecifico: 0.7 }, 'OTRAS': { scientificName: '(Genérico)', volFuste: (d, af) => Math.exp(-9.49642-0.00145081*d+0.824921*Math.log(d**2*af)+0.366708*Math.log(d*af)), volTotal: (d, at) => Math.exp(-10.78979 + 1.07129 * Math.log(d**2 * at)), pesoEspecifico: 0.75 } };
         const dapClasses = [ { name: 'I (<10cm)', min: 0, max: 9.99, label: "< 10 cm" }, { name: 'II (10-14.9cm)', min: 10, max: 14.99, label: "10-14,9 cm" }, { name: 'III (15-19.9cm)', min: 15, max: 19.99, label: "15-19,9 cm" }, { name: 'IV (20-24.9cm)', min: 20, max: 24.99, label: "20-24,9 cm" }, { name: 'V (25-29.9cm)', min: 25, max: 29.99, label: "25-29,9 cm" }, { name: 'VI (30-34.9cm)', min: 30, max: 34.99, label: "30-34,9 cm" }, { name: 'VII (35-39.9cm)', min: 35, max: 39.99, label: "35-39,9 cm" }, { name: 'VIII (40-44.9cm)', min: 40, max: 44.99, label: "40-44,9 cm" }, { name: 'IX (45-49.9cm)', min: 45, max: 49.99, label: "45-49,9 cm" }, { name: 'X (>50cm)', min: 50, max: Infinity, label: ">50 cm" } ];
-        let enteredTrees = []; let chartVolumenEspecieInstance = null; let chartDensidadEspecieInstance = null; let chartDistribucionDAPInstance = null; let chartVolumenClaseDAPInstance = null; let chartABClaseDAPInstance = null; let chartDensidadClaseDAPInstance = null; let chartToneladasClaseDAPInstance = null; let resultsBySpeciesDAPGlobal = {}; 
+        let enteredTrees = []; let chartVolumenEspecieInstance = null; let chartDensidadEspecieInstance = null; let chartDistribucionDAPInstance = null; let chartVolumenClaseDAPInstance = null; let chartABDensidadClaseDAPInstance = null; let chartToneladasClaseDAPInstance = null; let resultsBySpeciesDAPGlobal = {}; 
         
         // --- INICIO: LÓGICA PARA POAs DINÁMICOS ---
         const poaContainer = document.getElementById('poaContainer');
@@ -2445,7 +2231,7 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                         <h3 class="sub-section-title">${config.title}</h3>
                         <label class="poa-reuse-text-label">
                             <input type="checkbox" class="reuse-text-checkbox" data-source-id="${config.generalId}" data-target-id="${poaTextareaId}" checked>
-                            Usar texto general del plan (definido en el Ítem 13)
+                            Usar texto general del plan (definido en el Ítem 12)
                         </label>
                         <textarea id="${poaTextareaId}" class="auto-resize-textarea"></textarea>
                         <div id="print-${poaTextareaId}" class="textarea-print-content"></div>
@@ -2523,7 +2309,7 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                                 ${activitiesHtml}
                                 <h3 class="sub-section-title">7- CRONOGRAMA DE ACTIVIDADES DEL POA ${i}</h3>
                                 <div class="result-table-container">
-                                    <table class="poa-gantt-table" id="ganttTable_${i}">
+                                    <table class="poa-gantt-table">
                                          <thead>
                                             <tr>
                                                 <th rowspan="2" style="vertical-align: middle;">Actividades</th>
@@ -2638,7 +2424,6 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                     }
                 });
             });
-
             // --- Inicializar mini-mapas de POA ---
             initPoaMaps();
         }
@@ -2734,14 +2519,13 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                     showPoaStatus('Capas eliminadas.', 'info');
                 });
 
-                // Invalidar tamaño cuando el <details> se abre (el mapa puede inicializar oculto)
+                // Invalidar tamaño cuando el <details> se abre
                 const detailsEl = mapDiv.closest('details');
                 if (detailsEl) {
                     detailsEl.addEventListener('toggle', () => {
                         if (detailsEl.open) setTimeout(() => poaMap.invalidateSize(), 100);
                     });
                 }
-                // Invalidar tamaño inicial por si ya estaba abierto
                 setTimeout(() => poaMap.invalidateSize(), 200);
             });
         }
@@ -2786,19 +2570,7 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                  inputSinCat.style.border = '2px solid red';
             }
         }
-        
-        function calculateForestryData() {
-            const validationResult = validatePlanSurfaces();
-            if (!validationResult.valid) {
-                if (validationResult.type === 'sinCat') {
-                    alert(`¡Error de Validación!\n\nLa superficie "Sin Categorizar" del área del plan (${formatNumber(validationResult.planSinCat)}) no puede ser mayor a la superficie "Sin Categorizar" total del predio (${formatNumber(validationResult.predioSinCat)}).`);
-                } else if (validationResult.type === 'suma') {
-                    // **MENSAJE DE ERROR CORREGIDO**
-                    alert(`¡Error de Validación!\n\nLa suma de superficies por categoría del plan (${formatNumber(validationResult.sumaPlan)}) no puede ser mayor que la "Superficie del Área del Proyecto" (${formatNumber(validationResult.supAreaProyecto)}).`);
-                }
-                return; 
-            }
-             
+        function calculateForestryData() { 
             if (enteredTrees.length === 0) { alert('No se han ingresado árboles. Por favor, agregue datos de inventario.'); return; } 
             const totalSampledAreaM2 = parseFloat(document.getElementById('supParcelasM2').value); 
             if (totalSampledAreaM2 === 0) { alert('El área de muestreo es 0. Asegúrese de que los árboles tengan números de parcela asignados.'); return; } 
@@ -2836,7 +2608,6 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
             document.getElementById('inventoryResultsWrapper').style.display = 'block'; 
             document.getElementById('graficosInventarioContainer').style.display = 'grid'; 
             document.getElementById('firmas-section-plan').innerHTML = generateSignatureBlockHTML('plan');
-            document.getElementById('firmas-section-ddjj').innerHTML = generateSignatureBlockHTML('ddjj');
         }
         function createDapClassHeader(table, mainTitle, extraColumns = []) { table.innerHTML = ''; const thead = table.createTHead(); const row1 = thead.insertRow(); const th_species = document.createElement('th'); th_species.textContent = 'ESPECIES'; th_species.rowSpan = 3; row1.appendChild(th_species); const th_classes = document.createElement('th'); th_classes.textContent = mainTitle; th_classes.colSpan = dapClasses.length; row1.appendChild(th_classes); extraColumns.forEach(col => { const th = document.createElement('th'); th.textContent = col.title; th.rowSpan = col.rowSpan || 3; row1.appendChild(th); }); const row2 = thead.insertRow(); dapClasses.forEach(c => { const th = document.createElement('th'); th.textContent = c.name.split(' ')[0]; row2.appendChild(th); }); const row3 = thead.insertRow(); dapClasses.forEach(c => { const th = document.createElement('th'); th.textContent = c.label; row3.appendChild(th); }); }
         function renderVolumeTable(data, factor) { const table = document.getElementById('tableVolumen'); createDapClassHeader(table, 'CLASES DIAMETRICAS', [{ title: 'TOTAL', rowSpan: 3 }]); const tbody = table.createTBody(); const tfoot = table.createTFoot().insertRow(); tfoot.insertCell().textContent = 'TOTAL'; const totals = { ...Object.fromEntries(dapClasses.map(c => [c.name, 0])), 'TOTAL': 0 }; for (const especie in data) { const row = tbody.insertRow(); row.insertCell().textContent = especie; let totalEspecie = 0; dapClasses.forEach(dapClass => { const val = data[especie][dapClass.name] ? data[especie][dapClass.name].volFuste * factor : 0; row.insertCell().textContent = formatNumber(val); totalEspecie += val; totals[dapClass.name] += val; }); row.insertCell().textContent = formatNumber(totalEspecie); totals['TOTAL'] += totalEspecie; } dapClasses.forEach(c => tfoot.insertCell().textContent = formatNumber(totals[c.name])); tfoot.insertCell().textContent = formatNumber(totals['TOTAL']); }
@@ -2845,68 +2616,19 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
         function renderTonsTable(data, factor) { const table = document.getElementById('tableToneladas'); createDapClassHeader(table, 'CLASES DIAMETRICAS', [{ title: 'TOTAL', rowSpan: 3 }]); const tbody = table.createTBody(); const tfoot = table.createTFoot().insertRow(); tfoot.insertCell().textContent = 'TOTAL'; const totals = { ...Object.fromEntries(dapClasses.map(c => [c.name, 0])), 'TOTAL': 0 }; for (const especie in data) { const row = tbody.insertRow(); row.insertCell().textContent = especie; const pesoEsp = speciesFormulas[especie].pesoEspecifico || 0.75; let totalEspecie = 0; dapClasses.forEach(dapClass => { const volTotal = data[especie][dapClass.name] ? data[especie][dapClass.name].volTotal * factor : 0; const tons = volTotal * pesoEsp; row.insertCell().textContent = formatNumber(tons); totalEspecie += tons; totals[dapClass.name] += tons; }); row.insertCell().textContent = formatNumber(totalEspecie); totals['TOTAL'] += totalEspecie; } dapClasses.forEach(c => tfoot.insertCell().textContent = formatNumber(totals[c.name])); tfoot.insertCell().textContent = formatNumber(totals['TOTAL']); }
         function renderGeneralStatsTable(data, factor) { const tbody = document.getElementById('tableEstadisticosGenerales').querySelector('tbody'); tbody.innerHTML = ''; const commercialDapClasses = dapClasses.filter(c => c.min >= 10); let totalN = 0, totalAB = 0, totalVolFuste = 0, totalVolTotal = 0; for (const especie in data) { commercialDapClasses.forEach(dapClass => { const classData = data[especie][dapClass.name]; if (classData) { totalN += classData.count * factor; totalAB += classData.areaBasal * factor; totalVolFuste += classData.volFuste * factor; totalVolTotal += classData.volTotal * factor; } }); } const row = tbody.insertRow(); row.innerHTML = `<td>PROMEDIO</td><td>${formatNumber(totalN)}</td><td>${formatNumber(totalAB)}</td><td>${formatNumber(totalVolFuste)}</td><td>${formatNumber(totalVolTotal)}</td>`; row.style.fontWeight = 'bold'; row.style.backgroundColor = '#e9ecef'; }
         function calculateAndRenderSamplingStats(treesWithCalculations) { const parcels = {}; treesWithCalculations.forEach(tree => { if (!parcels[tree.parcelaNum]) { parcels[tree.parcelaNum] = { nArboles: 0, ab: 0, volFuste: 0, volTotal: 0 }; } parcels[tree.parcelaNum].nArboles++; parcels[tree.parcelaNum].ab += tree.areaBasal; parcels[tree.parcelaNum].volFuste += tree.volFuste; parcels[tree.parcelaNum].volTotal += tree.volTotal; }); const numParcelas = Object.keys(parcels).length; if (numParcelas < 2) { document.getElementById('tableResumenParcelasAB').querySelector('tbody').innerHTML = `<tr><td colspan="3">Se necesitan al menos 2 parcelas para los cálculos estadísticos.</td></tr>`; document.getElementById('tableDetalleParcelasObservado').querySelector('tbody').innerHTML = ''; document.getElementById('tableDetalleParcelasHa').querySelector('tbody').innerHTML = ''; return; } const supParcelaHa = 1000 / 10000; const factorExpansionParcela = 1 / supParcelaHa; const abPorHa = Object.values(parcels).map(p => p.ab * factorExpansionParcela); const mediaAB = abPorHa.reduce((a, b) => a + b, 0) / numParcelas; const varianzaAB = abPorHa.reduce((sum, val) => sum + (val - mediaAB)**2, 0) / (numParcelas - 1); const desvioStdAB = Math.sqrt(varianzaAB); const errorStdAB = desvioStdAB / Math.sqrt(numParcelas); const tValue = getTValue(numParcelas - 1); const limiteErrorAB = tValue * errorStdAB; const errorMuestralAB = (mediaAB > 0) ? (limiteErrorAB / mediaAB) * 100 : 0; const errorObjetivoAB = parseFloat(document.getElementById('inputErrorEstablecidoAB').value) || 15; const intensidadNecesaria = (mediaAB > 0) ? ((tValue * desvioStdAB) / (errorObjetivoAB / 100 * mediaAB))**2 : 0; const tbodyResumen = document.getElementById('tableResumenParcelasAB').querySelector('tbody'); tbodyResumen.innerHTML = `<tr><td>Número de parcelas (n)</td><td>${formatNumber(numParcelas, 0)}</td><td>unid.</td></tr><tr><td>Media Área Basal (AB)</td><td>${formatNumber(mediaAB)}</td><td>m²/ha</td></tr><tr><td>Varianza</td><td>${formatNumber(varianzaAB)}</td><td></td></tr><tr><td>Desvío Estándar</td><td>${formatNumber(desvioStdAB)}</td><td></td></tr><tr><td>Error Estándar</td><td>${formatNumber(errorStdAB)}</td><td></td></tr><tr><td>Límite de Error para la Media</td><td>${formatNumber(limiteErrorAB)}</td><td>m²/ha</td></tr><tr style="font-weight:bold;"><td>Error Muestral (%)</td><td>${formatNumber(errorMuestralAB)}</td><td>%</td></tr><tr><td>Intensidad de Muestreo (n parcelas) para un error del ${errorObjetivoAB}%</td><td>${Math.ceil(intensidadNecesaria)}</td><td>unid.</td></tr>`; const tbodyObs = document.getElementById('tableDetalleParcelasObservado').querySelector('tbody'); const tbodyHa = document.getElementById('tableDetalleParcelasHa').querySelector('tbody'); tbodyObs.innerHTML = ''; tbodyHa.innerHTML = ''; Object.entries(parcels).forEach(([num, data]) => { tbodyObs.insertRow().innerHTML = `<td>${num}</td><td>${data.nArboles}</td><td>${formatNumber(data.ab, 4)}</td><td>${formatNumber(data.volFuste, 4)}</td><td>${formatNumber(data.volTotal, 4)}</td>`; tbodyHa.insertRow().innerHTML = `<td>${num}</td><td>${formatNumber(data.nArboles * factorExpansionParcela)}</td><td>${formatNumber(data.ab * factorExpansionParcela)}</td><td>${formatNumber(data.volFuste * factorExpansionParcela)}</td><td>${formatNumber(data.volTotal * factorExpansionParcela)}</td>`; }); }
-        
-        function renderInventoryCharts(data, factor) { 
-            const totalsByDAP = {}; 
-            dapClasses.forEach(c => { totalsByDAP[c.name] = { vol: 0, ab: 0, n: 0, tons: 0 }; }); 
-            for (const especie in data) { 
-                const pesoEsp = speciesFormulas[especie].pesoEspecifico || 0.75; 
-                for (const dapClassName in data[especie]) { 
-                    const classData = data[especie][dapClassName]; 
-                    totalsByDAP[dapClassName].vol += classData.volFuste; 
-                    totalsByDAP[dapClassName].ab += classData.areaBasal; 
-                    totalsByDAP[dapClassName].n += classData.count; 
-                    totalsByDAP[dapClassName].tons += classData.volTotal * pesoEsp; 
-                } 
-            } 
-            const labels = dapClasses.map(c => c.label); 
-            if(chartVolumenClaseDAPInstance) chartVolumenClaseDAPInstance.destroy(); 
-            chartVolumenClaseDAPInstance = new Chart(document.getElementById('chartVolumenClaseDAP'), { type: 'bar', data: { labels, datasets: [{ label: 'Volumen Fuste (m³/ha)', data: dapClasses.map(c => (totalsByDAP[c.name].vol * factor).toFixed(2)), backgroundColor: '#36A2EB' }] }, options: { responsive: true, maintainAspectRatio: true } }); 
-            
-            if(chartABClaseDAPInstance) chartABClaseDAPInstance.destroy();
-            chartABClaseDAPInstance = new Chart(document.getElementById('chartABClaseDAP'), {
-                type: 'bar',
-                data: {
-                    labels,
-                    datasets: [{
-                        label: 'Área Basal (m²/ha)',
-                        data: dapClasses.map(c => (totalsByDAP[c.name].ab * factor).toFixed(2)),
-                        backgroundColor: '#f907a8'
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: true }
-            });
-
-            if(chartDensidadClaseDAPInstance) chartDensidadClaseDAPInstance.destroy();
-            chartDensidadClaseDAPInstance = new Chart(document.getElementById('chartDensidadClaseDAP'), {
-                type: 'bar',
-                data: {
-                    labels,
-                    datasets: [{
-                        label: 'Densidad (N/ha)',
-                        data: dapClasses.map(c => (totalsByDAP[c.name].n * factor).toFixed(0)),
-                        backgroundColor: '#4BC0C0'
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: true }
-            });
-            
-            if(chartToneladasClaseDAPInstance) chartToneladasClaseDAPInstance.destroy(); 
-            chartToneladasClaseDAPInstance = new Chart(document.getElementById('chartToneladasClaseDAP'), { type: 'bar', data: { labels, datasets: [{ label: 'Toneladas Totales (Tn/ha)', data: dapClasses.map(c => (totalsByDAP[c.name].tons * factor).toFixed(2)), backgroundColor: '#FF6384' }] }, options: { responsive: true, maintainAspectRatio: true } }); 
-        }
-
+        function renderInventoryCharts(data, factor) { const totalsByDAP = {}; dapClasses.forEach(c => { totalsByDAP[c.name] = { vol: 0, ab: 0, n: 0, tons: 0 }; }); for (const especie in data) { const pesoEsp = speciesFormulas[especie].pesoEspecifico || 0.75; for (const dapClassName in data[especie]) { const classData = data[especie][dapClassName]; totalsByDAP[dapClassName].vol += classData.volFuste; totalsByDAP[dapClassName].ab += classData.areaBasal; totalsByDAP[dapClassName].n += classData.count; totalsByDAP[dapClassName].tons += classData.volTotal * pesoEsp; } } const labels = dapClasses.map(c => c.label); if(chartVolumenClaseDAPInstance) chartVolumenClaseDAPInstance.destroy(); chartVolumenClaseDAPInstance = new Chart(document.getElementById('chartVolumenClaseDAP'), { type: 'bar', data: { labels, datasets: [{ label: 'Volumen Fuste (m³/ha)', data: dapClasses.map(c => (totalsByDAP[c.name].vol * factor).toFixed(2)), backgroundColor: '#36A2EB' }] }, options: { responsive: true, maintainAspectRatio: true } }); if(chartABDensidadClaseDAPInstance) chartABDensidadClaseDAPInstance.destroy(); chartABDensidadClaseDAPInstance = new Chart(document.getElementById('chartABDensidadClaseDAP'), { type: 'bar', data: { labels, datasets: [ { label: 'Área Basal (m²/ha)', data: dapClasses.map(c => (totalsByDAP[c.name].ab * factor).toFixed(2)), backgroundColor: '#FFCE56', yAxisID: 'y' }, { label: 'Densidad (N/ha)', data: dapClasses.map(c => (totalsByDAP[c.name].n * factor).toFixed(2)), backgroundColor: '#4BC0C0', yAxisID: 'y1' } ] }, options: { responsive: true, maintainAspectRatio: true, scales: { y: { type: 'linear', display: true, position: 'left' }, y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false } } } } }); if(chartToneladasClaseDAPInstance) chartToneladasClaseDAPInstance.destroy(); chartToneladasClaseDAPInstance = new Chart(document.getElementById('chartToneladasClaseDAP'), { type: 'bar', data: { labels, datasets: [{ label: 'Toneladas Totales (Tn/ha)', data: dapClasses.map(c => (totalsByDAP[c.name].tons * factor).toFixed(2)), backgroundColor: '#FF6384' }] }, options: { responsive: true, maintainAspectRatio: true } }); }
         function renderSummaryCharts(data, factor) { if (Object.keys(data).length === 0) return; const speciesLabels = Object.keys(data).sort(); const volumeBySpeciesData = speciesLabels.map(especie => { let totalVol = 0; for (const dapClass in data[especie]) { totalVol += data[especie][dapClass].volFuste; } return (totalVol * factor).toFixed(2); }); const densityBySpeciesData = speciesLabels.map(especie => { let totalCount = 0; for (const dapClass in data[especie]) { totalCount += data[especie][dapClass].count; } return (totalCount * factor).toFixed(2); }); const dapDistributionData = dapClasses.map(dapClass => { let totalInClass = 0; speciesLabels.forEach(especie => { if (data[especie][dapClass.name]) { totalInClass += data[especie][dapClass.name].count; } }); return (totalInClass * factor).toFixed(0); }); document.getElementById('graficosContainer').style.display = 'block'; if (chartVolumenEspecieInstance) chartVolumenEspecieInstance.destroy(); chartVolumenEspecieInstance = new Chart(document.getElementById('chartVolumenPorEspecie'), { type: 'bar', data: { labels: speciesLabels, datasets: [{ label: 'Volumen Fuste (m³/ha)', data: volumeBySpeciesData, backgroundColor: '#28a745' }] }, options: { responsive: true, maintainAspectRatio: true, indexAxis: 'y' } }); if (chartDensidadEspecieInstance) chartDensidadEspecieInstance.destroy(); chartDensidadEspecieInstance = new Chart(document.getElementById('chartDensidadPorEspecie'), { type: 'bar', data: { labels: speciesLabels, datasets: [{ label: 'Densidad (Arb/ha)', data: densityBySpeciesData, backgroundColor: '#ffc107' }] }, options: { responsive: true, maintainAspectRatio: true, indexAxis: 'y' } }); if (chartDistribucionDAPInstance) chartDistribucionDAPInstance.destroy(); chartDistribucionDAPInstance = new Chart(document.getElementById('chartDistribucionDAP'), { type: 'bar', data: { labels: dapClasses.map(c => c.label), datasets: [{ label: 'Número de Árboles por Hectárea', data: dapDistributionData, backgroundColor: '#6c757d' }] }, options: { responsive: true, maintainAspectRatio: true } }); }
         function renderPlanillaCampo(trees) { const tbody = document.getElementById('tablePlanillaCampo').querySelector('tbody'); tbody.innerHTML = ''; trees.forEach((tree, index) => { const formula = speciesFormulas[tree.especie]; const scientificName = formula ? formula.scientificName : 'N/A'; const row = tbody.insertRow(); row.innerHTML = `<td>${index + 1}</td><td>${tree.especie} (${scientificName})</td><td>${formatNumber(tree.dap,1)}</td><td>${formatNumber(tree.altTotal,1)}</td><td>${formatNumber(tree.altFuste,1)}</td><td>${tree.parcelaNum}</td>`; }); }
         
         function prepararImpresion() {
             if (!document.getElementById('checkAceptoDDJJ').checked) { alert('Debe aceptar los términos de la Declaración Jurada antes de imprimir.'); return; }
             if(!validatePoaAreas()) { alert('No se puede imprimir. La suma de las superficies de los POAs excede la superficie total del plan. Por favor, corrija los valores.'); return; }
-            if(!document.getElementById('firmas-section-plan').innerHTML){ alert('Debe Calcular los Datos Forestales antes de imprimir para generar la sección de firmas.'); return;}
+            if(!document.getElementById('firmas-section-plan')){ alert('Debe Calcular los Datos Forestales antes de imprimir para generar la sección de firmas.'); return;}
             alert("Se abrirá el diálogo de impresión. Para guardar como PDF, seleccione 'Guardar como PDF' o 'Microsoft Print to PDF' en el destino de la impresora.");
             
             // Populate data for ALL signature blocks
             const numPoas = parseInt(inputNumPoas.value, 10) || 0;
-            const suffixes = ['plan', 'ddjj', ...Array.from({length: numPoas}, (_, i) => `poa${i + 1}`)];
+            const suffixes = ['plan', ...Array.from({length: numPoas}, (_, i) => `poa${i + 1}`)];
 
             suffixes.forEach(suffix => {
                 const checkRepLegalNoAplica = document.getElementById('checkRepLegalNoAplica').checked;
@@ -2914,16 +2636,11 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                 const titularCuitEl = document.getElementById(`firmaPrintTitularProyectoCUIT-${suffix}`);
                 if(titularNameEl) titularNameEl.textContent = checkRepLegalNoAplica ? (document.getElementById('inputTitularProyectoNombre').value || "..............................") : (document.getElementById('inputRepLegalNombre').value || "..............................");
                 if(titularCuitEl) titularCuitEl.textContent = checkRepLegalNoAplica ? (document.getElementById('inputTitularProyectoCUIT').value || "..............................") : (document.getElementById('inputRepLegalDNI').value || "..............................");
-                const tecnicoNombreEl = document.getElementById(`firmaPrintTecnicoNombre-${suffix}`);
-                if(tecnicoNombreEl) tecnicoNombreEl.textContent = document.getElementById('inputTecnicoNombre').value || "..............................";
-                const tecnicoMatriculaEl = document.getElementById(`firmaPrintTecnicoMatricula-${suffix}`);
-                if(tecnicoMatriculaEl) tecnicoMatriculaEl.textContent = document.getElementById('inputTecnicoMatricula').value || "..............................";
-                const establecimientoEl = document.getElementById(`firmaPrintEstablecimiento-${suffix}`);
-                if(establecimientoEl) establecimientoEl.textContent = document.getElementById('inputEstablecimiento').value || "..............................";
-                const partidaEl = document.getElementById(`firmaPrintPartidaInmobiliaria-${suffix}`);
-                if(partidaEl) partidaEl.textContent = document.getElementById('inputPartidaInmobiliaria').value || "..............................";
-                const deptoEl = document.getElementById(`firmaPrintDepartamento-${suffix}`);
-                if(deptoEl) deptoEl.textContent = document.getElementById('inputDepartamento').value || "..............................";
+                document.getElementById(`firmaPrintTecnicoNombre-${suffix}`).textContent = document.getElementById('inputTecnicoNombre').value || "..............................";
+                document.getElementById(`firmaPrintTecnicoMatricula-${suffix}`).textContent = document.getElementById('inputTecnicoMatricula').value || "..............................";
+                document.getElementById(`firmaPrintEstablecimiento-${suffix}`).textContent = document.getElementById('inputEstablecimiento').value || "..............................";
+                document.getElementById(`firmaPrintPartidaInmobiliaria-${suffix}`).textContent = document.getElementById('inputPartidaInmobiliaria').value || "..............................";
+                document.getElementById(`firmaPrintDepartamento-${suffix}`).textContent = document.getElementById('inputDepartamento').value || "..............................";
             });
 
             // Populate global header/footer data
@@ -2945,64 +2662,28 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
             });
             
             renderPlanillaCampo(enteredTrees);
-            
-            // --- Capturar mapas POA como imágenes para impresión ---
-            const poaMapDivs = document.querySelectorAll('.poa-map-leaflet');
-            const snapshotPromises = Array.from(poaMapDivs).map(mapDiv => {
-                return new Promise(resolve => {
-                    if (typeof html2canvas === 'undefined') { resolve(); return; }
-                    // Invalidar tamaño del mapa antes de capturar
-                    const poaId = mapDiv.id.replace('poa-map-', '');
-                    if (poaMapsInstances[poaId]) poaMapsInstances[poaId].map.invalidateSize();
-                    html2canvas(mapDiv, { useCORS: true, allowTaint: true, scale: 1.5 }).then(canvas => {
-                        const img = document.createElement('img');
-                        img.src = canvas.toDataURL('image/png');
-                        img.className = 'poa-map-print-snapshot';
-                        img.style.width = '100%';
-                        img.style.display = 'none'; // solo visible en impresión via CSS
-                        // Eliminar snapshot previo si existe
-                        const prev = mapDiv.parentNode.querySelector('.poa-map-print-snapshot');
-                        if (prev) prev.remove();
-                        mapDiv.parentNode.insertBefore(img, mapDiv);
-                        resolve();
-                    }).catch(() => resolve());
-                });
-            });
-            
-            Promise.all(snapshotPromises).then(() => {
-                window.print();
-                // Limpiar snapshots después de imprimir
-                setTimeout(() => {
-                    document.querySelectorAll('.poa-map-print-snapshot').forEach(img => img.remove());
-                }, 2000);
-            });
+            window.print();
         }
         function clearCalculations() { 
             const tablesToClear = ['tableVolumen', 'tableAreaBasal', 'tableDensidad', 'tableToneladas', 'tableResumenParcelasAB', 'tableDetalleParcelasObservado', 'tableDetalleParcelasHa']; 
             tablesToClear.forEach(id => { const table = document.getElementById(id); if (table) table.innerHTML = ''; }); 
             document.getElementById('tableEstadisticosGenerales').querySelector('tbody').innerHTML = ''; 
-            if(chartVolumenClaseDAPInstance) chartVolumenClaseDAPInstance.destroy(); 
-            if(chartABClaseDAPInstance) chartABClaseDAPInstance.destroy(); 
-            if(chartDensidadClaseDAPInstance) chartDensidadClaseDAPInstance.destroy(); 
-            if(chartToneladasClaseDAPInstance) chartToneladasClaseDAPInstance.destroy(); 
-            if(chartVolumenEspecieInstance) chartVolumenEspecieInstance.destroy(); 
-            if(chartDensidadEspecieInstance) chartDensidadEspecieInstance.destroy(); 
-            if(chartDistribucionDAPInstance) chartDistribucionDAPInstance.destroy(); 
-            document.getElementById('graficosContainer').style.display = 'none'; 
-            document.getElementById('inventoryResultsWrapper').style.display = 'none'; 
-            document.getElementById('graficosInventarioContainer').style.display = 'none'; 
+            if(chartVolumenClaseDAPInstance) chartVolumenClaseDAPInstance.destroy(); if(chartABDensidadClaseDAPInstance) chartABDensidadClaseDAPInstance.destroy(); if(chartToneladasClaseDAPInstance) chartToneladasClaseDAPInstance.destroy(); 
+            if(chartVolumenEspecieInstance) chartVolumenEspecieInstance.destroy(); if(chartDensidadEspecieInstance) chartDensidadEspecieInstance.destroy(); if(chartDistribucionDAPInstance) chartDistribucionDAPInstance.destroy(); 
+            document.getElementById('graficosContainer').style.display = 'none'; document.getElementById('inventoryResultsWrapper').style.display = 'none'; document.getElementById('graficosInventarioContainer').style.display = 'none'; 
             resultsBySpeciesDAPGlobal = {}; 
             alert('Todos los cálculos y tablas generadas han sido borrados.'); 
         }
         function clearAllInputs() {
             if (confirm('¿Está seguro que desea borrar TODOS los datos ingresados en el formulario, incluyendo la lista de árboles? Esta acción no se puede deshacer.')) {
                 document.querySelectorAll('input[type="text"], input[type="number"], input[type="email"], input[type="tel"], select, textarea').forEach(el => {
-                    if (el.readOnly || el.id === 'inputProvincia' || el.id === 'selectTipoPlan' || el.id === 'inputCoberturaArbustivaMin') return;
-                    if (el.type === 'checkbox') { el.checked = false; el.dispatchEvent(new Event('change'));}
+                    if (el.readOnly || el.id === 'inputProvincia') return;
+                    if (el.type === 'checkbox') { el.checked = false; }
                     else if (el.tagName.toLowerCase() === 'textarea') { el.value = ''; } 
                     else { el.value = el.type === 'number' ? '0' : ''; }
                 });
                 document.getElementById('inputProvincia').value = "CORRIENTES";
+                document.getElementById('selectTipoPlan').value = "conservacion_restauracion";
                 document.getElementById('inputNumPoas').value = '0';
                 poaContainer.innerHTML = '';
                 enteredTrees = [];
@@ -3026,8 +2707,8 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
         document.getElementById('inputPlanSinCategorizar').addEventListener('input', validatePlanSurfaces);
         document.getElementById('inputNumPoas').addEventListener('change', generatePoaSections);
         document.getElementById('inputErrorEstablecidoAB').addEventListener('input', () => { if (enteredTrees.length > 0) { const treesWithCalculations = enteredTrees.map(t => ({...t, areaBasal: Math.PI * (t.dap / 200) ** 2})); calculateAndRenderSamplingStats(treesWithCalculations); } });
-        
-        // --- Listener carga Excel (dentro del scope para acceder a enteredTrees) ---
+
+        // --- Listener carga Excel ---
         document.getElementById('inputCargarExcel').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -3109,7 +2790,6 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                         return;
                     }
 
-                    const prevCount = enteredTrees.length;
                     enteredTrees.push(...newTrees);
                     renderEnteredTrees();
                     updateSampledArea();
@@ -3131,26 +2811,7 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
         populateLocationDropdown(); 
         actualizarSuperficientes(); 
         updateSampledArea();
-        loadDefaultOtbn();
-        
         });
-
-        function descargarDiccionarioEspecies() {
-            const headers = ['ESPECIES', 'DAP (cm)', 'ALT TOTAL (m)', 'ALT FUSTE (m)', 'Parcela Número (Obligatorio)', 'Nombre Científico', 'Nombre Vulgar'];
-            const rows = Object.keys(speciesFormulas).sort().map(key => {
-                const sp = speciesFormulas[key];
-                return [key, '', '', '', '', key, sp.scientificName];
-            });
-            let csvContent = headers.join(';') + '\r\n';
-            rows.forEach(r => { csvContent += r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(';') + '\r\n'; });
-            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'Diccionario_Especies.csv';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
 
         // ===== FUNCIONES PARA PLANILLA EXCEL (SheetJS) =====
 
@@ -3163,7 +2824,7 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
 
             // ---- Hoja INSTRUCCIONES ----
             const instrData = [
-                ['PLANILLA DE INVENTARIO FORESTAL - PLAN DE MANEJO MBGI'],
+                ['PLANILLA DE INVENTARIO FORESTAL - PLAN DE CONSERVACIÓN'],
                 ['INSTRUCCIONES DE USO'],
                 ['1.', 'Vaya a la hoja INVENTARIO para ingresar los datos de los árboles medidos.'],
                 ['2.', 'Cada fila representa un árbol individual del inventario.'],
@@ -3198,7 +2859,6 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
             XLSX.utils.book_append_sheet(wb, wsSp, 'ESPECIES_VALIDAS');
 
             // ---- Hoja FORMULAS_VOLUMEN ----
-            // Mapeo legible de cada fórmula según su función JS
             function describeFórmula(fn) {
                 const s = fn.toString();
                 if (s.includes('-9.5086+2.0041') && s.includes('0.973*Math.log(af)'))
@@ -3215,9 +2875,6 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                     return 'ln(V) = -8.3864 + 0.0551011·d - 0.000533799·d² - 0.159762·hf + 1.34969·ln(d·hf)';
                 if (s.includes('0.000033 * d**2.3455'))
                     return 'V = 0.000033 · d^2.3455 · ht^0.687553';
-                if (s.includes('-9.5086+2.0041') && s.includes('0.687553'))
-                    return 'V = 0.000033 · d^2.3455 · ht^0.687553';
-                // Fórmula general más común
                 return 'ln(V) = -9.49642 - 0.00145081·d + 0.824921·ln(d²·hf) + 0.366708·ln(d·hf)';
             }
             function describeFórmulaTotal(fn) {
@@ -3234,7 +2891,7 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
             }
 
             const fvHeaders = [
-                'ESPECIE (Nombre Científico)', 'NOMBRE VULGAR', 
+                'ESPECIE (Nombre Científico)', 'NOMBRE VULGAR',
                 'ECUACIÓN VOLUMEN DE FUSTE', 'ECUACIÓN VOLUMEN TOTAL', 'PESO ESPECÍFICO (t/m³)',
                 'Referencias: d=DAP(cm), hf=Alt.Fuste(m), ht=Alt.Total(m), V=Volumen(m³)'
             ];
@@ -3253,7 +2910,7 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
             wsFv['!cols'] = [{ wch: 42 }, { wch: 32 }, { wch: 58 }, { wch: 42 }, { wch: 20 }, { wch: 60 }];
             XLSX.utils.book_append_sheet(wb, wsFv, 'FORMULAS_VOLUMEN');
 
-            XLSX.writeFile(wb, 'Planilla_Inventario_Forestal_MBGI.xlsx');
+            XLSX.writeFile(wb, 'Planilla_Inventario_Forestal_Conservacion.xlsx');
         }
 
         function mostrarEstadoCarga(mensaje, tipo) {
@@ -3275,6 +2932,8 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
     </script>
 </body>
 </html>
+
+            
 
 
 
