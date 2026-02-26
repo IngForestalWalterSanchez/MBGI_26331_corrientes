@@ -3527,6 +3527,14 @@ window.ecuacionesTexto = {
 
         function generatePoaSections() {
             const numPoas = parseInt(inputNumPoas.value, 10) || 0;
+            // Destruir instancias Leaflet existentes antes de borrar el DOM
+            Object.keys(poaMapsInstances).forEach(id => {
+                try {
+                    if (poaMapsInstances[id].resizeObserver) poaMapsInstances[id].resizeObserver.disconnect();
+                    poaMapsInstances[id].map.remove();
+                } catch(e) {}
+                delete poaMapsInstances[id];
+            });
             poaContainer.innerHTML = ''; 
             if (numPoas === 0) return;
 
@@ -4568,6 +4576,26 @@ window.ecuacionesTexto = {
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
