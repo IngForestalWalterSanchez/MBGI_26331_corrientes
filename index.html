@@ -1299,7 +1299,7 @@
         <div id="loginFormContainer">
             <img src="membrete_provincia.png" alt="Logo Provincia" id="loginLogo">
             <form id="loginForm">
-                <h2>PLAN DE MANEJO MBGI</h2>
+                <h2>ANEXO I - FORMULARIO A - MBGI</h2>
                 <div class="input-group">
                     <label for="inputUsername">Usuario</label>
                     <input type="text" id="inputUsername" name="username" required>
@@ -1538,8 +1538,8 @@
                                                 </label>
                                             </div>
                                         </div>
+
                                     </div>
-                                    
                                     <div class="map-button-row">
                                         <button class="map-btn clear" id="btn-map-clear">Limpiar Capas</button>
                                         <button class="map-btn" id="btn-map-fit">Ajustar Vista</button>
@@ -2083,6 +2083,11 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                     mainAppContent.style.display = 'flex';  
                     setupStaticTextareas();
                     window.dispatchEvent(new Event('resize'));
+                    // Reparar mapa principal que se inicializó oculto y cargar OTBN
+                    setTimeout(function() { 
+                        if (typeof map !== 'undefined' && map) { map.invalidateSize(); }
+                        loadOrdenamientoFromServer();
+                    }, 300);
                 } else {
                     loginError.textContent = 'Usuario o contraseña incorrectos.';
                     loginError.style.display = 'block';
@@ -2256,21 +2261,11 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                 reader.readAsText(file);
             }
             
-            function loadDefaultOtbn() {
-                fetch('Ordenamiento.geojson') 
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Archivo de Ordenamiento (Ordenamiento.geojson) no encontrado. La capa no se cargará.');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        processOrdenamientoData(data);
-                    })
-                    .catch(error => {
-                        console.error('Error al cargar la capa de OTBN por defecto:', error);
-                        showMapStatus(error.message, 'error');
-                    });
+            function loadOrdenamientoFromServer() {
+                fetch('Ordenamiento.geojson')
+                    .then(response => { if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); } return response.json(); })
+                    .then(data => { processOrdenamientoData(data); })
+                    .catch(error => { console.error('Error al cargar Ordenamiento.json:', error); showMapStatus('Error al cargar la capa de Ordenamiento desde el servidor.', 'error'); });
             }
 
             function processOrdenamientoData(data) {
@@ -2280,10 +2275,8 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                    style: mapStyles.ordenamiento,
                    onEachFeature: (feature, layer) => { layer.bindPopup(`<strong>Categoría:</strong> ${feature.properties.Categoria || 'N/A'}`); }
                 });
-                
                 updateLayerControl();
                 mapLayers.ordenamiento.addTo(map); 
-
                 showMapStatus('Capa de Ordenamiento cargada.', 'success');
                 calcularInterseccionesYSuperficies();
                 calculatePlanCategoriesIntersection();
@@ -2326,7 +2319,7 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                 if (hasLayers) {
                     const bounds = group.getBounds();
                     if (bounds.isValid()) {
-                        map.fitBounds(bounds, { padding: [30, 30] });
+                        map.fitBounds(bounds, { padding: [10, 30] });
                     }
                 }
             }
@@ -2349,70 +2342,120 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                 } catch(e) { showMapStatus('Error calculando el área del Plan Técnico: ' + e.message, 'error'); }
             }
             
-            function calcularInterseccionesYSuperficies() {
-                if (!predioGeoJSON || !ordenamientoGeoJSON) { return; }
-                showMapStatus('Calculando superficies...', 'success');
-                try {
-                    const areaTotalM2 = turf.area(predioGeoJSON);
-                    const areaTotalHa = areaTotalM2 / 10000;
-                    document.getElementById('inputSupPredio').value = areaTotalHa.toFixed(2);
-                } catch (e) { showMapStatus('Error al calcular el área del predio.', 'error'); return; }
-                let areaRojoM2 = 0, areaAmarilloM2 = 0, areaVerdeM2 = 0;
-                try {
-                    const predioFeatures = predioGeoJSON.features;
-                    const ordenamientoFeatures = ordenamientoGeoJSON.features;
-                    predioFeatures.forEach(predioFeature => {
-                        ordenamientoFeatures.forEach(ordenamientoFeature => {
-                            try {
-                                const intersection = turf.intersect(predioFeature.geometry, ordenamientoFeature.geometry);
-                                if (intersection) {
-                                    const areaInterseccionM2 = turf.area(intersection);
-                                    const Categoria = (ordenamientoFeature.properties.Categoria || '').toUpperCase();
-                                    if (Categoria.includes('ROJO')) { areaRojoM2 += areaInterseccionM2; } 
-                                    else if (Categoria.includes('AMARILLO')) { areaAmarilloM2 += areaInterseccionM2; } 
-                                    else if (Categoria.includes('VERDE')) { areaVerdeM2 += areaInterseccionM2; }
-                                }
-                            } catch (e) { /* Ignorar errores de topología */ }
-                        });
-                    });
-                    document.getElementById('inputCatRojo').value = (areaRojoM2 / 10000).toFixed(2);
-                    document.getElementById('inputCatAmarillo').value = (areaAmarilloM2 / 10000).toFixed(2);
-                    document.getElementById('inputCatVerde').value = (areaVerdeM2 / 10000).toFixed(2);
-                    actualizarSuperficientes(); 
-                    showMapStatus('Cálculo de superficies por categoría completado.', 'success');
-                } catch(e) { showMapStatus('Error durante el cálculo de intersección: ' + e.message, 'error'); }
+            // ── Detección de categoría OTBN: itera TODAS las propiedades ──────────────
+            function detectarCatOTBN(feature) {
+                if (!feature || !feature.properties) return null;
+                for (const key of Object.keys(feature.properties)) {
+                    const val = String(feature.properties[key] || '').toUpperCase().trim();
+                    if (val.includes('ROJO'))     return 'ROJO';
+                    if (val.includes('AMARILLO')) return 'AMARILLO';
+                    if (val.includes('VERDE'))    return 'VERDE';
+                    if (val === 'I'   || val === '1') return 'ROJO';
+                    if (val === 'II'  || val === '2') return 'AMARILLO';
+                    if (val === 'III' || val === '3') return 'VERDE';
+                    if (/^CAT(EGORIA|EGOR[ÍI]A)?[.:\s]*I$/i.test(val))   return 'ROJO';
+                    if (/^CAT(EGORIA|EGOR[ÍI]A)?[.:\s]*II$/i.test(val))  return 'AMARILLO';
+                    if (/^CAT(EGORIA|EGOR[ÍI]A)?[.:\s]*III$/i.test(val)) return 'VERDE';
+                }
+                return null;
             }
-            
-            function calculatePlanCategoriesIntersection() {
-                if (!planGeoJSON || !ordenamientoGeoJSON) {
-                    document.getElementById('spanPlanCatRojo').textContent = '0,00';
-                    document.getElementById('spanPlanCatAmarillo').textContent = '0,00';
-                    document.getElementById('spanPlanCatVerde').textContent = '0,00';
+
+            // Aplana Polygon y MultiPolygon a array de Polygon Features
+            function aplanarAPolygons(feature) {
+                if (!feature || !feature.geometry) return [];
+                if (feature.geometry.type === 'Polygon') return [feature];
+                if (feature.geometry.type === 'MultiPolygon') {
+                    return feature.geometry.coordinates.map(coords => ({
+                        type: 'Feature', properties: feature.properties,
+                        geometry: { type: 'Polygon', coordinates: coords }
+                    }));
+                }
+                return [];
+            }
+
+            // Intersección con filtro bbox (rápido) + limpieza de coords como fallback
+            function intersectarSeguro(featA, featB) {
+                try {
+                    const bA = turf.bbox(featA), bB = turf.bbox(featB);
+                    if (bA[2] < bB[0] || bB[2] < bA[0] || bA[3] < bB[1] || bB[3] < bA[1]) return null;
+                    return turf.intersect(featA, featB);
+                } catch(e) {
+                    try { return turf.intersect(turf.cleanCoords(featA), turf.cleanCoords(featB)); }
+                    catch(e2) { return null; }
+                }
+            }
+
+            // Núcleo del cálculo: dado un GeoJSON fuente, cruza con OTBN y suma por categoría
+            function _sumarCategoriasOTBN(sourceGeoJSON) {
+                let rojo = 0, amarillo = 0, verde = 0, sinCat = 0;
+                const srcFlat = [];
+                sourceGeoJSON.features.forEach(f => aplanarAPolygons(f).forEach(p => srcFlat.push(p)));
+                const ordFlat = [];
+                ordenamientoGeoJSON.features.forEach(f => aplanarAPolygons(f).forEach(p => ordFlat.push(p)));
+                if (ordFlat.length > 0) {
+                    console.log('[OTBN] Features:', ordFlat.length, '| Props[0]:', JSON.stringify(ordFlat[0].properties));
+                    console.log('[OTBN] Cat detectada[0]:', detectarCatOTBN(ordFlat[0]));
+                }
+                srcFlat.forEach(src => {
+                    ordFlat.forEach(ord => {
+                        const inter = intersectarSeguro(src, ord);
+                        if (!inter) return;
+                        const m2 = turf.area(inter);
+                        if (m2 < 1) return;
+                        const cat = detectarCatOTBN(ord);
+                        if      (cat === 'ROJO')     rojo     += m2;
+                        else if (cat === 'AMARILLO') amarillo += m2;
+                        else if (cat === 'VERDE')    verde    += m2;
+                        else                          sinCat   += m2;
+                    });
+                });
+                return { rojo, amarillo, verde, sinCat };
+            }
+
+            function calcularInterseccionesYSuperficies() {
+                if (!predioGeoJSON) { return; }
+                // Calcular área del predio siempre que el KML esté cargado
+                try {
+                    document.getElementById('inputSupPredio').value = (turf.area(predioGeoJSON) / 10000).toFixed(2);
+                    actualizarSuperficientes();
+                } catch(e) { showMapStatus('Error al calcular área del predio.', 'error'); return; }
+                // Calcular categorías OTBN solo si el GeoJSON de ordenamiento está disponible
+                if (!ordenamientoGeoJSON) {
+                    showMapStatus('Predio calculado. Cargue el GeoJSON OTBN para calcular categorías.', 'success');
                     return;
                 }
-                let areaRojoM2 = 0, areaAmarilloM2 = 0, areaVerdeM2 = 0;
+                showMapStatus('Calculando superficies OTBN...', 'success');
                 try {
-                    const planFeatures = planGeoJSON.features;
-                    const ordenamientoFeatures = ordenamientoGeoJSON.features;
-                    planFeatures.forEach(planFeature => {
-                        ordenamientoFeatures.forEach(ordenamientoFeature => {
-                            try {
-                                const intersection = turf.intersect(planFeature.geometry, ordenamientoFeature.geometry);
-                                if (intersection) {
-                                    const areaInterseccionM2 = turf.area(intersection);
-                                    const Categoria = (ordenamientoFeature.properties.Categoria || '').toUpperCase();
-                                    if (Categoria.includes('ROJO')) { areaRojoM2 += areaInterseccionM2; } 
-                                    else if (Categoria.includes('AMARILLO')) { areaAmarilloM2 += areaInterseccionM2; } 
-                                    else if (Categoria.includes('VERDE')) { areaVerdeM2 += areaInterseccionM2; }
-                                }
-                            } catch (e) { /* Ignorar errores de topología */ }
-                        });
+                    const { rojo, amarillo, verde } = _sumarCategoriasOTBN(predioGeoJSON);
+                    document.getElementById('inputCatRojo').value     = (rojo     / 10000).toFixed(2);
+                    document.getElementById('inputCatAmarillo').value = (amarillo / 10000).toFixed(2);
+                    document.getElementById('inputCatVerde').value    = (verde    / 10000).toFixed(2);
+                    actualizarSuperficientes();
+                    showMapStatus('✅ Predio: ' + (turf.area(predioGeoJSON)/10000).toFixed(2) + ' ha | Rojo: ' + (rojo/10000).toFixed(2) + ' | Amarillo: ' + (amarillo/10000).toFixed(2) + ' | Verde: ' + (verde/10000).toFixed(2) + ' ha', 'success');
+                } catch(e) { showMapStatus('Error en cálculo OTBN: ' + e.message, 'error'); console.error(e); }
+            }
+
+            function calculatePlanCategoriesIntersection() {
+                if (!planGeoJSON) {
+                    ['spanPlanCatRojo','spanPlanCatAmarillo','spanPlanCatVerde'].forEach(id => {
+                        document.getElementById(id).textContent = '0,00';
                     });
-                    document.getElementById('spanPlanCatRojo').textContent = formatNumber(areaRojoM2 / 10000);
-                    document.getElementById('spanPlanCatAmarillo').textContent = formatNumber(areaAmarilloM2 / 10000);
-                    document.getElementById('spanPlanCatVerde').textContent = formatNumber(areaVerdeM2 / 10000);
+                    return;
+                }
+                // Calcular categorías OTBN del plan solo si el ordenamiento está disponible
+                if (!ordenamientoGeoJSON) {
+                    ['spanPlanCatRojo','spanPlanCatAmarillo','spanPlanCatVerde'].forEach(id => {
+                        document.getElementById(id).textContent = '0,00';
+                    });
+                    return;
+                }
+                try {
+                    const { rojo, amarillo, verde } = _sumarCategoriasOTBN(planGeoJSON);
+                    document.getElementById('spanPlanCatRojo').textContent     = formatNumber(rojo     / 10000);
+                    document.getElementById('spanPlanCatAmarillo').textContent = formatNumber(amarillo / 10000);
+                    document.getElementById('spanPlanCatVerde').textContent    = formatNumber(verde    / 10000);
                     validatePlanSurfaces();
-                } catch(e) { showMapStatus('Error calculando intersección del Área del Plan: ' + e.message, 'error'); }
+                } catch(e) { showMapStatus('Error calculando intersección del Plan: ' + e.message, 'error'); console.error(e); }
             }
             
             function validatePlanSurfaces() {
@@ -2447,7 +2490,8 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
             document.getElementById('kml-predio-visible').addEventListener('change', (e) => toggleLayer('predio', e.target.checked));
             document.getElementById('kml-plan-visible').addEventListener('change', (e) => toggleLayer('plan', e.target.checked));
             document.getElementById('kml-parcelas-visible').addEventListener('change', (e) => toggleLayer('parcelas', e.target.checked));
-            
+
+
             document.getElementById('btn-map-clear').addEventListener('click', () => {
                 ['predio', 'plan', 'parcelas', 'ordenamiento'].forEach(key => { 
                     if (mapLayers[key]) { map.removeLayer(mapLayers[key]); mapLayers[key] = null; } 
@@ -2468,8 +2512,8 @@ Implementar estas medidas de prevención de incendios puede contribuir significa
                 actualizarSuperficientes();
                 updateLayerControl();
                 document.getElementById('map-coordinates-display').innerHTML = `Lat: ---, Lng: ---`;
-                showMapStatus('Todas las capas han sido removidas.', 'success');
-                loadDefaultOtbn(); 
+                showMapStatus('Capas de usuario removidas.', 'success');
+                loadOrdenamientoFromServer();
             });
 
             document.getElementById('btn-map-fit').addEventListener('click', fitToLayers);
@@ -3754,7 +3798,8 @@ window.ecuacionesTexto = {
 
                 const poaMap = L.map(mapDiv.id, { zoomControl: true }).setView([-28.5, -57.5], 8);
                 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                    attribution: 'Tiles © Esri'
+                    attribution: 'Tiles © Esri',
+                    crossOrigin: 'anonymous'
                 }).addTo(poaMap);
                 L.control.scale({ imperial: false, metric: true }).addTo(poaMap);
 
@@ -3785,7 +3830,10 @@ window.ecuacionesTexto = {
                     if (bounds.length > 0) {
                         let combined = bounds[0];
                         bounds.forEach(b => { combined = combined.extend(b); });
-                        inst.map.fitBounds(combined, { padding: [20, 20] });
+                        inst.map.fitBounds(combined, {
+                            paddingTopLeft: [10, 10],
+                            paddingBottomRight: [400, 10]
+                        });
                     }
                 }
 
@@ -4100,24 +4148,44 @@ window.ecuacionesTexto = {
             
             // --- Capturar mapas POA como imágenes para impresión ---
             const poaMapDivs = document.querySelectorAll('.poa-map-leaflet');
+            // Abrir todos los details primero
+            document.querySelectorAll('#poaContainer details').forEach(d => { d.open = true; });
+
             const snapshotPromises = Array.from(poaMapDivs).map(mapDiv => {
                 return new Promise(resolve => {
                     if (typeof html2canvas === 'undefined') { resolve(); return; }
-                    // Invalidar tamaño del mapa antes de capturar
                     const poaId = mapDiv.id.replace('poa-map-', '');
-                    if (poaMapsInstances[poaId]) poaMapsInstances[poaId].map.invalidateSize();
-                    html2canvas(mapDiv, { useCORS: true, allowTaint: true, scale: 1.5 }).then(canvas => {
-                        const img = document.createElement('img');
-                        img.src = canvas.toDataURL('image/png');
-                        img.className = 'poa-map-print-snapshot';
-                        img.style.width = '100%';
-                        img.style.display = 'none'; // solo visible en impresión via CSS
-                        // Eliminar snapshot previo si existe
-                        const prev = mapDiv.parentNode.querySelector('.poa-map-print-snapshot');
-                        if (prev) prev.remove();
-                        mapDiv.parentNode.insertBefore(img, mapDiv);
-                        resolve();
-                    }).catch(() => resolve());
+                    const inst = poaMapsInstances[poaId];
+                    
+                    function doCapture() {
+                        html2canvas(mapDiv, { useCORS: true, allowTaint: true, scale: 1.5 }).then(canvas => {
+                            const img = document.createElement('img');
+                            img.src = canvas.toDataURL('image/png');
+                            img.className = 'poa-map-print-snapshot';
+                            img.style.width = '100%';
+                            img.style.display = 'none';
+                            const prev = mapDiv.parentNode.querySelector('.poa-map-print-snapshot');
+                            if (prev) prev.remove();
+                            mapDiv.parentNode.insertBefore(img, mapDiv);
+                            resolve();
+                        }).catch(() => resolve());
+                    }
+
+                    if (inst) {
+                        // invalidateSize + fitBounds + esperar tiles antes de capturar
+                        inst.map.invalidateSize();
+                        const bounds = [];
+                        if (inst.layers && inst.layers.plan) bounds.push(inst.layers.plan.getBounds());
+                        if (inst.layers && inst.layers.poa)  bounds.push(inst.layers.poa.getBounds());
+                        if (bounds.length > 0) {
+                            let combined = bounds[0];
+                            bounds.forEach(b => { combined = combined.extend(b); });
+                            inst.map.fitBounds(combined, { paddingTopLeft: [30, 30], paddingBottomRight: [30, 30] });
+                        }
+                        setTimeout(doCapture, 800);
+                    } else {
+                        doCapture();
+                    }
                 });
             });
             
@@ -4339,7 +4407,6 @@ window.ecuacionesTexto = {
         }
         actualizarSuperficientes(); 
         updateSampledArea();
-        loadDefaultOtbn();
         
         });
 
@@ -4576,6 +4643,7 @@ window.ecuacionesTexto = {
     </script>
 </body>
 </html>
+
 
 
 
