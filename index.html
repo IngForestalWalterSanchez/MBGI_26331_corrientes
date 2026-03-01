@@ -1035,7 +1035,7 @@
                 font-size: 8.5pt !important;
             }
             /* Ocultar inputs KML y botones de mapa */
-            .poa-kml-plan, .poa-kml-poa, .poa-map-fit-btn, .poa-map-clear-btn {
+            .poa-kml-plan, .poa-kml-poa, .poa-kml-cortafuegos, .poa-map-fit-btn, .poa-map-clear-btn {
                 display: none !important;
             }
             /* --- FIN IMPRESIÓN MAPAS POA --- */
@@ -3658,6 +3658,10 @@ window.ecuacionesTexto = {
                                                 📌 KML Área POA ${i}:
                                                 <input type="file" accept=".kml" class="poa-kml-poa" data-poa="${i}" style="width:160px; font-size:0.82em;">
                                             </label>
+                                            <label title="Cargar KML de calles cortafuegos del POA ${i}">
+                                                🔥 KML Calles Cortafuegos:
+                                                <input type="file" accept=".kml" class="poa-kml-cortafuegos" data-poa="${i}" style="width:160px; font-size:0.82em;">
+                                            </label>
                                             <button class="btn-map-poa poa-map-fit-btn" data-poa="${i}" title="Ajustar vista a capas cargadas">⤢ Ajustar Vista</button>
                                             <button class="btn-map-poa poa-map-clear-btn" data-poa="${i}" style="background:#dc3545;" title="Limpiar capas">✕ Limpiar</button>
                                         </div>
@@ -3805,12 +3809,37 @@ window.ecuacionesTexto = {
 
                 poaMapsInstances[poaId] = {
                     map: poaMap,
-                    layers: { plan: null, poa: null }
+                    layers: { plan: null, poa: null, cortafuegos: null },
+                    legend: null
                 };
 
                 // Estilos de capas
-                const stylePlan = { color: '#06f1f1', weight: 2, opacity: 0.9, fillOpacity: 0.15 };
-                const stylePoa  = { color: '#ff6600', weight: 3, opacity: 1,   fillOpacity: 0.25 };
+                const stylePlan        = { color: '#06f1f1', weight: 2, opacity: 0.9, fillOpacity: 0.15 };
+                const stylePoa         = { color: '#ff6600', weight: 3, opacity: 1,   fillOpacity: 0.25 };
+                const styleCortafuegos = { color: '#e8151e', weight: 2.5, opacity: 0.9, fillOpacity: 0.15 };
+
+                // ---- Leyenda dinámica ----
+                function buildLegend() {
+                    const inst = poaMapsInstances[poaId];
+                    if (inst.legend) { inst.map.removeControl(inst.legend); inst.legend = null; }
+                    const items = [];
+                    if (inst.layers.plan)        items.push({ color: '#06f1f1', label: 'Plan Técnico' });
+                    if (inst.layers.poa)         items.push({ color: '#ff6600', label: `Área POA ${poaId}` });
+                    if (inst.layers.cortafuegos) items.push({ color: '#e8151e', label: 'Calles Cortafuegos' });
+                    if (items.length === 0) return;
+                    const legend = L.control({ position: 'bottomleft' });
+                    legend.onAdd = function() {
+                        const div = L.DomUtil.create('div');
+                        div.style.cssText = 'background:rgba(255,255,255,0.92);padding:6px 10px;border-radius:5px;font-size:11px;line-height:1.6;box-shadow:0 1px 4px rgba(0,0,0,0.3);pointer-events:none;';
+                        div.innerHTML = '<strong style="font-size:12px;">Referencias</strong><br>' +
+                            items.map(it =>
+                                `<span style="display:inline-block;width:14px;height:14px;background:${it.color};opacity:0.85;border:1px solid ${it.color};vertical-align:middle;margin-right:5px;border-radius:2px;"></span>${it.label}`
+                            ).join('<br>');
+                        return div;
+                    };
+                    legend.addTo(inst.map);
+                    inst.legend = legend;
+                }
 
                 function showPoaStatus(msg, tipo) {
                     const el = document.getElementById(`poa-map-status-${poaId}`);
@@ -3825,14 +3854,15 @@ window.ecuacionesTexto = {
                 function fitPoaMap() {
                     const inst = poaMapsInstances[poaId];
                     const bounds = [];
-                    if (inst.layers.plan) bounds.push(inst.layers.plan.getBounds());
-                    if (inst.layers.poa)  bounds.push(inst.layers.poa.getBounds());
+                    if (inst.layers.plan)        bounds.push(inst.layers.plan.getBounds());
+                    if (inst.layers.poa)         bounds.push(inst.layers.poa.getBounds());
+                    if (inst.layers.cortafuegos) bounds.push(inst.layers.cortafuegos.getBounds());
                     if (bounds.length > 0) {
                         let combined = bounds[0];
                         bounds.forEach(b => { combined = combined.extend(b); });
                         inst.map.fitBounds(combined, {
-                            paddingTopLeft: [10, 10],
-                            paddingBottomRight: [400, 10]
+                            paddingTopLeft: [20, 20],
+                            paddingBottomRight: [20, 20]
                         });
                     }
                 }
@@ -3853,6 +3883,7 @@ window.ecuacionesTexto = {
                                 }
                             }).addTo(inst.map);
                             fitPoaMap();
+                            buildLegend();
                             showPoaStatus(`✅ Capa "${labelName}" cargada.`, 'ok');
                         } catch(err) {
                             showPoaStatus(`Error al cargar ${labelName}: ` + err.message, 'err');
@@ -3864,8 +3895,10 @@ window.ecuacionesTexto = {
                 // Inputs KML de este POA
                 const kmlPlanInput = document.querySelector(`.poa-kml-plan[data-poa="${poaId}"]`);
                 const kmlPoaInput  = document.querySelector(`.poa-kml-poa[data-poa="${poaId}"]`);
+                const kmlCortafuegosInput = document.querySelector(`.poa-kml-cortafuegos[data-poa="${poaId}"]`);
                 if (kmlPlanInput) kmlPlanInput.addEventListener('change', e => loadPoaKML(e.target.files[0], 'plan', stylePlan, 'Plan Técnico'));
                 if (kmlPoaInput)  kmlPoaInput.addEventListener('change',  e => loadPoaKML(e.target.files[0], 'poa',  stylePoa,  `Área POA ${poaId}`));
+                if (kmlCortafuegosInput) kmlCortafuegosInput.addEventListener('change', e => loadPoaKML(e.target.files[0], 'cortafuegos', styleCortafuegos, `Calles Cortafuegos POA ${poaId}`));
 
                 // Botón ajustar vista
                 const fitBtn = document.querySelector(`.poa-map-fit-btn[data-poa="${poaId}"]`);
@@ -3875,10 +3908,13 @@ window.ecuacionesTexto = {
                 const clearBtn = document.querySelector(`.poa-map-clear-btn[data-poa="${poaId}"]`);
                 if (clearBtn) clearBtn.addEventListener('click', () => {
                     const inst = poaMapsInstances[poaId];
-                    if (inst.layers.plan) { inst.map.removeLayer(inst.layers.plan); inst.layers.plan = null; }
-                    if (inst.layers.poa)  { inst.map.removeLayer(inst.layers.poa);  inst.layers.poa  = null; }
-                    if (kmlPlanInput) kmlPlanInput.value = '';
-                    if (kmlPoaInput)  kmlPoaInput.value  = '';
+                    if (inst.layers.plan)        { inst.map.removeLayer(inst.layers.plan);        inst.layers.plan        = null; }
+                    if (inst.layers.poa)         { inst.map.removeLayer(inst.layers.poa);         inst.layers.poa         = null; }
+                    if (inst.layers.cortafuegos) { inst.map.removeLayer(inst.layers.cortafuegos); inst.layers.cortafuegos = null; }
+                    if (inst.legend)             { inst.map.removeControl(inst.legend);           inst.legend             = null; }
+                    if (kmlPlanInput)        kmlPlanInput.value = '';
+                    if (kmlPoaInput)         kmlPoaInput.value  = '';
+                    if (kmlCortafuegosInput) kmlCortafuegosInput.value = '';
                     inst.map.setView([-28.5, -57.5], 8);
                     showPoaStatus('Capas eliminadas.', 'info');
                 });
@@ -4175,14 +4211,16 @@ window.ecuacionesTexto = {
                         // invalidateSize + fitBounds + esperar tiles antes de capturar
                         inst.map.invalidateSize();
                         const bounds = [];
-                        if (inst.layers && inst.layers.plan) bounds.push(inst.layers.plan.getBounds());
-                        if (inst.layers && inst.layers.poa)  bounds.push(inst.layers.poa.getBounds());
+                        if (inst.layers && inst.layers.plan)        bounds.push(inst.layers.plan.getBounds());
+                        if (inst.layers && inst.layers.poa)         bounds.push(inst.layers.poa.getBounds());
+                        if (inst.layers && inst.layers.cortafuegos) bounds.push(inst.layers.cortafuegos.getBounds());
                         if (bounds.length > 0) {
                             let combined = bounds[0];
                             bounds.forEach(b => { combined = combined.extend(b); });
-                            inst.map.fitBounds(combined, { paddingTopLeft: [30, 30], paddingBottomRight: [30, 30] });
+                            inst.map.fitBounds(combined, { paddingTopLeft: [20, 20], paddingBottomRight: [20, 20] });
                         }
-                        setTimeout(doCapture, 800);
+                        // Esperar que los tiles carguen completamente antes de capturar
+                        setTimeout(doCapture, 1400);
                     } else {
                         doCapture();
                     }
@@ -4643,6 +4681,7 @@ window.ecuacionesTexto = {
     </script>
 </body>
 </html>
+
 
 
 
